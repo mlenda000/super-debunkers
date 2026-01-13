@@ -1,0 +1,43 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-normal);
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+}
+
+
+
+body {
+margin: 0;
+padding: 0;
+min-width: 320px;
+width: 100vw;
+height: 100vh;
+overflow: hidden;
+position: fixed;
+}
+
+:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: var(--spacing-xs);
+}
+

@@ -1,0 +1,58 @@
+.rotate-screen-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.95);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+.rotate-screen-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-2xl);
+  text-align: center;
+}
+
+.rotate-screen-icon {
+  width: 120px;
+  height: 120px;
+  color: #fff;
+  animation: rotate-pulse 2s ease-in-out infinite;
+}
+
+.rotate-screen-text {
+  font-family: 'DIN Alternate', sans-serif;
+  font-size: var(--font-size-base);
+  color: #fff;
+  margin: 0;
+  max-width: 300px;
+}
+
+@keyframes rotate-pulse {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-15deg) scale(1.1);
+  }
+  50% {
+    transform: rotate(0deg) scale(1);
+  }
+  75% {
+    transform: rotate(15deg) scale(1.1);
+  }
+}
+
+/* Show only on mobile devices in portrait mode */
+@media (max-width: 640px) and (orientation: portrait) {
+  .rotate-screen-overlay {
+    display: flex;
+  }
+}

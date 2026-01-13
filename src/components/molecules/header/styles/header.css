@@ -1,0 +1,37 @@
+.app-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--width-full);
+    padding: var(--spacing-2xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2;
+}
+.header-button {
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: #fff;
+    font-family: 'Subway Berlin', sans-serif;
+    display: flex;
+    align-items: center;
+    padding-inline: var(--spacing-sm);
+    padding-block: var(--spacing-xs);
+    transition: all 0.3s ease;
+}
+.header-button:hover {
+    transform: scale(1.1);
+}
+.header-button:active, .header-button:focus, .header-button:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+.header-button-image {
+    width: auto;
+    height: 48px;
+    margin-right: 16px;
+}

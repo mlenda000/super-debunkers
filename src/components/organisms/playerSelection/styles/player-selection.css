@@ -1,0 +1,66 @@
+.player-selection {
+  display: grid;
+  place-items: center;
+  width: var(--width-full);
+  min-height: var(--min-height-screen);
+  justify-content: center;
+  align-content: center;
+  padding: var(--spacing-sm);
+  gap: var(--spacing-md);
+  margin-top: 20px;
+
+  @media (max-width: 768px) {
+    padding: var(--spacing-xs);
+    gap: var(--spacing-sm);
+  }
+
+}
+.player-selection__header {
+  font-family: "Subway Berlin", sans-serif;
+  font-size: clamp(20px, 6vw, 100px);
+  line-height: var(--line-height-snug);
+  margin-block: 0;
+  z-index: 2;
+  text-align: center;
+  
+  @media (max-width: 768px) {
+    font-size: clamp(18px, 5vw, 36px);
+  }
+}
+.player-selection__avatar-container {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--gap-grid-xl);
+  margin-inline: auto;
+  max-width: clamp(300px, 90vw, 1200px);
+  width: var(--width-full);
+  padding: var(--spacing-sm);
+
+  .player-selection__avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1;
+  }
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--gap-grid-lg);
+    max-width: clamp(280px, 85vw, 800px);
+    padding: var(--spacing-md);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--spacing-md);
+    max-width: clamp(240px, 95vw, 600px);
+    padding: var(--spacing-xs);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(6, 1fr);
+    gap: clamp(6px, 1vw, 8px);
+    max-width: clamp(200px, 98vw, 400px);
+    padding: clamp(2px, 0.5vw, 4px);
+  }
+}

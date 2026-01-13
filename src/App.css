@@ -1,0 +1,63 @@
+/* Typography variables */
+@import './styles/typography.css';
+
+/* Spacing variables */
+@import './styles/spacing.css';
+
+/* style classes for all components */
+@import './components/atoms/avatarImage/styles/avatar-image.css';
+@import './components/atoms/background/styles/background.css';
+@import './components/atoms/button/styles/button.css';
+@import './components/atoms/input/styles/input.css';
+@import "./components/atoms/roomTab/styles/room-tab.css";
+@import './components/atoms/rotateScreen/styles/rotate-screen.css';
+@import './components/molecules/carouselSlide/styles/carousel-slide.css';
+@import './components/molecules/header/styles/header.css';
+@import './components/molecules/tacticCardBack/styles/tactic-card-back.css';
+@import './components/molecules/tacticCards/styles/tactic-cards.css';
+@import './components/organisms/playerSelection/styles/player-selection.css';
+@import './components/organisms/carousel/styles/carousel.css';
+@import './components/organisms/lobby/styles/lobby.css';
+@import './components/organisms/NameSelection/styles/name-selection.css';
+/* @import './components/templates/characterCreationPage/styles/character-creation-page.css'; */
+/* @import "./components/templates/directionsPage/styles/directions-page.css"; */
+@import './components/templates/createRoomPage/styles/create-room-page.css';
+@import './components/templates/gamePage/styles/game-page.css';
+@import './components/templates/homePage/styles/home-page.css';
+@import './components/templates/lobbyPage/styles/lobby-page.css';
+/* @import './components/templates/villainsPage/styles/villains-page.css'; */
+
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fonts */
+@font-face {
+    font-family: 'DIN Alternate';
+    src: url('/fonts/DINAlternate-Bold.ttf') format('truetype');
+    font-weight: var(--font-weight-bold);
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Subway Berlin';
+    src: url('/fonts/subway-berlin-sc.otf') format('opentype');
+    font-weight: var(--font-weight-normal);
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Global styles */
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
+}
+

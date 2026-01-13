@@ -1,0 +1,36 @@
+[
+  {
+    "id": "directions-1",
+    "title": "How to Play",
+    "imageType": "single",
+    "image": "/images/directions/news-card.webp",
+    "imageAlt": "Example news card",
+    "description": "You'll see a news card and need to decide if it's real or fake.. "
+  },
+  {
+    "id": "directions-2",
+    "imageType": "multiple",
+    "description": "If it's fake, you'll have to figure out which trick the villains are using! Hover over the card for more details on the tactic."
+  },
+  {
+    "id": "directions-3",
+    "imageType": "single",
+    "image": "/images/directions/facts.webp",
+    "imageAlt": "Example of the facts card",
+    "description": "If you think the news card is telling the truth, use the “Facts” card."
+  },
+  {
+    "id": "directions-4",
+    "imageType": "single",
+    "image": "/images/directions/eye-symbol.webp",
+    "imageAlt": "Example of how many tactics are used",
+    "description": "The little eye symbols at the bottom right of each news card shows how many tricks are being used."
+  },
+  {
+    "id": "directions-5",
+    "imageType": "single",
+    "image": "/images/directions/avatar.webp",
+    "imageAlt": "Example of an avatar",
+    "description": "If you make the wrong guesses, you will lose followers, but if you guess correctly, you will gain more.\n\nThe player with the most followers at the end wins!"
+  }
+]

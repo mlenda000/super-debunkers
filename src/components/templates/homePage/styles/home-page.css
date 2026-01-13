@@ -1,0 +1,138 @@
+.homepage {
+    font-family: 'Subway Berlin', sans-serif;
+    text-align: center;
+    overflow-y: auto;
+    height: 100vh;
+    padding-inline: var(--spacing-md);
+}
+.homepage h1 {
+    width: var(--width-80);
+    font-size: var(--font-size-xxl);
+    line-height: var(--line-height-xxl);
+    margin-inline: auto;
+    margin-top: 35vh;
+    margin-bottom: var(--spacing-6xl);
+    color: white;
+}
+.homepage h2 {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-snug);
+    color: white;
+    margin-block: 0;
+}
+.home-secondary-header{
+    margin-top: var(--spacing-5xl) !important;   
+}
+.home-description-secondary{
+    margin-bottom: var(--spacing-4xl);   
+}
+
+.home-description {
+    font-family: "DIN Alternate", sans-serif;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    max-width: var(--max-width-sm);
+    margin-inline: auto;
+}
+.home-button-group {
+  display: flex;
+  gap: var(--spacing-md);
+  max-height: var(--max-height-lg);
+  max-width: var(--max-width-md);
+  width: var(--width-fit);
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto var(--spacing-4xl) auto;
+}
+
+.home-button {
+  aspect-ratio: 3/ 4;
+  height: var(--height-full);
+  max-height: var(--max-height-sm);
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  background: transparent;
+  color:white;
+  transition: all 0.3s ease;
+}
+.home-button:hover {
+    transform: scale(1.05);
+    border-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.home-button:active, .home-button:focus, .home-button:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}   
+.home-button-title {
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-button);
+    margin: 0;
+    padding-inline: var(--spacing-sm);
+}
+
+
+.home-button-image {
+  width: var(--width-80);
+  height: var(--height-auto);
+  object-fit: contain;
+}
+.home-play-button {
+    position: absolute;
+    bottom: var(--spacing-sm);
+    left: 50%;
+    transform: translateX(-50%);
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--width-full);
+}
+.home-button-description {
+    font-size: var(--font-size-xs);
+    margin-right: var(--spacing-sm);
+    margin-block: 0;
+}
+
+/* Tablet breakpoint */
+@media (max-width: 1024px) {
+  .home-button-group {
+    max-height: clamp(300px, 50vw, 500px);
+    max-width: clamp(500px, 70vw, 700px);
+    gap: var(--spacing-sm);
+  }
+
+  .home-button {
+    max-height: clamp(250px, 40vw, 350px);
+  }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 640px) {
+  .home-button-group {
+    flex-direction: column;
+    max-height: none;
+    max-width: clamp(200px, 80vw, 300px);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .home-button {
+    width: var(--width-full);
+    max-height: clamp(200px, 50vw, 300px);
+    aspect-ratio: 3 / 4;
+  }
+
+  .home-button-image {
+    width: 70%;
+  }
+
+  .home-play-button {
+    bottom: var(--spacing-xs);
+  }
+}

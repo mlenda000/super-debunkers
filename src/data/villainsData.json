@@ -1,0 +1,31 @@
+[
+  {
+    "id": "villains-1",
+    "header": "Meet the Villains",
+    "description": "In a world of news and gossip, super villains spread fake news to create confusion. Outsmart them, expose their tricks and reveal the truth."
+  },
+  {
+    "id": "villains-2",
+    "image": "/images/villains/bots.webp",
+    "imageAlt": "BOTS villain image",
+    "description": "In a technology-driven world, the BOTS spread deepfakes and algorithms driven lies through images and videos."
+  },
+  {
+    "id": "villains-3",
+    "image": "/images/villains/oligs.webp",
+    "imageAlt": "OLIGS villain image",
+    "description": "The OLIGS create fake news to earn more money and control people with their corporate and financial power."
+  },
+  {
+    "id": "villains-4",
+    "image": "/images/villains/biosts.webp",
+    "imageAlt": "BIOSTS villain image",
+    "description": "The BIOSTS scam innocent townsfolk with fake cures for their health problems to gain money, fame and control."
+  },
+  {
+    "id": "villains-5",
+    "image": "/images/villains/celebs.webp",
+    "imageAlt": "CELEBS villain image",
+    "description": "The CELEBS sell fake products and use their own social media fame to fool the public with false promises and fake exclusivity."
+  }
+]

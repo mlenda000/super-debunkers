@@ -1,0 +1,146 @@
+.carousel-slide {
+  width: 100%;
+  max-width: 70vw;
+  height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-sm);
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.carousel-slide-with-tactics {
+  margin-top: 20px;
+}
+
+.carousel-slide-header {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: #fff;
+  margin: 0;
+  text-align: center;
+  max-width: 70vw;
+  font-family: 'Subway Berlin', sans-serif;
+}
+
+.carousel-slide-image-wrapper {
+  width: 100%;
+  max-width: 60vw;
+  max-height: 45vh;
+  flex-shrink: 1;
+  border-radius: var(--spacing-sm);
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-slide-image {
+  max-width: 100%;
+  max-height: 45vh;
+  width: var(--width-auto);
+  height: var(--height-auto);
+  display: block;
+  object-fit: contain;
+}
+
+.carousel-slide-description {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  max-width: 65vw;
+  margin: 0;
+  font-family: "DIN Alternate", sans-serif;
+}
+
+.carousel-slide-content {
+  width: 100%;
+  max-width: 70vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+}
+
+/* Responsive */
+/* Tablet landscape */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .carousel-slide {
+    padding: var(--spacing-lg) var(--spacing-md);
+    gap: var(--spacing-sm);
+  }
+
+  .carousel-slide-header {
+    max-width: 90vw;
+  }
+
+  .carousel-slide-image-wrapper {
+    max-width: 70vw;
+  }
+
+  .carousel-slide-image {
+    max-height: 40vh;
+  }
+
+  .carousel-slide-description {
+    max-width: 80vw;
+  }
+
+  .carousel-slide-content {
+    max-width: 90vw;
+    gap: var(--spacing-md);
+  }
+}
+
+/* Mobile landscape */
+@media (max-width: 640px) and (orientation: landscape) {
+  .carousel-slide {
+    padding: var(--spacing-md) var(--spacing-sm);
+    gap: var(--spacing-xs);
+    min-height: 100vh;
+  }
+
+  .carousel-slide-header {
+    max-width: 85vw;
+  }
+
+  .carousel-slide-image-wrapper {
+    max-width: 60vw;
+  }
+
+  .carousel-slide-image {
+    max-height: 35vh;
+  }
+
+  .carousel-slide-description {
+    max-width: 70vw;
+  }
+
+  .carousel-slide-content {
+    max-width: 85vw;
+    gap: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 640px) {
+  .carousel-slide {
+    flex-direction: row;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+
+  .carousel-slide-header {
+    font-size: var(--font-size-responsive-lg);
+  }
+
+  .carousel-slide-description {
+    font-size: var(--font-size-responsive-sm);
+  }
+}
