@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "@/components/atoms/input/Input";
+import Button from "@/components/atoms/button/Button";
 
 const CreateRoomPage = ({
   rooms,
@@ -29,12 +30,7 @@ const CreateRoomPage = ({
   return (
     <>
       <div className="create-room__container">
-        <img
-          src={"/images/new-game.png"}
-          alt="Logo"
-          style={{ width: "35%", height: "auto" }}
-          className="create-room__title"
-        />
+        <h1 className="create-room__title">Create Room</h1>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -49,15 +45,8 @@ const CreateRoomPage = ({
             />
           </div>
         </form>
-        <button onClick={handleSubmit} className="next-button">
-          <img
-            src={`/images/${
-              currentInput ? "pink-next-button.png" : "gray-next-button.png"
-            }`}
-            alt="Logo"
-            style={{ cursor: "pointer", width: "50%", height: "auto" }}
-          />
-        </button>
+
+        <Button onClick={handleSubmit}>Create Room</Button>
       </div>
     </>
   );

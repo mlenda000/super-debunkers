@@ -85,6 +85,7 @@ export interface NextButtonProps {
   onClick: () => void;
   disabled?: boolean;
   className?: string;
+  children?: string;
 }
 
 // Room Tab Types

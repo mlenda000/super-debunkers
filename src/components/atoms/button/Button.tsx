@@ -4,10 +4,11 @@ const NextButton = ({
   onClick,
   disabled = false,
   className = "next-button",
+  children = "Next",
 }: NextButtonProps) => {
   return (
     <button onClick={onClick} className={className} disabled={disabled}>
-      <p className="next-button-text">Next</p>
+      <p className="next-button-text">{children}</p>
       <img
         src={`/images/buttons/${!disabled ? "next.webp" : "gray-next.png"}`}
         alt="Next"
