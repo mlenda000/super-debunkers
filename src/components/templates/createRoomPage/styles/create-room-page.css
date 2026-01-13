@@ -1,28 +1,4 @@
-.create-room {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.create-room-page{
     height: 100%;
     width: 100%;
-    background-color: var(--color-background);
-}
-
-.create-room__input {
-    margin-top: 30px;
-}
-
-.create-room__button {
-    position: absolute;
-    border: 0;
-    right: 120px;
-    bottom: 120px;
-    margin-top: 4rem;
-}
-
-.create-room__container {
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }

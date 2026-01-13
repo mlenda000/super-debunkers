@@ -19,6 +19,7 @@
 @import './components/organisms/carousel/styles/carousel.css';
 @import './components/organisms/lobby/styles/lobby.css';
 @import './components/organisms/nameSelection/styles/name-selection.css';
+@import './components/organisms/createRoom/styles/create-room.css';
 /* @import './components/templates/characterCreationPage/styles/character-creation-page.css'; */
 /* @import "./components/templates/directionsPage/styles/directions-page.css"; */
 @import './components/templates/createRoomPage/styles/create-room-page.css';
