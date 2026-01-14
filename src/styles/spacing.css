@@ -8,8 +8,10 @@
   --spacing-md: clamp(2px, 1rem, 16px); /* 16px */
   --spacing-lg: clamp(2px, 1.25rem, 20px); /* 20px */
   --spacing-xl: clamp(2px, 1.5rem, 24px); /* 24px */
+  --spacing-xxl: clamp(16px, 1.5rem, 32px);
   --spacing-2xl: clamp(4px, 2rem, 32px); /* 32px */
   --spacing-3xl: clamp(6px, 2.5rem, 40px); /* 40px */
+ 
   
   /* Specific Margins */
   --spacing-4xl: clamp(8px, 3.75rem, 60px); /* 60px */

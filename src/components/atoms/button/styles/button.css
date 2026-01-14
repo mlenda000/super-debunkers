@@ -23,7 +23,7 @@
   }
   
   @media (max-height: 600px) {
-    margin-top: clamp(2px, 0.3vh, 4px);
+    margin-top: var(--spacing-xxl);
     padding: clamp(2px, 0.3vh, 4px) var(--spacing-xs);
   }
 }
