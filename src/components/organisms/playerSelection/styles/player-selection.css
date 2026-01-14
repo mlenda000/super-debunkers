@@ -7,7 +7,6 @@
   align-content: center;
   padding: var(--spacing-sm);
   gap: var(--spacing-md);
-  margin-top: 20px;
 
   @media (max-width: 768px) {
     padding: var(--spacing-xs);

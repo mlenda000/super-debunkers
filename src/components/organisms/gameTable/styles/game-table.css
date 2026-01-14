@@ -1,0 +1,33 @@
+.active-game-page {
+  display: flex;
+  flex-direction: column;
+
+  .top-section {
+    margin-top: 45px;
+    margin-bottom: 0;
+    padding-bottom: 1rem;
+    position: relative;
+  }
+
+  .bottom-section {
+    margin-top: 100px;
+    padding: 1rem;
+    position: relative;
+
+    @media (min-width: 1500px) {
+      padding-top: 3rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .bottom-section {
+      padding-bottom: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .bottom-section {
+      padding-bottom: 3rem;
+    }
+  }
+}
