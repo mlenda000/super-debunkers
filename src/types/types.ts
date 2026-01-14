@@ -1,3 +1,9 @@
+export interface PlayedCardProps {
+  name: string;
+  image: string;
+  id: string | number;
+  onUndo: (id: string | number) => void;
+}
 import type { ReactNode } from "react";
 
 // Global Context Types
@@ -93,4 +99,24 @@ export interface RoomTabProps {
   room: string;
   avatar: string;
   onClick: (playerName: string, room: string, avatar: string) => void;
+}
+
+export interface TacticCardProps {
+  category: string;
+  image: string;
+  imageBack: string;
+  description?: string;
+  example: string;
+  alt: string;
+  className?: string;
+  id: string;
+  onUndo?: (id: string) => void;
+}
+
+export interface TacticCardFrontProps {
+  category: string;
+  image: string;
+  alt: string;
+  className?: string;
+  onUndo?: (id: string) => void;
 }

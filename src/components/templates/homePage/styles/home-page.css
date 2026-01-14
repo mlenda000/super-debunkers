@@ -4,6 +4,7 @@
     overflow-y: auto;
     height: 100vh;
     padding-inline: var(--spacing-md);
+<<<<<<< HEAD
     position: relative;
 }
 
@@ -29,6 +30,9 @@
     60% {
         transform: translateX(-50%) translateY(-7px);
     }
+=======
+    margin-bottom: 32px;
+>>>>>>> a909b23 (started working through gametable components)
 }
 .homepage h1 {
     width: var(--width-80);
