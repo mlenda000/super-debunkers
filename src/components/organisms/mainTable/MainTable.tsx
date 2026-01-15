@@ -1,37 +1,10 @@
 import React, { useEffect } from "react";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { sendWebSocketMessage } from "@/services/webSocketService";
-import influencerCards from "@/data/influencerCards.json";
+import type { MainTableProps, ThemeStyle } from "@/types/types";
 import PlayedCard from "@/components/molecules/playedCard/PlayedCard";
-
-interface TacticCardType {
-  id: string;
-  name: string;
-  imageUrl?: string;
-  description?: string;
-}
-
-interface InfluencerCardType {
-  caption: string;
-  bodyCopy: string;
-  villain: string;
-  tacticUsed: string[];
-  newsImage?: string;
-}
-
-interface MainTableProps {
-  items: TacticCardType[];
-  currentInfluencer: InfluencerCardType | null;
-  setCurrentInfluencer: (influencer: InfluencerCardType) => void;
-  finishRound: boolean;
-  setFinishRound: (val: boolean) => void;
-  setRoundEnd: (val: boolean) => void;
-  setPlayersHandItems: (items: TacticCardType[]) => void;
-  originalItems: TacticCardType[];
-  mainTableItems: TacticCardType[];
-  setMainTableItems: (items: TacticCardType[]) => void;
-  setSubmitForScoring: (val: boolean) => void;
-}
+// import NewsCard from "@/components/molecules/newsCard/NewsCard";
+import influencerCards from "@/data/influencerCards.json";
 
 const MainTable: React.FC<MainTableProps> = ({
   items,
@@ -60,12 +33,12 @@ const MainTable: React.FC<MainTableProps> = ({
     const resetTable = () => {
       setMessage("");
       setPlayersHandItems(originalItems);
-      const filteredItems = mainTableItems.filter(
-        (item) => item.collection !== "category_cards"
-      );
+      //   const filteredItems = mainTableItems.filter(
+      //     (item) => item.collection !== "category_cards"
+      //   );
 
       setPlayerReady(false);
-      setMainTableItems(filteredItems);
+      setMainTableItems(originalItems);
       setSubmitForScoring(false);
     };
     if (message === "endOfRound") {
@@ -90,7 +63,7 @@ const MainTable: React.FC<MainTableProps> = ({
   const indexRef = React.useRef(0);
   const newPlayerRef = React.useRef(true);
   useEffect(() => {
-    if (influencerCards?.length > 0 && isDeckShuffled) {
+    if (Object.values(influencerCards)?.length > 0 && isDeckShuffled) {
       if (newPlayerRef.current) {
         setCurrentInfluencer(gameCards[gameRound - 1]);
         newPlayerRef.current = false; // Mark the player as no longer new
@@ -107,10 +80,11 @@ const MainTable: React.FC<MainTableProps> = ({
   }, [setCurrentInfluencer, gameCards]);
 
   useEffect(() => {
-    setThemeStyle(currentInfluencer?.villain);
+    // Ensure villain is ThemeStyle (cast for type safety after NewsCardType update)
+    setThemeStyle((currentInfluencer?.villain as ThemeStyle) || "all");
     const messageRdyInfluencer = {
       type: "influencer",
-      villain: currentInfluencer?.villain,
+      villain: currentInfluencer?.villain as ThemeStyle,
       tactic: Array.isArray(currentInfluencer?.tacticUsed)
         ? currentInfluencer?.tacticUsed
         : [currentInfluencer?.tacticUsed],
@@ -150,12 +124,12 @@ const MainTable: React.FC<MainTableProps> = ({
   return (
     <div className="main-table">
       <div className="main-table__influencer">
-        <InfluencerCard
+        <NewsCard
           name={currentInfluencer?.caption}
           description={currentInfluencer?.bodyCopy}
           example="Influencer Example"
           category={currentInfluencer?.tacticUsed}
-          villain={currentInfluencer?.villain}
+          villain={currentInfluencer?.villain as ThemeStyle} // type safety after NewsCardType update
           image={
             currentInfluencer?.newsImage
               ? `/images/influencer/${currentInfluencer.newsImage}`
@@ -173,20 +147,13 @@ const MainTable: React.FC<MainTableProps> = ({
         </div>
         {items.map((card) => (
           <PlayedCard
-            //                 category
-            //   image,
-            //   example,
-            //   alt,
-            //   imageBack,
-            //   description,
-            //   className
+            name={card?.title}
             category={card?.category}
             image={card?.image}
             alt={card?.alt}
-            description={card?.description}
             id={card?.id}
             key={card?.id}
-            onUndo={handleReturnCard}
+            onUndo={() => handleReturnCard(card?.id)}
           />
         ))}
         {

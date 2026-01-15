@@ -1,9 +1,21 @@
 import PartySocket from "partysocket";
 import { PARTYKIT_HOST } from "./env";
+import { handleGameMessage } from "@/context/GameContextUtils";
+import type { GameContextType } from "@/types/gameTypes";
 
 let wsInstance: PartySocket | null = null;
 let messageListeners: Array<(message: Record<string, unknown>) => void> = [];
 let connectionPromise: Promise<void> | null = null;
+let contextSetters: Partial<GameContextType> | null = null;
+
+/**
+ * Register GameContext setters for use in WebSocket message handling
+ */
+export const registerGameContextSetters = (
+  setters: Partial<GameContextType>
+) => {
+  contextSetters = setters;
+};
 
 export const initializeWebSocket = (
   roomId: string = "lobby"
@@ -46,7 +58,11 @@ export const initializeWebSocket = (
     if (message && typeof message === "string") {
       try {
         const parsedMessage = JSON.parse(message);
-        console.log("Received message from server:", parsedMessage);
+
+        // Call GameContextUtils handler if setters are registered
+        if (contextSetters) {
+          handleGameMessage(parsedMessage, contextSetters);
+        }
 
         // Notify all listeners
         messageListeners.forEach((listener) => listener(parsedMessage));

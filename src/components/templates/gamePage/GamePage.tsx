@@ -30,17 +30,18 @@ const GamePage = () => {
         isInfoModalOpen={isInfoModalOpen}
         setIsInfoModalOpen={setIsInfoModalOpen}
       /> */}
-      <GameTable
-        setRoundEnd={(value: boolean | ((prevState: boolean) => boolean)) =>
-          setRoundEnd(value)
-        }
-        roundHasEnded={roundHasEnded}
-        setRoundHasEnded={setRoundHasEnded}
-      />
-      {/* {waitingForPlayers && (
+      <GameProvider>
+        <GameTable
+          setRoundEnd={(value: boolean | ((prevState: boolean) => boolean)) =>
+            setRoundEnd(value)
+          }
+          roundHasEnded={roundHasEnded}
+          setRoundHasEnded={setRoundHasEnded}
+        />
+        {/* {waitingForPlayers && (
               <WaitingModal setWaitingForPlayers={setWaitingForPlayers} />
             )} */}
-      {/* {roundStart && <RoundModal />}
+        {/* {roundStart && <RoundModal />}
       {roundEnd && <ResultModal />}
       {showResponseModal && <ResponseModal />}
       {showScoreCard && <ScoreModal setIsEndGame={setIsEndGame} />}
@@ -48,6 +49,7 @@ const GamePage = () => {
       {isInfoModalOpen && (
         <InfoModal isOpen={isInfoModalOpen} onClose={setIsInfoModalOpen} /> 
       )}*/}
+      </GameProvider>
     </>
   );
 };
