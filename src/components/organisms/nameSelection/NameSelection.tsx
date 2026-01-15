@@ -27,30 +27,34 @@ const NameSelection = () => {
     <>
       <div className="name-selection">
         <div className="name-selection__content">
-          <form
-            className="name-selection__input"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-            style={{ zIndex: 2 }}
-          >
-            {avatar && (
-              <div className="name-selection__avatar" style={{ zIndex: 2 }}>
-                <AvatarImage src={avatar} display="chosen-avatar" />
-              </div>
-            )}
-            <Input
-              value={playerName}
-              onChange={(e) => handleNameChange(e.target.value)}
-              placeholder="Enter your name"
-            />
-          </form>
-          <NextButton
-            onClick={handleSubmit}
-            disabled={!playerName}
-            className="next-button"
-          />
+          {avatar && (
+            <div className="name-selection__avatar" style={{ zIndex: 2 }}>
+              <AvatarImage src={avatar} display="chosen-avatar" />
+            </div>
+          )}
+          <div className="name-selection__form">
+            <form
+              className="name-selection__input"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+              }}
+              style={{ zIndex: 2 }}
+            >
+              <Input
+                value={playerName}
+                onChange={(e) => handleNameChange(e.target.value)}
+                placeholder="Enter your name"
+              />
+            </form>
+            <div className="name-selection-next-button">
+              <NextButton
+                onClick={handleSubmit}
+                disabled={!playerName}
+                className="next-button"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>
