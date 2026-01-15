@@ -1,7 +1,9 @@
 export interface PlayedCardProps {
   name: string;
   image: string;
+  alt?: string;
   id: string | number;
+  category?: string;
   onUndo: (id: string | number) => void;
 }
 import type { ReactNode } from "react";
@@ -105,6 +107,7 @@ export interface TacticCardProps {
   category: string;
   image: string;
   imageBack: string;
+  title: string;
   description?: string;
   example: string;
   alt: string;
@@ -113,10 +116,49 @@ export interface TacticCardProps {
   onUndo?: (id: string) => void;
 }
 
+export interface NewsCardProps {
+  caption: string;
+  bodyCopy: string;
+  collection: string;
+  harm?: string;
+  howToSpotIt?: string;
+  motive?: string;
+  newsImage: string;
+  newsLogoImage?: string;
+  qrCodeImage?: string;
+  tacticUsed: boolean[];
+  tacticUsedImage: string;
+  takeaway?: string;
+  video?: string;
+  villain: ThemeStyle;
+}
+
 export interface TacticCardFrontProps {
   category: string;
   image: string;
   alt: string;
   className?: string;
   onUndo?: (id: string) => void;
+}
+
+export interface NewsCardType {
+  caption: string;
+  bodyCopy: string;
+  villain: ThemeStyle;
+  tacticUsed: string[];
+  newsImage?: string;
+}
+
+export interface MainTableProps {
+  items: TacticCardProps[];
+  currentInfluencer: NewsCardType | null;
+  setCurrentInfluencer: (influencer: NewsCardType) => void;
+  finishRound: boolean;
+  setFinishRound: (val: boolean) => void;
+  setRoundEnd: (val: boolean) => void;
+  setPlayersHandItems: (items: TacticCardProps[]) => void;
+  originalItems: TacticCardProps[];
+  mainTableItems: TacticCardProps[];
+  setMainTableItems: (items: TacticCardProps[]) => void;
+  setSubmitForScoring: (val: boolean) => void;
 }
