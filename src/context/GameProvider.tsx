@@ -1,18 +1,37 @@
 import { useState, useMemo, useEffect } from "react";
 import type { ReactNode } from "react";
 import { GameContext } from "@/context/GameContext";
-import { useGameContext } from "@/hooks/useGameContext";
+import type { Player, Message, CustomState, GameRoom } from "@/types/gameTypes";
 import { registerGameContextSetters } from "@/services/webSocketService";
-import type { Player, Message, Settings, CustomState } from "@/types/gameTypes";
+import type { TacticCardProps, NewsCardProps } from "@/types/types";
 
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   // --- State declarations ---
   const [currentPlayer, setCurrentPlayer] = useState<string>("");
   const [customState, setCustomState] = useState<CustomState>(null);
-  const [gameRoom, setGameRoom] = useState<string>("");
+  const [gameRoom, setGameRoom] = useState<GameRoom>({
+    count: 0,
+    room: "",
+    type: "",
+    roomData: {
+      count: 0,
+      players: [],
+      name: "",
+    },
+  });
   const [messages, setMessages] = useState<Message[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
-  const [settings, setSettings] = useState<Settings>({});
+  const [tacticCards, setTacticCards] = useState<
+    TacticCardProps[] | undefined
+  >();
+  const [newsCards, setNewsCards] = useState<NewsCardProps[]>([]);
+  const [activeNewsCard, setActiveNewsCard] = useState<NewsCardProps | null>(
+    null
+  );
+  const [gameRound, setGameRound] = useState<number>(1);
+  const [endGame, setEndGame] = useState<boolean>(false);
+  const [isDeckShuffled, setIsDeckShuffled] = useState<boolean>(false);
+  const [finalRound, setFinalRound] = useState<boolean>(false);
 
   // --- Memoized values ---
   const memoCurrentPlayer = useMemo(() => currentPlayer, [currentPlayer]);
@@ -20,14 +39,30 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const memoGameRoom = useMemo(() => gameRoom, [gameRoom]);
   const memoMessages = useMemo(() => messages, [messages]);
   const memoPlayers = useMemo(() => players, [players]);
-  const memoSettings = useMemo(() => settings, [settings]);
+  const memoTacticCards = useMemo(() => tacticCards, [tacticCards]);
+  const memoNewsCards = useMemo(() => newsCards, [newsCards]);
+  const memoActiveNewsCard = useMemo(() => activeNewsCard, [activeNewsCard]);
+  const memoGameRound = useMemo(() => gameRound, [gameRound]);
+  const memoEndGame = useMemo(() => endGame, [endGame]);
+  const memoIsDeckShuffled = useMemo(() => isDeckShuffled, [isDeckShuffled]);
+  const memoFinalRound = useMemo(() => finalRound, [finalRound]);
 
-  const context = useGameContext();
-
-  //pushes the setters to the webSocketService for use in message handling
   useEffect(() => {
-    registerGameContextSetters(context);
-  }, [context]);
+    registerGameContextSetters({
+      setPlayers,
+      setCurrentPlayer,
+      setGameRoom,
+      setMessages,
+      setCustomState,
+      setTacticCards,
+      setNewsCards,
+      setActiveNewsCard,
+      setGameRound,
+      setEndGame,
+      setIsDeckShuffled,
+      setFinalRound,
+    });
+  }, []);
 
   return (
     <GameContext.Provider
@@ -40,10 +75,22 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         setGameRoom,
         messages: memoMessages,
         setMessages,
-        settings: memoSettings,
-        setSettings,
         customState: memoCustomState,
         setCustomState,
+        tacticCards: memoTacticCards,
+        setTacticCards,
+        newsCards: memoNewsCards,
+        setNewsCards,
+        activeNewsCard: memoActiveNewsCard,
+        setActiveNewsCard,
+        gameRound: memoGameRound,
+        setGameRound,
+        endGame: memoEndGame,
+        setEndGame,
+        isDeckShuffled: memoIsDeckShuffled,
+        setIsDeckShuffled,
+        finalRound: memoFinalRound,
+        setFinalRound,
       }}
     >
       {children}

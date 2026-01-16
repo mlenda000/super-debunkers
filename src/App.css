@@ -15,7 +15,12 @@
 @import './components/molecules/header/styles/header.css';
 @import './components/molecules/tacticCardBack/styles/tactic-card-back.css';
 @import './components/molecules/tacticCards/styles/tactic-cards.css';
+@import './components/molecules/tool/styles/tool.css';
 @import './components/organisms/playerSelection/styles/player-selection.css';
+@import './components/organisms/gameTable/styles/game-table.css';
+@import './components/organisms/mainTable/styles/main-table.css';
+/* @import './components/organisms/playersHand/styles/players-hand.css'; */
+@import './components/organisms/resultModal/styles/result-modal.css';
 @import './components/organisms/carousel/styles/carousel.css';
 @import './components/organisms/lobby/styles/lobby.css';
 @import './components/organisms/nameSelection/styles/name-selection.css';
