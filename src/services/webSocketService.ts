@@ -7,6 +7,7 @@ let wsInstance: PartySocket | null = null;
 let messageListeners: Array<(message: Record<string, unknown>) => void> = [];
 let connectionPromise: Promise<void> | null = null;
 let contextSetters: Partial<GameContextType> | null = null;
+let messageBuffer: Record<string, unknown>[] = [];
 
 /**
  * Register GameContext setters for use in WebSocket message handling
@@ -14,7 +15,16 @@ let contextSetters: Partial<GameContextType> | null = null;
 export const registerGameContextSetters = (
   setters: Partial<GameContextType>
 ) => {
+  console.log("Registering context setters:", setters);
   contextSetters = setters;
+  // Process any buffered messages
+  if (messageBuffer.length > 0) {
+    console.log("Processing buffered messages:", messageBuffer);
+    messageBuffer.forEach((msg) => {
+      handleGameMessage(msg, contextSetters!);
+    });
+    messageBuffer = [];
+  }
 };
 
 export const initializeWebSocket = (
@@ -58,13 +68,14 @@ export const initializeWebSocket = (
     if (message && typeof message === "string") {
       try {
         const parsedMessage = JSON.parse(message);
-
-        // Call GameContextUtils handler if setters are registered
         if (contextSetters) {
           handleGameMessage(parsedMessage, contextSetters);
+        } else {
+          console.warn(
+            "contextSetters is null when message received! Buffering message."
+          );
+          messageBuffer.push(parsedMessage);
         }
-
-        // Notify all listeners
         messageListeners.forEach((listener) => listener(parsedMessage));
       } catch (error) {
         console.error("Error parsing message:", error);
@@ -94,10 +105,20 @@ export const getWebSocketInstance = (): PartySocket | null => {
 
 /**
  * Send a message through the WebSocket
+ * Waits for connection if currently connecting
  */
-export const sendWebSocketMessage = (
+export const sendWebSocketMessage = async (
   message: Record<string, unknown>
-): void => {
+): Promise<void> => {
+  // If connection is in progress, wait for it
+  if (
+    connectionPromise &&
+    wsInstance &&
+    wsInstance.readyState !== wsInstance.OPEN
+  ) {
+    await connectionPromise;
+  }
+
   if (!wsInstance || wsInstance.readyState !== wsInstance.OPEN) {
     console.error("WebSocket connection is not open. Cannot send message.");
     return;
@@ -132,6 +153,7 @@ export const requestPlayerId = async (): Promise<() => void> => {
   await initializeWebSocket();
 
   const existingPlayerId = localStorage.getItem("playerId");
+  console.log("Existing playerId from localStorage:", existingPlayerId);
 
   // Subscribe BEFORE sending so we don't miss the response
   const unsubscribe = subscribeToMessages((message) => {

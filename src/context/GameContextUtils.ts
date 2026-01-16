@@ -1,5 +1,10 @@
-import type { Player, GameContextType } from "@/types/gameTypes";
-import type { NewsCardProps } from "@/types/types";
+import type {
+  Player,
+  GameContextType,
+  GameRoom,
+  RoomData,
+  GameDeck,
+} from "@/types/gameTypes";
 
 // Utility function to handle WebSocket messages and update GameContext state
 // Usage: handleGameMessage(message, setters)
@@ -19,23 +24,39 @@ export function handleGameMessage(
       if (setters.setCurrentPlayer)
         setters.setCurrentPlayer(message.id as string);
       break;
-    case "lobbyUpdate":
-      if (setters.setGameRoom) setters.setGameRoom(message.room as string);
-      if (
-        setters.setPlayers &&
-        message.roomData &&
-        typeof message.roomData === "object"
-      )
-        setters.setPlayers(
-          (message.roomData as { players: unknown }).players as Player[]
-        );
+    case "lobbyUpdate": {
+      const gameRoomObj: GameRoom = {
+        count: Number(message.count),
+        room: String(message.room),
+        type: "lobbyUpdate",
+        roomData: {
+          count: Number((message.roomData as RoomData)?.count ?? message.count),
+          players: ((message.roomData as RoomData)?.players ?? []) as Player[],
+          name: String((message.roomData as RoomData)?.name ?? message.room),
+        },
+      };
+      if (setters.setGameRoom) setters.setGameRoom(gameRoomObj);
+      if (setters.setPlayers) setters.setPlayers(gameRoomObj.roomData.players);
       break;
-    case "roomUpdate":
-      if (setters.setGameRoom) setters.setGameRoom(message.room as string);
-      if (setters.setPlayers) setters.setPlayers(message.players as Player[]);
-      if (setters.setSettings && message.deck)
-        setters.setSettings({ deck: message.deck as NewsCardProps[] });
+    }
+    case "roomUpdate": {
+      const roomData = message.roomData as RoomData | undefined;
+      const gameRoomObj: GameRoom = {
+        count: Number(message.count ?? roomData?.count),
+        room: String(message.room),
+        type: "roomUpdate",
+        roomData: {
+          count: Number(roomData?.count ?? message.count),
+          players: (roomData?.players ?? []) as Player[],
+          name: String(roomData?.name ?? message.room),
+          deck: message.deck as GameDeck | undefined,
+        },
+      };
+      if (setters.setGameRoom) setters.setGameRoom(gameRoomObj);
+      if (setters.setPlayers) setters.setPlayers(gameRoomObj.roomData.players);
+
       break;
+    }
     case "announcement":
       if (setters.setMessages)
         setters.setMessages((prev) => [
@@ -53,13 +74,6 @@ export function handleGameMessage(
     case "allReady":
       if (setters.setCustomState)
         setters.setCustomState({ allReady: message.roomData as boolean });
-      break;
-    case "shuffledDeck":
-      if (setters.setSettings)
-        setters.setSettings({
-          deck: message.data as NewsCardProps[],
-          isShuffled: message.isShuffled as boolean,
-        });
       break;
     case "scoreUpdate":
       if (setters.setPlayers) setters.setPlayers(message.players as Player[]);

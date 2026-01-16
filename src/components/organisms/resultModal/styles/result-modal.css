@@ -1,0 +1,24 @@
+.result-modal__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .80);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .result-modal__content {
+    display:flex;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .result-modal__button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+  }

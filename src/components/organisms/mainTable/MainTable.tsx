@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { sendWebSocketMessage } from "@/services/webSocketService";
 import type { MainTableProps, ThemeStyle } from "@/types/types";
+import { useGameContext } from "@/hooks/useGameContext";
 import PlayedCard from "@/components/molecules/playedCard/PlayedCard";
 // import NewsCard from "@/components/molecules/newsCard/NewsCard";
 import influencerCards from "@/data/influencerCards.json";
@@ -20,6 +21,8 @@ const MainTable: React.FC<MainTableProps> = ({
   setSubmitForScoring,
 }) => {
   const { setThemeStyle } = useGlobalContext();
+  const { gameRoom, gameRound, isDeckShuffled, setEndGame, setFinalRound } =
+    useGameContext();
 
   const [playerReady, setPlayerReady] = React.useState<boolean>(false);
   const [message, setMessage] = React.useState<string>("");
@@ -28,6 +31,9 @@ const MainTable: React.FC<MainTableProps> = ({
     () => (Array.isArray(influencerCards) ? [...influencerCards] : []),
     []
   );
+
+  console.log("influencerCards:", influencerCards);
+  console.log("gameRoom:", gameRoom);
 
   useEffect(() => {
     const resetTable = () => {
@@ -65,7 +71,7 @@ const MainTable: React.FC<MainTableProps> = ({
   useEffect(() => {
     if (Object.values(influencerCards)?.length > 0 && isDeckShuffled) {
       if (newPlayerRef.current) {
-        setCurrentInfluencer(gameCards[gameRound - 1]);
+        setCurrentInfluencer(gameCards[(gameRound ?? 1) - 1]);
         newPlayerRef.current = false; // Mark the player as no longer new
       }
     } else {
@@ -74,12 +80,22 @@ const MainTable: React.FC<MainTableProps> = ({
       );
     }
     if (gameRound === 5) {
-      setFinalRound(true);
-      setEndGame(true);
+      setFinalRound?.(true);
+      setEndGame?.(true);
     }
-  }, [setCurrentInfluencer, gameCards]);
+  }, [
+    setCurrentInfluencer,
+    gameCards,
+    gameRound,
+    setFinalRound,
+    setEndGame,
+    isDeckShuffled,
+  ]);
 
   useEffect(() => {
+    // Only send message if currentInfluencer is defined
+    if (!currentInfluencer) return;
+
     // Ensure villain is ThemeStyle (cast for type safety after NewsCardType update)
     setThemeStyle((currentInfluencer?.villain as ThemeStyle) || "all");
     const messageRdyInfluencer = {
@@ -109,7 +125,6 @@ const MainTable: React.FC<MainTableProps> = ({
       setPlayersHandItems([...items, cardToReturn]);
       if (updatedItems?.length === 0) {
         console.log("No cards left on the table");
-        console.log("No cards left on the table");
         setPlayerReady(false);
         setFinishRound(false);
         sendWebSocketMessage({
@@ -119,12 +134,12 @@ const MainTable: React.FC<MainTableProps> = ({
       }
     }
   };
-  console.log(gameRoom.roomData);
+  console.log(gameRoom);
 
   return (
     <div className="main-table">
       <div className="main-table__influencer">
-        <NewsCard
+        {/* <NewsCard
           name={currentInfluencer?.caption}
           description={currentInfluencer?.bodyCopy}
           example="Influencer Example"
@@ -136,14 +151,14 @@ const MainTable: React.FC<MainTableProps> = ({
               : `/images/influencer/scientist.png`
           }
           tacticUsed={currentInfluencer?.tacticUsed}
-        />
+        /> */}
       </div>
       <div className="main-table__tactics">
         <div
           className="main-table__background"
           style={finishRound ? { display: "none" } : { display: "block" }}
         >
-          <img src={`/images/place-cards.png`} alt="Place cards" />
+          <p className="main-table__place-cards">Place Cards</p>
         </div>
         {items.map((card) => (
           <PlayedCard
@@ -157,7 +172,10 @@ const MainTable: React.FC<MainTableProps> = ({
           />
         ))}
         {
-          <div onClick={handlePlayerReady} className="main-table__finish-round">
+          <button
+            onClick={handlePlayerReady}
+            className="main-table__finish-round"
+          >
             <img
               src={
                 !playerReady && finishRound
@@ -171,7 +189,7 @@ const MainTable: React.FC<MainTableProps> = ({
               height={"auto"}
               style={{ cursor: "pointer" }}
             />
-          </div>
+          </button>
         }
       </div>
     </div>

@@ -68,14 +68,12 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
       await initializeWebSocket("lobby");
 
       unsubscribe = subscribeToMessages((message) => {
-        console.log("GlobalProvider received message:", message);
         if (
           message.type === "playerId" &&
           message.id &&
           typeof message.id === "string"
         ) {
           const newPlayerId = message.id;
-          console.log("Setting playerId:", newPlayerId);
           localStorage.setItem("playerId", newPlayerId);
           localStorage.setItem("playerIdTimestamp", Date.now().toString());
           setPlayerId(newPlayerId);
@@ -86,7 +84,6 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
       localStorage.removeItem("playerId");
       localStorage.removeItem("playerIdTimestamp");
 
-      console.log("Sending getPlayerId request from GlobalProvider...");
       sendWebSocketMessage({ type: "getPlayerId" });
     };
 
