@@ -1,3 +1,4 @@
+import type { NewsCardProps } from "./gameTypes";
 export interface PlayedCardProps {
   name: string;
   image: string;
@@ -116,23 +117,6 @@ export interface TacticCardProps {
   onUndo?: (id: string) => void;
 }
 
-export interface NewsCardProps {
-  caption: string;
-  bodyCopy: string;
-  collection: string;
-  harm?: string;
-  howToSpotIt?: string;
-  motive?: string;
-  newsImage: string;
-  newsLogoImage?: string;
-  qrCodeImage?: string;
-  tacticUsed: boolean[];
-  tacticUsedImage: string;
-  takeaway?: string;
-  video?: string;
-  villain: ThemeStyle;
-}
-
 export interface TacticCardFrontProps {
   category: string;
   image: string;
@@ -151,8 +135,8 @@ export interface NewsCardType {
 
 export interface MainTableProps {
   items: TacticCardProps[];
-  currentInfluencer: NewsCardType | null;
-  setCurrentInfluencer: (influencer: NewsCardType) => void;
+  currentInfluencer: NewsCardProps | null;
+  setCurrentInfluencer: (influencer: NewsCardProps | null) => void;
   finishRound: boolean;
   setFinishRound: (val: boolean) => void;
   setRoundEnd: (val: boolean) => void;

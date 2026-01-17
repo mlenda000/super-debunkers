@@ -4,8 +4,7 @@ import { sendWebSocketMessage } from "@/services/webSocketService";
 import type { MainTableProps, ThemeStyle } from "@/types/types";
 import { useGameContext } from "@/hooks/useGameContext";
 import PlayedCard from "@/components/molecules/playedCard/PlayedCard";
-// import NewsCard from "@/components/molecules/newsCard/NewsCard";
-import influencerCards from "@/data/influencerCards.json";
+import NewsCard from "@/components/molecules/newsCard/NewsCard";
 
 const MainTable: React.FC<MainTableProps> = ({
   items,
@@ -21,19 +20,21 @@ const MainTable: React.FC<MainTableProps> = ({
   setSubmitForScoring,
 }) => {
   const { setThemeStyle } = useGlobalContext();
-  const { gameRoom, gameRound, isDeckShuffled, setEndGame, setFinalRound } =
-    useGameContext();
-
+  const { gameRoom, gameRound, setEndGame, setFinalRound } = useGameContext();
   const [playerReady, setPlayerReady] = React.useState<boolean>(false);
   const [message, setMessage] = React.useState<string>("");
 
   const gameCards = React.useMemo(
-    () => (Array.isArray(influencerCards) ? [...influencerCards] : []),
-    []
+    () =>
+      Array.isArray(gameRoom.roomData.deck?.data)
+        ? [...gameRoom.roomData.deck.data]
+        : [],
+    [gameRoom.roomData.deck]
   );
-
-  console.log("influencerCards:", influencerCards);
-  console.log("gameRoom:", gameRoom);
+  const isDeckShuffled = React.useMemo(
+    () => gameRoom.roomData.deck?.isShuffled,
+    [gameRoom.roomData.deck]
+  );
 
   useEffect(() => {
     const resetTable = () => {
@@ -69,14 +70,33 @@ const MainTable: React.FC<MainTableProps> = ({
   const indexRef = React.useRef(0);
   const newPlayerRef = React.useRef(true);
   useEffect(() => {
-    if (Object.values(influencerCards)?.length > 0 && isDeckShuffled) {
+    console.log(
+      "useEffect triggered - gameCards:",
+      gameCards,
+      "isDeckShuffled:",
+      isDeckShuffled,
+      "newPlayerRef.current:",
+      newPlayerRef.current,
+      "gameRound:",
+      gameRound
+    );
+    if (gameCards.length > 0 && isDeckShuffled) {
       if (newPlayerRef.current) {
+        console.log(
+          "Setting influencer for new player at index:",
+          (gameRound ?? 1) - 1
+        );
         setCurrentInfluencer(gameCards[(gameRound ?? 1) - 1]);
         newPlayerRef.current = false; // Mark the player as no longer new
+      } else {
+        console.log("newPlayerRef.current is false, skipping influencer set");
       }
     } else {
       console.log(
-        "No influencer cards available or deck not shuffled yet. influencerCards:"
+        "Conditions not met - gameCards.length:",
+        gameCards.length,
+        "isDeckShuffled:",
+        isDeckShuffled
       );
     }
     if (gameRound === 5) {
@@ -139,19 +159,16 @@ const MainTable: React.FC<MainTableProps> = ({
   return (
     <div className="main-table">
       <div className="main-table__influencer">
-        {/* <NewsCard
-          name={currentInfluencer?.caption}
-          description={currentInfluencer?.bodyCopy}
-          example="Influencer Example"
-          category={currentInfluencer?.tacticUsed}
-          villain={currentInfluencer?.villain as ThemeStyle} // type safety after NewsCardType update
+        <NewsCard
+          name={currentInfluencer?.name || ""}
+          description={currentInfluencer?.description}
+          category={currentInfluencer?.category}
+          villain={currentInfluencer?.villain}
           image={
-            currentInfluencer?.newsImage
-              ? `/images/influencer/${currentInfluencer.newsImage}`
-              : `/images/influencer/scientist.png`
+            currentInfluencer?.image || "/images/influencer/scientist.webp"
           }
           tacticUsed={currentInfluencer?.tacticUsed}
-        /> */}
+        />
       </div>
       <div className="main-table__tactics">
         <div
