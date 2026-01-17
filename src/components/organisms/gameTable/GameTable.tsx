@@ -7,6 +7,7 @@ import { useGlobalContext } from "@/hooks/useGlobalContext";
 import MainTable from "../mainTable/MainTable";
 import PlayersHand from "@/components/organisms/playersHand/PlayersHand";
 import categoryCards from "@/data/tacticsCards.json";
+import type { Player } from "@/types/gameTypes";
 
 import { useGameContext } from "@/hooks/useGameContext";
 
@@ -22,14 +23,22 @@ const GameTable: React.FC<GameTableProps> = ({
   setRoundHasEnded,
 }) => {
   const { playerName } = useGlobalContext();
-  const gameRoom = { roomData: [] } as any;
-  const gameRound = 0;
-  const currentInfluencer = null;
-  const setCurrentInfluencer = () => {};
+  const { gameRoom, gameRound, activeNewsCard, setActiveNewsCard } =
+    useGameContext();
+  const currentInfluencer =
+    activeNewsCard === undefined ? null : activeNewsCard;
+  // Ensure setCurrentInfluencer is always a function
+  const setCurrentInfluencer: (influencer: any) => void =
+    setActiveNewsCard ?? (() => {});
 
-  const playersHand = Object.values(categoryCards)?.filter(
-    (card) => card.image
-  );
+  // Map playersHand to include missing 'id' and 'alt' properties for TacticCardProps
+  const playersHand = Object.values(categoryCards)
+    .filter((card) => card.image)
+    .map((card, idx) => ({
+      ...card,
+      id: card.category ?? idx + 1,
+      alt: card.imageAlt ?? card.title ?? "Card image",
+    }));
   const [mainTableItems, setMainTableItems] = useState<any[]>([]);
   const [finishRound, setFinishRound] = useState(false);
   const [submitForScoring, setSubmitForScoring] = useState(false);
@@ -52,8 +61,6 @@ const GameTable: React.FC<GameTableProps> = ({
       setMainTableItems([...removeStartingText, activeCard]);
     }
   };
-
-  const context = useGameContext();
 
   useEffect(() => {
     setFinishRound(mainTableItems.length > 0);
@@ -96,7 +103,9 @@ const GameTable: React.FC<GameTableProps> = ({
       );
       setRoundHasEnded(true);
       // Moved handleFinishRound logic here
-      const player = gameRoom.roomData.find((p: any) => p.name === playerName);
+      const players = gameRoom.roomData.players;
+
+      const player = players.find((p: Player) => p.name === playerName);
       console.log("Player in handleFinishRound after firing from conditional");
       sendWebSocketMessage({
         type: "endOfRound",
@@ -148,11 +157,8 @@ const GameTable: React.FC<GameTableProps> = ({
             <Droppable className="main-table-droppable">
               <MainTable
                 items={mainTableItems}
-                round={gameRound}
                 currentInfluencer={currentInfluencer}
-                setCurrentInfluencer={(influencer) =>
-                  setCurrentInfluencer(influencer)
-                }
+                setCurrentInfluencer={setCurrentInfluencer}
                 finishRound={finishRound}
                 setFinishRound={setFinishRound}
                 setRoundEnd={setRoundEnd}

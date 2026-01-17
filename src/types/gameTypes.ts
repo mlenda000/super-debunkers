@@ -1,4 +1,15 @@
-import type { NewsCardProps } from "./types";
+import type { TacticCardProps } from "./types";
+
+export interface NewsCardProps {
+  name: string;
+  description?: string;
+  example?: string;
+  image?: string;
+  category?: string;
+  villain?: string;
+  display?: string;
+  tacticUsed?: string[];
+}
 
 // Player type
 export interface Player {
@@ -10,6 +21,10 @@ export interface Player {
   // Add more fields as needed
 }
 
+export interface PlayersHandProps {
+  items: TacticCardProps[];
+}
+
 // Message type
 export interface Message {
   text: string;
@@ -18,7 +33,7 @@ export interface Message {
 
 export interface GameDeck {
   type: "shuffledDeck" | undefined;
-  data: GameDeck;
+  data: NewsCardProps[];
   isShuffled: boolean;
 }
 
