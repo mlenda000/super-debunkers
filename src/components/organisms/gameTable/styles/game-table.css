@@ -1,7 +1,7 @@
 .active-game-page {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: minmax(0, 10%) auto;
+  grid-template-rows: minmax(0, 15%) auto;
   grid-template-areas:
     "scoreboard"
     "content";
@@ -85,8 +85,8 @@
   }
 
   /* Tablet and up - stack vertically, hide nav button */
-  @media (min-width: 768px) {
-    grid-template-rows: minmax(0, 10%) minmax(0, 50%) minmax(0, 30%);
+  @media (min-height: 600px) {
+    grid-template-rows: minmax(0, 15%) minmax(0, 50%) minmax(0, 30%);
     grid-template-areas:
       "scoreboard"
       "content"

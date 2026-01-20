@@ -17,22 +17,21 @@
 @import './components/molecules/tacticCardBack/styles/tactic-card-back.css';
 @import './components/molecules/tacticCards/styles/tactic-cards.css';
 @import './components/molecules/tool/styles/tool.css';
+@import './components/molecules/playedCard/styles/played-card.css';
 @import './components/organisms/playerSelection/styles/player-selection.css';
 @import './components/organisms/gameTable/styles/game-table.css';
 @import './components/organisms/mainTable/styles/main-table.css';
-/* @import './components/organisms/playersHand/styles/players-hand.css'; */
+@import './components/organisms/playersHand/styles/players-hand.css';
 @import './components/organisms/resultModal/styles/result-modal.css';
 @import './components/organisms/carousel/styles/carousel.css';
 @import './components/organisms/lobby/styles/lobby.css';
 @import './components/organisms/nameSelection/styles/name-selection.css';
 @import './components/organisms/createRoom/styles/create-room.css';
-/* @import './components/templates/characterCreationPage/styles/character-creation-page.css'; */
-/* @import "./components/templates/directionsPage/styles/directions-page.css"; */
 @import './components/templates/createRoomPage/styles/create-room-page.css';
 @import './components/templates/gamePage/styles/game-page.css';
 @import './components/templates/homePage/styles/home-page.css';
 @import './components/templates/lobbyPage/styles/lobby-page.css';
-/* @import './components/templates/villainsPage/styles/villains-page.css'; */
+
 
 /* Tailwind CSS */
 @tailwind base;

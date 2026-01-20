@@ -1,9 +1,14 @@
-import { useState } from "react";
 import TacticCardBack from "@/components/molecules/tacticCardBack/TacticCardBack";
 import TacticCardFront from "@/components/molecules/tacticCardFront/TacticCardFront";
 import type { TacticCardProps } from "@/types/types";
 
-const TacticCard: React.FC<TacticCardProps> = ({
+interface TacticCardWithHoverProps extends TacticCardProps {
+  hoveredCardId: string | null;
+  setHoveredCardId: (id: string | null) => void;
+  onMoveToTable?: (cardId: string) => void;
+}
+
+const TacticCard: React.FC<TacticCardWithHoverProps> = ({
   category,
   image,
   example,
@@ -11,21 +16,41 @@ const TacticCard: React.FC<TacticCardProps> = ({
   imageBack,
   description,
   className,
+  id,
+  hoveredCardId,
+  setHoveredCardId,
+  onMoveToTable,
 }) => {
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    setHoveredCardId(id);
+  };
+  const handleMouseLeave = (e: React.MouseEvent) => {
+    setHoveredCardId(null);
+  };
+  const handleFocus = () => setHoveredCardId(id);
+  const handleBlur = () => setHoveredCardId(null);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.key === "Enter" || e.key === " ") && onMoveToTable) {
+      e.preventDefault();
+      onMoveToTable(id);
+    }
+  };
 
   return (
     <div
       key={category}
       className="tactic-card"
-      onClick={() => setHoveredCard(hoveredCard === category ? null : category)}
-      onMouseEnter={() => setHoveredCard(category)}
-      onMouseLeave={() => setHoveredCard(null)}
-      onFocus={() => setHoveredCard(category)}
-      onBlur={() => setHoveredCard(null)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
       tabIndex={0}
+      role="button"
+      aria-label={`Tactic card: ${category}. Press Enter or Space to move to table`}
     >
-      {hoveredCard === category ? (
+      {hoveredCardId === id ? (
         <TacticCardBack
           imageBack={imageBack}
           description={description || ""}

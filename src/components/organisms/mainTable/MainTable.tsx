@@ -2,17 +2,25 @@ import React, { useEffect } from "react";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { sendWebSocketMessage } from "@/services/webSocketService";
 import type { MainTableProps, ThemeStyle } from "@/types/types";
+
+// Ensure MainTableProps includes playersHandItems
+// If not, extend the type here for local use (temporary fix)
+type MainTablePropsWithHand = MainTableProps & {
+  playersHandItems: any[];
+  setPlayersHandItems: (items: any[]) => void;
+};
 import { useGameContext } from "@/hooks/useGameContext";
 import PlayedCard from "@/components/molecules/playedCard/PlayedCard";
 import NewsCard from "@/components/molecules/newsCard/NewsCard";
 
-const MainTable: React.FC<MainTableProps> = ({
+const MainTable: React.FC<MainTablePropsWithHand> = ({
   items,
   currentInfluencer,
   setCurrentInfluencer,
   finishRound,
   setFinishRound,
   setRoundEnd,
+  playersHandItems,
   setPlayersHandItems,
   originalItems,
   mainTableItems,
@@ -40,10 +48,6 @@ const MainTable: React.FC<MainTableProps> = ({
     const resetTable = () => {
       setMessage("");
       setPlayersHandItems(originalItems);
-      //   const filteredItems = mainTableItems.filter(
-      //     (item) => item.collection !== "category_cards"
-      //   );
-
       setPlayerReady(false);
       setMainTableItems(originalItems);
       setSubmitForScoring(false);
@@ -129,8 +133,8 @@ const MainTable: React.FC<MainTableProps> = ({
       console.log("Card to return:", cardToReturn);
       const updatedItems = mainTableItems.filter((item) => item.id !== cardId);
       setMainTableItems(updatedItems);
-
-      setPlayersHandItems([...items, cardToReturn]);
+      console.log("this is in the handleReturnCard function", items);
+      setPlayersHandItems([...playersHandItems, cardToReturn]);
       if (updatedItems?.length === 0) {
         console.log("No cards left on the table");
         setPlayerReady(false);
@@ -187,10 +191,10 @@ const MainTable: React.FC<MainTableProps> = ({
             <img
               src={
                 !playerReady && finishRound
-                  ? `/images/ready-button.png`
+                  ? `/images/buttons/ready-button.webp`
                   : playerReady && finishRound
-                  ? `/images/checked-button.png`
-                  : `/images/not-ready-button.png`
+                  ? `/images/buttons/checked-button.webp`
+                  : `/images/buttons/not-ready-button.webp`
               }
               alt="Ready"
               width={"180%"}

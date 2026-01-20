@@ -23,28 +23,31 @@ const PlayedCard: React.FC<PlayedCardProps> = ({ name, image, id, onUndo }) => {
           <img
             src={
               name === "The Truth" || id === 1
-                ? "/images/new-cards/true.png"
-                : "/images/new-cards/" + image
+                ? "/images/tactics/true.webp"
+                : image
             }
             alt={name}
             className="played-card__image"
+            style={{ maxHeight: "250px", aspectRatio: "2.5 / 3.5" }}
           />
-          {isHovered && (
-            <div
-              className="played-card__overlay"
-              onClick={() => onUndo(id)}
-              style={{
-                position: "absolute",
-                bottom: "75px",
-                left: "20px",
-                zIndex: 1,
-              }}
-            >
-              <div className="played-card__undo-icon">
-                <img src={`/icons/undo-arrow-icon.svg`} alt="Undo" />
+          {isHovered &&
+            (console.log("hovered"),
+            (
+              <div
+                className="played-card__overlay"
+                onClick={() => onUndo(id)}
+                style={{
+                  position: "absolute",
+                  bottom: "75px",
+                  left: "20px",
+                  zIndex: 1,
+                }}
+              >
+                <button className="played-card__undo-icon">
+                  <img src={`/icons/undo-arrow-icon.svg`} alt="Undo" />
+                </button>
               </div>
-            </div>
-          )}
+            ))}
         </div>
       </div>
     </div>

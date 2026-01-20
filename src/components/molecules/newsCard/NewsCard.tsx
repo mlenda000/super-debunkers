@@ -14,7 +14,7 @@ const NewsCard = ({
     <div className={display === "modal" ? "news-card__modal" : "news-card"}>
       <div className="news-card__content">
         {image && (
-          <img src={image} alt={category} className="news-card__images" />
+          <img src={image} alt={category[0]} className="news-card__images" />
         )}
         <div className="news-card__text">
           <h1 className="news-card__title">{name}</h1>

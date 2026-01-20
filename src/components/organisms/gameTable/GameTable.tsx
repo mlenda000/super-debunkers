@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 import { Droppable } from "@/components/atoms/droppable/Droppable";
-import { DndContext, type DragEndEvent } from "@dnd-kit/core";
+import { DndContext, type DragEndEvent, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { sendWebSocketMessage } from "@/services/webSocketService";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import MainTable from "../mainTable/MainTable";
@@ -46,6 +46,21 @@ const GameTable: React.FC<GameTableProps> = ({
   const [showingHand, setShowingHand] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const playersHandRef = useRef<HTMLDivElement>(null);
+
+  // Configure sensors for mouse and touch
+  const mouseSensor = useSensor(MouseSensor);
+  const touchSensor = useSensor(TouchSensor);
+  const sensors = useSensors(mouseSensor, touchSensor);
+
+  // Handle moving card to main table (for keyboard/programmatic moves)
+  const handleMoveCardToTable = useCallback((cardId: string) => {
+    const activeCard = playersHandItems.find((item) => item.id === cardId);
+    if (!activeCard) return;
+    
+    setPlayersHandItems((items) => items.filter((item) => item.id !== cardId));
+    const removeStartingText = mainTableItems.filter((card) => card.id !== 1);
+    setMainTableItems([...removeStartingText, activeCard]);
+  }, [playersHandItems, mainTableItems]);
 
   const handleDrop = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -127,7 +142,7 @@ const GameTable: React.FC<GameTableProps> = ({
   ]);
 
   return (
-    <DndContext onDragEnd={handleDrop}>
+    <DndContext onDragEnd={handleDrop} sensors={sensors}>
       <div
         style={{ zIndex: 2 }}
         className="active-game-page"
@@ -153,29 +168,45 @@ const GameTable: React.FC<GameTableProps> = ({
           aria-label="Game content area - use arrow keys or swipe to navigate"
           tabIndex={0}
         >
-          <div className="top-section" aria-label="Game table">
-            <Droppable className="main-table-droppable">
-              <MainTable
-                items={mainTableItems}
-                currentInfluencer={currentInfluencer}
-                setCurrentInfluencer={setCurrentInfluencer}
-                finishRound={finishRound}
-                setFinishRound={setFinishRound}
-                setRoundEnd={setRoundEnd}
-                setPlayersHandItems={setPlayersHandItems}
-                mainTableItems={mainTableItems}
-                setMainTableItems={setMainTableItems}
-                originalItems={playersHand}
-                setSubmitForScoring={setSubmitForScoring}
-              />
-            </Droppable>
-          </div>
           <div
-            className="bottom-section"
-            ref={playersHandRef}
-            aria-label="Your cards"
+            className="main-table-and-hand-row"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "100%",
+            }}
           >
-            <PlayersHand items={playersHandItems} />
+            <div
+              className="top-section"
+              aria-label="Game table"
+              style={{ width: "100%" }}
+            >
+              <Droppable className="main-table-droppable">
+                <MainTable
+                  items={mainTableItems}
+                  currentInfluencer={currentInfluencer}
+                  setCurrentInfluencer={setCurrentInfluencer}
+                  playersHandItems={playersHandItems}
+                  finishRound={finishRound}
+                  setFinishRound={setFinishRound}
+                  setRoundEnd={setRoundEnd}
+                  setPlayersHandItems={setPlayersHandItems}
+                  mainTableItems={mainTableItems}
+                  setMainTableItems={setMainTableItems}
+                  originalItems={playersHand}
+                  setSubmitForScoring={setSubmitForScoring}
+                />
+              </Droppable>
+            </div>
+            <div
+              className="bottom-section"
+              ref={playersHandRef}
+              aria-label="Your cards"
+              style={{ width: "100%" }}
+            >
+              <PlayersHand items={playersHandItems} />
+            </div>
           </div>
         </div>
       </div>

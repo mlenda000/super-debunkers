@@ -7,9 +7,12 @@ const TacticCardFront = ({
   category,
 }: TacticCardFrontProps) => {
   return (
-    <picture className={className} key={category}>
+    <div
+      className={`tactic-card-front tactic-card-face ${className ?? ""}`}
+      key={category}
+    >
       <img src={image} alt={alt} className="tactic-card-image" />
-    </picture>
+    </div>
   );
 };
 

@@ -1,0 +1,62 @@
+.players-area {
+    display: flex;
+    flex-direction: column;
+    padding-top: 40px;
+
+    @media (max-width: 1200px) {
+        padding-top: 35px;
+        align-items: center;
+    }
+
+    @media (max-width: 1028px) {
+        padding-top: 45px;
+    }
+
+    @media (max-width: 768px) {
+        padding-top: 80px;
+    }
+
+    @media (max-width: 480px) {
+        padding-top: 90px;
+    }
+}
+
+.players-hand {
+    display: flex;
+    align-items: center;
+    padding-inline: 16px;
+    gap: 16px;
+    bottom: 40px;
+
+    @media (max-width: 1200px) {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: auto;
+        gap: 16px;
+        bottom: 35px;
+    }
+
+    @media (max-width: 1028px) {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: auto;
+        gap: 14px;
+        bottom: 30px;
+    }
+
+    @media (max-width: 768px) {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: auto;
+        gap: 12px;
+        bottom: 30px;
+    }
+
+    @media (max-width: 480px) {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: auto;
+        gap: 8px;
+        bottom: 20px;
+    }
+}

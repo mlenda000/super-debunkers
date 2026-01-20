@@ -2,16 +2,20 @@ import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import NewsCard from "../newsCard/NewsCard";
 
-const Tool = ({ showResults }) => {
+interface ToolProps {
+  showResults: boolean;
+}
+
+const Tool = ({ showResults }: ToolProps) => {
   const currentInfluencer = useSelector(
-    (state) => state.game.currentInfluencer
+    (state: any) => state.game.currentInfluencer
   );
 
   return (
     <div className="tool__container">
       <div className="tool-image">
         <img
-          src={`${process.env.PUBLIC_URL}/images/tool/tool-wrapper.png`}
+          src={`/images/tool/tool-wrapper.webp`}
           alt="tool"
           style={{
             display: "grid",
@@ -48,7 +52,7 @@ const Tool = ({ showResults }) => {
       </div>
 
       <img
-        src={`/images/tool/tool-swiper.png`}
+        src={`/images/tool/tool-swiper.webp`}
         className="tool-swiper"
         style={{}}
         alt="tool swiper"
@@ -65,7 +69,7 @@ const Tool = ({ showResults }) => {
       >
         {!showResults ? (
           <img
-            src={process.env.PUBLIC_URL + "/images/tool/answers/reading.png"}
+            src={"/images/tool/answers/reading.webp"}
             alt="reading"
             style={{
               width: "100%",
@@ -75,7 +79,7 @@ const Tool = ({ showResults }) => {
           />
         ) : currentInfluencer?.tacticUsed[0] === "True" ? (
           <img
-            src={process.env.PUBLIC_URL + "/images/tool/answers/facts.png"}
+            src={"/images/tool/answers/facts.webp"}
             alt="reading"
             style={{
               width: "100%",
@@ -131,9 +135,7 @@ export const ImageCarousel = ({ images }) => {
     <>
       {detected ? (
         <img
-          src={
-            process.env.PUBLIC_URL + "/images/tool/answers/Fake-detected.png"
-          }
+          src={"/images/tool/answers/Fake-detected.webp"}
           alt="reading"
           style={{
             width: "100%",
@@ -143,10 +145,9 @@ export const ImageCarousel = ({ images }) => {
       ) : (
         <img
           src={
-            process.env.PUBLIC_URL +
             "/images/tool/answers/" +
             images[currentIndex].toLowerCase() +
-            ".png"
+            ".webp"
           }
           alt={images[currentIndex]}
           style={{

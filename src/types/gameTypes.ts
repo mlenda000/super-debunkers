@@ -40,6 +40,7 @@ export interface Player {
 
 export interface PlayersHandProps {
   items: TacticCardProps[];
+  onMoveCardToTable?: (cardId: string) => void;
 }
 
 // Message type

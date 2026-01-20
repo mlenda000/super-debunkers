@@ -13,7 +13,7 @@ const TacticCardBack = ({
 }: TacticCardBackProps) => {
   return (
     <div
-      className="tactic-card-back"
+      className="tactic-card-back tactic-card-face"
       style={{ backgroundImage: `url(${imageBack})` }}
     >
       <div className="tactic-card-back-content">
