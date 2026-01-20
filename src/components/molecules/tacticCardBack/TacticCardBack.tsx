@@ -1,5 +1,3 @@
-import "./styles/tactic-card-back.css";
-
 interface TacticCardBackProps {
   imageBack: string;
   description: string;

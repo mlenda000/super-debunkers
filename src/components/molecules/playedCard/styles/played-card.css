@@ -1,155 +1,164 @@
 .played-card {
-    margin: 12px;
+  margin: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 
-    .played-card__content {
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-    }
+  .played-card__content {
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
 
-    .played-card__image {
-        width: auto;
-        height: 250px;
-        object-fit: cover;
-        border-radius: 10px;
-    }
+  .played-card__image {
+    width: auto;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
 
-    .played-card__title {
-        font-size: 1.3rem;
-        white-space: nowrap;
-        font-weight: 900;
-        color: black;
-        display: flex;
-        justify-content: center;
-        align-self: center;
-        margin-top: 50%;
-        margin-bottom: 2px;
-    }
+  .played-card__title {
+    font-size: 1.3rem;
+    white-space: nowrap;
+    font-weight: 900;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    margin-top: 50%;
+    margin-bottom: 2px;
+  }
 
-    .played-card__description {
-        text-align: center;
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: black;
-        padding-inline: 12px;
-        padding-top: 0;
-        margin-top: 0;
-    }
+  .played-card__description {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: black;
+    padding-inline: 12px;
+    padding-top: 0;
+    margin-top: 0;
+  }
 }
 
 .played-card__undo-icon {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    display: grid;
-    place-items: center;
-    z-index: 1001;
+  position: absolute;
+  top: auto;
+  right: 10px;
+  bottom: 10px;
+  left: auto;
+  width: 50px;
+  height: 50px;
+  z-index: 1001;
+  background: transparent;
+  border: transparent;
+  border-radius: 12px;
+  cursor: pointer;
 }
 
 @media (max-width: 1200px) {
-    .played-card {
-        margin: 10px;
+  .played-card {
+    margin: 10px;
 
-        .played-card__content {
-            height: 250px;
-        }
-
-        .played-card__image {
-            height: 275px;
-        }
-
-        .played-card__title {
-            font-size: 1.2rem;
-            margin-top: 45%;
-        }
-
-        .played-card__description {
-            font-size: 0.7rem;
-        }
+    .played-card__content {
+      height: 250px;
     }
 
-    .played-card__undo-icon {
-        width: 45px;
-        height: 45px;
+    .played-card__image {
+      height: 275px;
     }
+
+    .played-card__title {
+      font-size: 1.2rem;
+      margin-top: 45%;
+    }
+
+    .played-card__description {
+      font-size: 0.7rem;
+    }
+  }
+
+  .played-card__undo-icon {
+    width: 45px;
+    height: 45px;
+  }
 }
 
 @media (max-width: 1028px) {
-    .played-card {
-        margin: 8px;
+  .played-card {
+    margin: 8px;
 
-        .played-card__content {
-            height: 225px;
-        }
-
-        .played-card__title {
-            font-size: 1.1rem;
-            margin-top: 40%;
-        }
-
-        .played-card__description {
-            font-size: 0.65rem;
-        }
+    .played-card__content {
+      height: 225px;
     }
 
-    .played-card__undo-icon {
-        width: 40px;
-        height: 40px;
+    .played-card__title {
+      font-size: 1.1rem;
+      margin-top: 40%;
     }
+
+    .played-card__description {
+      font-size: 0.65rem;
+    }
+  }
+
+  .played-card__undo-icon {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 @media (max-width: 768px) {
-    .played-card {
-        margin: 6px;
+  .played-card {
+    margin: 6px;
 
-        .played-card__content {
-            height: 200px;
-        }
-
-        .played-card__image {
-            height: 275px;
-        }
-
-        .played-card__title {
-            font-size: 1rem;
-            margin-top: 35%;
-        }
-
-        .played-card__description {
-            font-size: 0.6rem;
-        }
+    .played-card__content {
+      height: 200px;
     }
 
-    .played-card__undo-icon {
-        width: 35px;
-        height: 35px;
+    .played-card__image {
+      height: 275px;
     }
+
+    .played-card__title {
+      font-size: 1rem;
+      margin-top: 35%;
+    }
+
+    .played-card__description {
+      font-size: 0.6rem;
+    }
+  }
+
+  .played-card__undo-icon {
+    width: 35px;
+    height: 35px;
+  }
 }
 
 @media (max-width: 480px) {
-    .played-card {
-        margin: 4px;
+  .played-card {
+    margin: 4px;
 
-        .played-card__content {
-            height: 175px;
-        }
-
-        .played-card__image {
-            height: 225px;
-        }
-
-        .played-card__title {
-            font-size: 0.9rem;
-            margin-top: 30%;
-        }
-
-        .played-card__description {
-            font-size: 0.55rem;
-        }
+    .played-card__content {
+      height: 175px;
     }
 
-    .played-card__undo-icon {
-        width: 30px;
-        height: 30px;
+    .played-card__image {
+      height: 225px;
     }
+
+    .played-card__title {
+      font-size: 0.9rem;
+      margin-top: 30%;
+    }
+
+    .played-card__description {
+      font-size: 0.55rem;
+    }
+  }
+
+  .played-card__undo-icon {
+    width: 30px;
+    height: 30px;
+  }
 }

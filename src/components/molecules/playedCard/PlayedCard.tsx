@@ -15,11 +15,13 @@ const PlayedCard: React.FC<PlayedCardProps> = ({ name, image, id, onUndo }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      {isHovered && (
+        <button className="played-card__undo-icon" onClick={() => onUndo(id)}>
+          <img src={`/icons/undo-arrow-icon.svg`} alt="Undo" />
+        </button>
+      )}
       <div className="played-card__content">
-        <div
-          className="played-card__image-container"
-          style={{ position: "relative" }}
-        >
+        <div className="played-card__image-container">
           <img
             src={
               name === "The Truth" || id === 1
@@ -30,24 +32,6 @@ const PlayedCard: React.FC<PlayedCardProps> = ({ name, image, id, onUndo }) => {
             className="played-card__image"
             style={{ maxHeight: "250px", aspectRatio: "2.5 / 3.5" }}
           />
-          {isHovered &&
-            (console.log("hovered"),
-            (
-              <div
-                className="played-card__overlay"
-                onClick={() => onUndo(id)}
-                style={{
-                  position: "absolute",
-                  bottom: "75px",
-                  left: "20px",
-                  zIndex: 1,
-                }}
-              >
-                <button className="played-card__undo-icon">
-                  <img src={`/icons/undo-arrow-icon.svg`} alt="Undo" />
-                </button>
-              </div>
-            ))}
         </div>
       </div>
     </div>

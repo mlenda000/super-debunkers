@@ -1,37 +1,38 @@
 /* Typography variables */
-@import './styles/typography.css';
+@import "./styles/typography.css";
 
 /* Spacing variables */
-@import './styles/spacing.css';
+@import "./styles/spacing.css";
 
 /* style classes for all components */
-@import './components/atoms/avatarImage/styles/avatar-image.css';
-@import './components/atoms/background/styles/background.css';
-@import './components/atoms/button/styles/button.css';
-@import './components/atoms/input/styles/input.css';
+@import "./components/atoms/avatarImage/styles/avatar-image.css";
+@import "./components/atoms/background/styles/background.css";
+@import "./components/atoms/button/styles/button.css";
+@import "./components/atoms/input/styles/input.css";
 @import "./components/atoms/roomTab/styles/room-tab.css";
-@import './components/atoms/rotateScreen/styles/rotate-screen.css';
-@import './components/molecules/carouselSlide/styles/carousel-slide.css';
-@import './components/molecules/header/styles/header.css';
-@import './components/molecules/newsCard/styles/news-card.css';
-@import './components/molecules/tacticCardBack/styles/tactic-card-back.css';
-@import './components/molecules/tacticCards/styles/tactic-cards.css';
-@import './components/molecules/tool/styles/tool.css';
-@import './components/molecules/playedCard/styles/played-card.css';
-@import './components/organisms/playerSelection/styles/player-selection.css';
-@import './components/organisms/gameTable/styles/game-table.css';
-@import './components/organisms/mainTable/styles/main-table.css';
-@import './components/organisms/playersHand/styles/players-hand.css';
-@import './components/organisms/resultModal/styles/result-modal.css';
-@import './components/organisms/carousel/styles/carousel.css';
-@import './components/organisms/lobby/styles/lobby.css';
-@import './components/organisms/nameSelection/styles/name-selection.css';
-@import './components/organisms/createRoom/styles/create-room.css';
-@import './components/templates/createRoomPage/styles/create-room-page.css';
-@import './components/templates/gamePage/styles/game-page.css';
-@import './components/templates/homePage/styles/home-page.css';
-@import './components/templates/lobbyPage/styles/lobby-page.css';
-
+@import "./components/atoms/rotateScreen/styles/rotate-screen.css";
+@import "./components/molecules/carouselSlide/styles/carousel-slide.css";
+@import "./components/molecules/header/styles/header.css";
+@import "./components/molecules/newsCard/styles/news-card.css";
+@import "./components/molecules/tacticCardBack/styles/tactic-card-back.css";
+@import "./components/molecules/tacticCardFront/styles/tactic-card-front.css";
+@import "./components/molecules/tacticCards/styles/tactic-cards.css";
+@import "./components/molecules/tool/styles/tool.css";
+@import "./components/molecules/playedCard/styles/played-card.css";
+@import "./components/organisms/tacticCard/styles/tactic-card.css";
+@import "./components/organisms/playerSelection/styles/player-selection.css";
+@import "./components/organisms/gameTable/styles/game-table.css";
+@import "./components/organisms/mainTable/styles/main-table.css";
+@import "./components/organisms/playersHand/styles/players-hand.css";
+@import "./components/organisms/resultModal/styles/result-modal.css";
+@import "./components/organisms/carousel/styles/carousel.css";
+@import "./components/organisms/lobby/styles/lobby.css";
+@import "./components/organisms/nameSelection/styles/name-selection.css";
+@import "./components/organisms/createRoom/styles/create-room.css";
+@import "./components/templates/createRoomPage/styles/create-room-page.css";
+@import "./components/templates/gamePage/styles/game-page.css";
+@import "./components/templates/homePage/styles/home-page.css";
+@import "./components/templates/lobbyPage/styles/lobby-page.css";
 
 /* Tailwind CSS */
 @tailwind base;
@@ -40,19 +41,19 @@
 
 /* Fonts */
 @font-face {
-    font-family: 'DIN Alternate';
-    src: url('/fonts/DINAlternate-Bold.ttf') format('truetype');
-    font-weight: var(--font-weight-bold);
-    font-style: normal;
-    font-display: swap;
+  font-family: "DIN Alternate";
+  src: url("/fonts/DINAlternate-Bold.ttf") format("truetype");
+  font-weight: var(--font-weight-bold);
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Subway Berlin';
-    src: url('/fonts/subway-berlin-sc.otf') format('opentype');
-    font-weight: var(--font-weight-normal);
-    font-style: normal;
-    font-display: swap;
+  font-family: "Subway Berlin";
+  src: url("/fonts/subway-berlin-sc.otf") format("opentype");
+  font-weight: var(--font-weight-normal);
+  font-style: normal;
+  font-display: swap;
 }
 
 /* Global styles */
@@ -66,4 +67,3 @@
   box-sizing: border-box;
   position: relative;
 }
-

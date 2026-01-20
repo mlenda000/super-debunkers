@@ -1,7 +1,6 @@
 import TacticCardBack from "@/components/molecules/tacticCardBack/TacticCardBack";
 import TacticCardFront from "@/components/molecules/tacticCardFront/TacticCardFront";
 import type { TacticCardProps } from "@/types/types";
-import "./styles/tactic-card.css";
 
 interface TacticCardWithHoverProps extends TacticCardProps {
   hoveredCardId: string | null;

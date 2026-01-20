@@ -193,13 +193,13 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
                 !playerReady && finishRound
                   ? `/images/buttons/ready-button.webp`
                   : playerReady && finishRound
-                  ? `/images/buttons/checked-button.webp`
-                  : `/images/buttons/not-ready-button.webp`
+                    ? `/images/buttons/checked-button.webp`
+                    : `/images/buttons/not-ready-button.webp`
               }
               alt="Ready"
               width={"180%"}
               height={"auto"}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", maxWidth: "100px" }}
             />
           </button>
         }

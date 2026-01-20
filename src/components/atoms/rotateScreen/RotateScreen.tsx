@@ -1,5 +1,3 @@
-import "./styles/rotate-screen.css";
-
 const RotateScreen = () => {
   return (
     <div className="rotate-screen-overlay">

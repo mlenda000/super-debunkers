@@ -1,7 +1,6 @@
 import { useState } from "react";
 import tacticCards from "@/data/tacticsCards.json";
 import TacticCardBack from "@/components/molecules/tacticCardBack/TacticCardBack";
-import "./styles/tactic-cards.css";
 import TacticCardFront from "../tacticCardFront/TacticCardFront";
 
 const TacticCards = () => {
