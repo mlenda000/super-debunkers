@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 
 import Tool from "@/components/molecules/tool/Tool"; // Assuming Tool is a component you want to show in the modal
 
 const ResultModal = () => {
-  const [showComponents, setShowComponents] = useState(false);
+  const [showComponents] = useState(false);
 
   //   useEffect(() => {
   //     const timer = setTimeout(() => {

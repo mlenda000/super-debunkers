@@ -2,17 +2,33 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AvatarImage from "@/components/atoms/avatarImage/AvatarImage";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
+import { useGameContext } from "@/hooks/useGameContext";
+import type { GameRoom, Player } from "@/types/gameTypes";
 
-const Scoreboard = ({
-  roundHasEnded,
-  setRoundHasEnded,
-  isInfoModalOpen,
-  setIsInfoModalOpen,
-  gameRoom,
-  gameRound,
+interface ScoreboardProps {
+  roundHasEnded?: boolean;
+  setRoundHasEnded?: (val: boolean) => void;
+  isInfoModalOpen?: boolean;
+  setIsInfoModalOpen?: (val: boolean) => void;
+  gameRoom?: GameRoom;
+  gameRound?: number;
+}
+
+const Scoreboard: React.FC<ScoreboardProps> = ({
+  //   roundHasEnded,
+  //   setRoundHasEnded,
+  isInfoModalOpen = false,
+  setIsInfoModalOpen = () => {},
+  gameRoom: propGameRoom,
+  gameRound: propGameRound,
 }) => {
   const { setThemeStyle } = useGlobalContext();
+  const { gameRoom: ctxGameRoom, gameRound: ctxGameRound } = useGameContext();
   const navigate = useNavigate();
+
+  // Prefer context values, fallback to props
+  const gameRoom = ctxGameRoom || propGameRoom;
+  const gameRound = ctxGameRound || propGameRound;
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {}, [JSON.stringify(gameRoom?.roomData)]);
@@ -39,11 +55,11 @@ const Scoreboard = ({
       />
 
       <div className="scoreboard__avatar">
-        {gameRoom?.roomData?.length > 0 &&
-          gameRoom?.roomData?.map((avatar, ready) => {
+        {gameRoom?.roomData?.players.length > 0 &&
+          gameRoom?.roomData?.players.map((player: Player) => {
             return (
-              <React.Fragment key={avatar?.id}>
-                {avatar?.status ? (
+              <React.Fragment key={player?.id}>
+                {player?.isReady ? (
                   <img
                     src={`/icons/player-ready.png`}
                     alt="Player ready"
@@ -52,16 +68,16 @@ const Scoreboard = ({
                   />
                 ) : (
                   <AvatarImage
-                    src={avatar?.avatar}
+                    src={player?.avatar || ""}
                     display="mini"
-                    playerReady={ready}
+                    playerReady={player?.isReady || false}
                   />
                 )}
                 <span
                   className="scoreboard__names"
                   style={{ marginLeft: "8px", zIndex: 2 }}
                 >
-                  {avatar?.name}
+                  {player?.name}
                 </span>
               </React.Fragment>
             );
@@ -77,7 +93,9 @@ const Scoreboard = ({
         </div>
         <button
           className="scoreboard-info__image"
-          onClick={() => setIsInfoModalOpen(!isInfoModalOpen)}
+          onClick={() =>
+            setIsInfoModalOpen && setIsInfoModalOpen(!isInfoModalOpen)
+          }
         >
           <img
             src={`/images/buttons/info-button.webp`}

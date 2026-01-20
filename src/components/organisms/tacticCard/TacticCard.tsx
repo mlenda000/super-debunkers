@@ -21,10 +21,10 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
   setHoveredCardId,
   onMoveToTable,
 }) => {
-  const handleMouseEnter = (e: React.MouseEvent) => {
+  const handleMouseEnter = () => {
     setHoveredCardId(id);
   };
-  const handleMouseLeave = (e: React.MouseEvent) => {
+  const handleMouseLeave = () => {
     setHoveredCardId(null);
   };
   const handleFocus = () => setHoveredCardId(id);

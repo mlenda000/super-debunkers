@@ -117,7 +117,7 @@ const Tool = ({ showResults }: ToolProps) => {
   );
 };
 
-export const ImageCarousel = ({ images }) => {
+export const ImageCarousel = ({ images }: { images: string[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [detected, setDetected] = useState(true);
 

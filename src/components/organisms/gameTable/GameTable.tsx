@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useGameContext } from "@/hooks/useGameContext";
 import type { Player, NewsCard } from "@/types/gameTypes";
+import type { TacticCardProps } from "@/types/types";
 import { Droppable } from "@/components/atoms/droppable/Droppable";
 import {
   DndContext,
@@ -34,7 +35,7 @@ const GameTable: React.FC<GameTableProps> = ({
   const currentInfluencer =
     activeNewsCard === undefined ? null : activeNewsCard;
   // Ensure setCurrentInfluencer is always a function
-  const setCurrentInfluencer: (influencer: NewsCard) => void =
+  const setCurrentInfluencer: (influencer: NewsCard | null) => void =
     setActiveNewsCard ?? (() => {});
 
   // Map playersHand to include missing 'id' and 'alt' properties for TacticCardProps
@@ -45,10 +46,11 @@ const GameTable: React.FC<GameTableProps> = ({
       id: card.category ?? idx + 1,
       alt: card.imageAlt ?? card.title ?? "Card image",
     }));
-  const [mainTableItems, setMainTableItems] = useState<any[]>([]);
+  const [mainTableItems, setMainTableItems] = useState<typeof playersHand>([]);
   const [finishRound, setFinishRound] = useState(false);
   const [submitForScoring, setSubmitForScoring] = useState(false);
-  const [playersHandItems, setPlayersHandItems] = useState<any[]>(playersHand);
+  const [playersHandItems, setPlayersHandItems] =
+    useState<typeof playersHand>(playersHand);
   const [showingHand, setShowingHand] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const playersHandRef = useRef<HTMLDivElement>(null);
@@ -58,21 +60,6 @@ const GameTable: React.FC<GameTableProps> = ({
   const touchSensor = useSensor(TouchSensor);
   const sensors = useSensors(mouseSensor, touchSensor);
 
-  // Handle moving card to main table (for keyboard/programmatic moves)
-  const handleMoveCardToTable = useCallback(
-    (cardId: string) => {
-      const activeCard = playersHandItems.find((item) => item.id === cardId);
-      if (!activeCard) return;
-
-      setPlayersHandItems((items) =>
-        items.filter((item) => item.id !== cardId)
-      );
-      const removeStartingText = mainTableItems.filter((card) => card.id !== 1);
-      setMainTableItems([...removeStartingText, activeCard]);
-    },
-    [playersHandItems, mainTableItems]
-  );
-
   const handleDrop = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over?.id == null) {
@@ -80,10 +67,12 @@ const GameTable: React.FC<GameTableProps> = ({
     }
     if (active.id !== over.id) {
       const activeCard = playersHandItems.find((item) => item.id === active.id);
+      if (!activeCard) return;
+      
       setPlayersHandItems((items) =>
         items.filter((item) => item.id !== active.id)
       );
-      const removeStartingText = mainTableItems.filter((card) => card.id !== 1);
+      const removeStartingText = mainTableItems.filter((card) => String(card.id) !== "1");
       setMainTableItems([...removeStartingText, activeCard]);
     }
   };
@@ -200,13 +189,13 @@ const GameTable: React.FC<GameTableProps> = ({
                   items={mainTableItems}
                   currentInfluencer={currentInfluencer}
                   setCurrentInfluencer={setCurrentInfluencer}
-                  playersHandItems={playersHandItems}
+                  playersHandItems={playersHandItems as unknown as TacticCardProps[]}
                   finishRound={finishRound}
                   setFinishRound={setFinishRound}
                   setRoundEnd={setRoundEnd}
-                  setPlayersHandItems={setPlayersHandItems}
-                  mainTableItems={mainTableItems}
-                  setMainTableItems={setMainTableItems}
+                  setPlayersHandItems={setPlayersHandItems as unknown as (items: TacticCardProps[]) => void}
+                  mainTableItems={mainTableItems as unknown as TacticCardProps[]}
+                  setMainTableItems={setMainTableItems as unknown as (items: TacticCardProps[]) => void}
                   originalItems={playersHand}
                   setSubmitForScoring={setSubmitForScoring}
                 />

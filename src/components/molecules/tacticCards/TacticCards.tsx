@@ -8,7 +8,7 @@ const TacticCards = () => {
 
   return (
     <div className="tactic-cards-wrapper">
-      {Object.values(tacticCards).map((card) => (
+      {Object.values(tacticCards).slice(0, 10).map((card) => (
         <div
           key={card.category}
           className="tactic-card"

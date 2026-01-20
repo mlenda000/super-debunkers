@@ -1,17 +1,19 @@
 import React, { useEffect } from "react";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { sendWebSocketMessage } from "@/services/webSocketService";
-import type { MainTableProps, ThemeStyle } from "@/types/types";
-
-// Ensure MainTableProps includes playersHandItems
-// If not, extend the type here for local use (temporary fix)
-type MainTablePropsWithHand = MainTableProps & {
-  playersHandItems: any[];
-  setPlayersHandItems: (items: any[]) => void;
-};
+import type {
+  MainTableProps,
+  ThemeStyle,
+  TacticCardProps,
+} from "@/types/types";
 import { useGameContext } from "@/hooks/useGameContext";
 import PlayedCard from "@/components/molecules/playedCard/PlayedCard";
 import NewsCard from "@/components/molecules/newsCard/NewsCard";
+
+type MainTablePropsWithHand = MainTableProps & {
+  playersHandItems: TacticCardProps[];
+  setPlayersHandItems: (items: TacticCardProps[]) => void;
+};
 
 const MainTable: React.FC<MainTablePropsWithHand> = ({
   items,

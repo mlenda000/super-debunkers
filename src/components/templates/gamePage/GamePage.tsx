@@ -20,17 +20,11 @@ const GamePage = () => {
   return (
     <>
       <RotateScreen />
-      {/* <Scoreboard
-        roundHasEnded={roundHasEnded}
-        setRoundHasEnded={setRoundHasEnded}
-        isInfoModalOpen={isInfoModalOpen}
-        setIsInfoModalOpen={setIsInfoModalOpen}
-      /> */}
       <GameTable
         setRoundEnd={(value: boolean | ((prevState: boolean) => boolean)) =>
           setRoundEnd(value)
         }
-        //   roundHasEnded={roundHasEnded}
+        roundHasEnded={roundHasEnded}
         setRoundHasEnded={setRoundHasEnded}
       />
       {/* {waitingForPlayers && (

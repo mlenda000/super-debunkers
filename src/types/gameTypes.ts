@@ -35,7 +35,6 @@ export interface Player {
   avatar?: string;
   score?: number;
   isReady?: boolean;
-  // Add more fields as needed
 }
 
 export interface PlayersHandProps {
