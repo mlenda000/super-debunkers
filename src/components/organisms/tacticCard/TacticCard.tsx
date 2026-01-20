@@ -1,6 +1,7 @@
 import TacticCardBack from "@/components/molecules/tacticCardBack/TacticCardBack";
 import TacticCardFront from "@/components/molecules/tacticCardFront/TacticCardFront";
 import type { TacticCardProps } from "@/types/types";
+import "./styles/tactic-card.css";
 
 interface TacticCardWithHoverProps extends TacticCardProps {
   hoveredCardId: string | null;
@@ -40,7 +41,7 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
   return (
     <div
       key={category}
-      className="tactic-card"
+      className="tactic-card-item"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onFocus={handleFocus}
@@ -48,13 +49,14 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
       onKeyDown={handleKeyDown}
       tabIndex={0}
       role="button"
-      aria-label={`Tactic card: ${category}. Press Enter or Space to move to table`}
+      aria-label={`Tactic card: ${category[0]}. Press Enter or Space to move to table`}
     >
       {hoveredCardId === id ? (
         <TacticCardBack
           imageBack={imageBack}
           description={description || ""}
           example={example}
+          category={category}
         />
       ) : (
         <TacticCardFront

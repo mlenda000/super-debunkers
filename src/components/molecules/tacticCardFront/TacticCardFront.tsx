@@ -1,4 +1,5 @@
 import type { TacticCardFrontProps } from "@/types/types";
+import "./styles/tactic-card-front.css";
 
 const TacticCardFront = ({
   image,
