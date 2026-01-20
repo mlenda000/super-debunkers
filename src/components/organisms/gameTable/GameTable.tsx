@@ -7,7 +7,7 @@ import { useGlobalContext } from "@/hooks/useGlobalContext";
 import MainTable from "../mainTable/MainTable";
 import PlayersHand from "@/components/organisms/playersHand/PlayersHand";
 import categoryCards from "@/data/tacticsCards.json";
-import type { Player } from "@/types/gameTypes";
+import type { Player, NewsCard } from "@/types/gameTypes";
 
 import { useGameContext } from "@/hooks/useGameContext";
 
@@ -28,7 +28,7 @@ const GameTable: React.FC<GameTableProps> = ({
   const currentInfluencer =
     activeNewsCard === undefined ? null : activeNewsCard;
   // Ensure setCurrentInfluencer is always a function
-  const setCurrentInfluencer: (influencer: any) => void =
+  const setCurrentInfluencer: (influencer: NewsCard) => void =
     setActiveNewsCard ?? (() => {});
 
   // Map playersHand to include missing 'id' and 'alt' properties for TacticCardProps

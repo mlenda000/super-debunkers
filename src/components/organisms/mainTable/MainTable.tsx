@@ -67,25 +67,13 @@ const MainTable: React.FC<MainTableProps> = ({
     message,
   ]);
 
+  console.log("current influencer:", currentInfluencer);
+
   const indexRef = React.useRef(0);
   const newPlayerRef = React.useRef(true);
   useEffect(() => {
-    console.log(
-      "useEffect triggered - gameCards:",
-      gameCards,
-      "isDeckShuffled:",
-      isDeckShuffled,
-      "newPlayerRef.current:",
-      newPlayerRef.current,
-      "gameRound:",
-      gameRound
-    );
     if (gameCards.length > 0 && isDeckShuffled) {
       if (newPlayerRef.current) {
-        console.log(
-          "Setting influencer for new player at index:",
-          (gameRound ?? 1) - 1
-        );
         setCurrentInfluencer(gameCards[(gameRound ?? 1) - 1]);
         newPlayerRef.current = false; // Mark the player as no longer new
       } else {
@@ -160,14 +148,17 @@ const MainTable: React.FC<MainTableProps> = ({
     <div className="main-table">
       <div className="main-table__influencer">
         <NewsCard
-          name={currentInfluencer?.name || ""}
-          description={currentInfluencer?.description}
-          category={currentInfluencer?.category}
-          villain={currentInfluencer?.villain}
+          name={currentInfluencer?.caption || ""}
+          description={currentInfluencer?.bodyCopy || ""}
+          example="Influencer Example"
+          category={currentInfluencer?.tacticUsed || []}
+          villain={currentInfluencer?.villain || "all"}
           image={
-            currentInfluencer?.image || "/images/influencer/scientist.webp"
+            currentInfluencer?.newsImage
+              ? `/images/news/${currentInfluencer.newsImage}`
+              : `/images/news/scientist.webp`
           }
-          tacticUsed={currentInfluencer?.tacticUsed}
+          tacticUsed={currentInfluencer?.tacticUsed || []}
         />
       </div>
       <div className="main-table__tactics">

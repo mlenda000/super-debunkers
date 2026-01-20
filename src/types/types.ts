@@ -1,4 +1,4 @@
-import type { NewsCardProps } from "./gameTypes";
+import type { NewsCard } from "./gameTypes";
 export interface PlayedCardProps {
   name: string;
   image: string;
@@ -135,8 +135,8 @@ export interface NewsCardType {
 
 export interface MainTableProps {
   items: TacticCardProps[];
-  currentInfluencer: NewsCardProps | null;
-  setCurrentInfluencer: (influencer: NewsCardProps | null) => void;
+  currentInfluencer: NewsCard | null;
+  setCurrentInfluencer: (influencer: NewsCard | null) => void;
   finishRound: boolean;
   setFinishRound: (val: boolean) => void;
   setRoundEnd: (val: boolean) => void;

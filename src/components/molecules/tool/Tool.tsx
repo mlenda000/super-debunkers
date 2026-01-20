@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
-// import InfluencerCard from "../InfluencerCard/InfluencerCard";
+import NewsCard from "../newsCard/NewsCard";
 
 const Tool = ({ showResults }) => {
   const currentInfluencer = useSelector(
@@ -31,7 +31,7 @@ const Tool = ({ showResults }) => {
         }}
       >
         <div className="sliding-background">
-          <InfluencerCard
+          <NewsCard
             name={currentInfluencer?.caption}
             description={currentInfluencer?.bodyCopy}
             example="Influencer Example"
@@ -39,9 +39,8 @@ const Tool = ({ showResults }) => {
             villain={currentInfluencer?.villain}
             image={
               currentInfluencer?.newsImage
-                ? process.env.PUBLIC_URL +
-                  `/images/influencer/${currentInfluencer.newsImage}`
-                : process.env.PUBLIC_URL + `/images/influencer/scientist.png`
+                ? `/images/news/${currentInfluencer.newsImage}`
+                : `/images/news/scientist.webp`
             }
             display="modal"
           />
@@ -49,7 +48,7 @@ const Tool = ({ showResults }) => {
       </div>
 
       <img
-        src={`${process.env.PUBLIC_URL}/images/tool/tool-swiper.png`}
+        src={`/images/tool/tool-swiper.png`}
         className="tool-swiper"
         style={{}}
         alt="tool swiper"

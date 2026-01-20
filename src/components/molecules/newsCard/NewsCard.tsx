@@ -3,10 +3,10 @@ import type { NewsCardProps } from "@/types/gameTypes";
 const NewsCard = ({
   name,
   description,
-  image,
   category,
-  display,
+  image,
   tacticUsed,
+  display,
 }: NewsCardProps) => {
   //ratio 2.5 : 3.5
 
@@ -23,7 +23,7 @@ const NewsCard = ({
             <p className="news-card__description">{description}</p>
           )}
         </div>
-        {(tacticUsed && tacticUsed.length > 0) && (
+        {tacticUsed && tacticUsed.length > 0 && (
           <div className="news-card__tactic-count">
             {(tacticUsed || []).map((tactic) => (
               <img

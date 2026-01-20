@@ -13,6 +13,7 @@
 @import './components/atoms/rotateScreen/styles/rotate-screen.css';
 @import './components/molecules/carouselSlide/styles/carousel-slide.css';
 @import './components/molecules/header/styles/header.css';
+@import './components/molecules/newsCard/styles/news-card.css';
 @import './components/molecules/tacticCardBack/styles/tactic-card-back.css';
 @import './components/molecules/tacticCards/styles/tactic-cards.css';
 @import './components/molecules/tool/styles/tool.css';

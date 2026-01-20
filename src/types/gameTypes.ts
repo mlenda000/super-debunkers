@@ -1,16 +1,33 @@
-import type { TacticCardProps } from "./types";
+import type { TacticCardProps, ThemeStyle } from "./types";
+
+export interface NewsCard {
+  id: string;
+  caption: string;
+  bodyCopy: string;
+  collection: string;
+  harm: string[];
+  howToSpotIt: string[];
+  motive: string;
+  newsImage: string;
+  newsLogoImage: string;
+  qrCodeImage: string;
+  tacticUsed?: string[];
+  tacticUsedImage: string;
+  takeaway: string;
+  video: string;
+  villain: ThemeStyle;
+}
 
 export interface NewsCardProps {
   name: string;
-  description?: string;
-  example?: string;
-  image?: string;
-  category?: string;
-  villain?: string;
-  display?: string;
+  description: string;
+  example: string;
+  category: string[];
+  villain: ThemeStyle;
+  image: string;
   tacticUsed?: string[];
+  display?: "default" | "modal";
 }
-
 // Player type
 export interface Player {
   id: string;
@@ -33,7 +50,7 @@ export interface Message {
 
 export interface GameDeck {
   type: "shuffledDeck" | undefined;
-  data: NewsCardProps[];
+  data: NewsCard[];
   isShuffled: boolean;
 }
 
@@ -83,10 +100,10 @@ export type GameContextType = {
   setTacticCards?: (
     cards: import("./types").TacticCardProps[] | undefined
   ) => void;
-  newsCards?: NewsCardProps[];
-  setNewsCards?: (cards: NewsCardProps[]) => void;
-  activeNewsCard?: NewsCardProps | null;
-  setActiveNewsCard?: (card: NewsCardProps | null) => void;
+  newsCards?: NewsCard[];
+  setNewsCards?: (cards: NewsCard[]) => void;
+  activeNewsCard?: NewsCard | null;
+  setActiveNewsCard?: (card: NewsCard | null) => void;
   gameRound?: number;
   setGameRound?: (round: number) => void;
   endGame?: boolean;

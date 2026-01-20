@@ -1,10 +1,15 @@
 import { useState, useMemo, useEffect } from "react";
 import type { ReactNode } from "react";
 import { GameContext } from "@/context/GameContext";
-import type { Player, Message, CustomState, GameRoom } from "@/types/gameTypes";
+import type {
+  Player,
+  Message,
+  CustomState,
+  GameRoom,
+  NewsCard,
+} from "@/types/gameTypes";
 import { registerGameContextSetters } from "@/services/webSocketService";
-import type { TacticCardProps, NewsCardProps } from "@/types/types";
-
+import type { TacticCardProps } from "@/types/types";
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   // --- State declarations ---
   const [currentPlayer, setCurrentPlayer] = useState<string>("");
@@ -24,10 +29,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [tacticCards, setTacticCards] = useState<
     TacticCardProps[] | undefined
   >();
-  const [newsCards, setNewsCards] = useState<NewsCardProps[]>([]);
-  const [activeNewsCard, setActiveNewsCard] = useState<NewsCardProps | null>(
-    null
-  );
+  const [newsCards, setNewsCards] = useState<NewsCard[]>([]);
+  const [activeNewsCard, setActiveNewsCard] = useState<NewsCard | null>(null);
   const [gameRound, setGameRound] = useState<number>(1);
   const [endGame, setEndGame] = useState<boolean>(false);
   const [isDeckShuffled, setIsDeckShuffled] = useState<boolean>(false);
