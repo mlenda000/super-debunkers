@@ -1,15 +1,21 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-
+import { useGameContext } from "@/hooks/useGameContext";
+import type { Player, NewsCard } from "@/types/gameTypes";
 import { Droppable } from "@/components/atoms/droppable/Droppable";
-import { DndContext, type DragEndEvent, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  DndContext,
+  type DragEndEvent,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { sendWebSocketMessage } from "@/services/webSocketService";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import MainTable from "../mainTable/MainTable";
 import PlayersHand from "@/components/organisms/playersHand/PlayersHand";
 import categoryCards from "@/data/tacticsCards.json";
-import type { Player, NewsCard } from "@/types/gameTypes";
-
-import { useGameContext } from "@/hooks/useGameContext";
+import Scoreboard from "@/components/molecules/scoreBoard/ScoreBoard";
 
 interface GameTableProps {
   setRoundEnd: (val: boolean) => void;
@@ -53,14 +59,19 @@ const GameTable: React.FC<GameTableProps> = ({
   const sensors = useSensors(mouseSensor, touchSensor);
 
   // Handle moving card to main table (for keyboard/programmatic moves)
-  const handleMoveCardToTable = useCallback((cardId: string) => {
-    const activeCard = playersHandItems.find((item) => item.id === cardId);
-    if (!activeCard) return;
-    
-    setPlayersHandItems((items) => items.filter((item) => item.id !== cardId));
-    const removeStartingText = mainTableItems.filter((card) => card.id !== 1);
-    setMainTableItems([...removeStartingText, activeCard]);
-  }, [playersHandItems, mainTableItems]);
+  const handleMoveCardToTable = useCallback(
+    (cardId: string) => {
+      const activeCard = playersHandItems.find((item) => item.id === cardId);
+      if (!activeCard) return;
+
+      setPlayersHandItems((items) =>
+        items.filter((item) => item.id !== cardId)
+      );
+      const removeStartingText = mainTableItems.filter((card) => card.id !== 1);
+      setMainTableItems([...removeStartingText, activeCard]);
+    },
+    [playersHandItems, mainTableItems]
+  );
 
   const handleDrop = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -148,7 +159,9 @@ const GameTable: React.FC<GameTableProps> = ({
         className="active-game-page"
         onKeyDown={handleKeyDown}
       >
-        <div className="scoreboard-section">{/* <Scoreboard/> */}</div>
+        <div className="scoreboard-section">
+          <Scoreboard />{" "}
+        </div>
 
         {/* Mobile navigation button */}
         <button

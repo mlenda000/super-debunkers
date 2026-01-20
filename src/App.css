@@ -19,6 +19,7 @@
 @import "./components/molecules/tacticCards/styles/tactic-cards.css";
 @import "./components/molecules/tool/styles/tool.css";
 @import "./components/molecules/playedCard/styles/played-card.css";
+@import "./components/molecules/scoreBoard/styles/score-board.css";
 @import "./components/organisms/tacticCard/styles/tactic-card.css";
 @import "./components/organisms/playerSelection/styles/player-selection.css";
 @import "./components/organisms/gameTable/styles/game-table.css";

@@ -78,6 +78,7 @@ export interface AvatarImageProps {
   setAvatar?: (avatar: string) => void;
   display?: string;
   playerSelection?: boolean;
+  playerReady?: boolean;
 }
 
 // Input Types
