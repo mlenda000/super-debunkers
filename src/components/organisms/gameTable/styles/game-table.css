@@ -1,0 +1,131 @@
+.active-game-page {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(0, 15%) auto;
+  grid-template-areas:
+    "scoreboard"
+    "content";
+  height: 100%;
+  width: 100%;
+  gap: 0.5rem;
+  position: relative;
+
+  .scoreboard-section {
+    grid-area: scoreboard;
+    width: 100%;
+  }
+
+  /* Mobile navigation button */
+  .scroll-nav-button {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    border: 2px solid white;
+    border-radius: 2rem;
+    font-family: "Subway Berlin", sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .scroll-nav-button:hover,
+  .scroll-nav-button:focus {
+    background-color: rgba(50, 50, 50, 0.9);
+    transform: scale(1.05);
+    outline: 2px solid #4da6ff;
+    outline-offset: 2px;
+  }
+
+  .scroll-nav-button:active {
+    transform: scale(0.95);
+  }
+
+  /* Scrollable content area for mobile */
+  .game-content-scroll {
+    grid-area: content;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .game-content-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .game-content-scroll:focus {
+    outline: 2px solid #4da6ff;
+    outline-offset: -2px;
+  }
+
+  .top-section {
+    flex: 0 0 100%;
+    min-width: 100%;
+    padding: 0.5rem;
+    position: relative;
+    scroll-snap-align: start;
+  }
+
+  .bottom-section {
+    flex: 0 0 100%;
+    min-width: 100%;
+    padding: 0.5rem;
+    position: relative;
+    scroll-snap-align: start;
+  }
+
+  /* Tablet and up - stack vertically, hide nav button */
+  @media (min-height: 600px) {
+    grid-template-rows: minmax(0, 15%) minmax(0, 50%) minmax(0, 30%);
+    grid-template-areas:
+      "scoreboard"
+      "content"
+      "bottom";
+
+    .scroll-nav-button {
+      display: none;
+    }
+
+    .game-content-scroll {
+      display: block;
+      overflow: visible;
+    }
+
+    .top-section {
+      flex: none;
+      min-width: auto;
+      padding-bottom: 1rem;
+    }
+
+    .bottom-section {
+      flex: none;
+      min-width: auto;
+      grid-area: bottom;
+      padding-bottom: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .bottom-section {
+      padding-bottom: 3rem;
+    }
+  }
+
+  @media (min-width: 1500px) {
+    .bottom-section {
+      padding-top: 3rem;
+    }
+  }
+}

@@ -1,25 +1,32 @@
-import "./styles/tactic-card-back.css";
-
 interface TacticCardBackProps {
   imageBack: string;
   description: string;
-  example: string;
+  example?: string;
+  category?: string;
+  className?: string;
 }
 
 const TacticCardBack = ({
   imageBack,
   description,
-  example,
+  category,
+  className,
 }: TacticCardBackProps) => {
+  console.log("category in TacticCardBack:", category);
   return (
-    <div
-      className="tactic-card-back"
-      style={{ backgroundImage: `url(${imageBack})` }}
-    >
-      <div className="tactic-card-back-content">
-        <p className="tactic-card-back-description">{description}</p>
-        <p className="tactic-card-back-example">{example}</p>
-      </div>
+    <div className={`tactic-card-back ${className ?? ""}`}>
+      <img
+        src={imageBack}
+        alt={description}
+        className="tactic-card-image-back"
+      />
+      <p
+        className={`tactic-card-back-description ${
+          category === "true" ? "truth" : ""
+        }`}
+      >
+        {description}
+      </p>
     </div>
   );
 };

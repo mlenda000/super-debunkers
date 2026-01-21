@@ -7,9 +7,12 @@
     align-items: center;
     justify-content: flex-start;
     padding: var(--spacing-3xl) var(--spacing-md);
-    overflow-y: auto;
+    overflow-y: auto !important;
     overflow-x: hidden;
     margin-top: 10vh;
+    box-sizing: border-box;
+    max-height: 100vh;
+    margin-bottom: 60px;
 
     @media (max-width: 768px) {
         padding: var(--spacing-xl) var(--spacing-sm);
@@ -31,8 +34,12 @@
         justify-content: flex-start;
         width: var(--width-full);
         gap: var(--spacing-md);
-        margin-top: var(--spacing-xl);
-        padding-bottom: var(--spacing-3xl);
+        margin-block: var(--spacing-xl);
+        padding-top: var(--spacing-xs);     
+        padding-bottom: max(var(--spacing-3xl), 60px);
+        box-sizing: border-box;
+        overflow-y: auto;
+        max-height: 80vh;
         
         @media (max-width: 768px) {
             gap: var(--spacing-sm);
@@ -47,7 +54,7 @@
         @media (max-height: 600px) and (orientation: landscape) {
             gap: var(--spacing-xs);
             margin-top: var(--spacing-sm);
-            padding-bottom: var(--spacing-xl);
+            padding-bottom: max(var(--spacing-xl), 60px);
         }
     }
 

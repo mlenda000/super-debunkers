@@ -1,14 +1,14 @@
 import { useState } from "react";
 import tacticCards from "@/data/tacticsCards.json";
 import TacticCardBack from "@/components/molecules/tacticCardBack/TacticCardBack";
-import "./styles/tactic-cards.css";
+import TacticCardFront from "../tacticCardFront/TacticCardFront";
 
 const TacticCards = () => {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   return (
     <div className="tactic-cards-wrapper">
-      {Object.values(tacticCards).map((card) => (
+      {Object.values(tacticCards).slice(0, 10).map((card) => (
         <div
           key={card.category}
           className="tactic-card"
@@ -25,13 +25,13 @@ const TacticCards = () => {
             <TacticCardBack
               imageBack={card.imageBack}
               description={card.description}
-              example={card.example}
+              category={card.category}
             />
           ) : (
-            <img
-              src={card.image}
+            <TacticCardFront
+              image={card.image}
               alt={card.imageAlt}
-              className="tactic-card-image"
+              category={card.category}
             />
           )}
         </div>

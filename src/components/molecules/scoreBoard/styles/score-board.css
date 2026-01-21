@@ -1,0 +1,105 @@
+.scoreboard {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: "Subway Berlin", sans-serif;
+  white-space: nowrap;
+}
+
+.scoreboard__names {
+  margin-right: 40px;
+  margin-left: 4px;
+  font-size: 2.5em;
+
+  @media (max-width: 1200px) {
+    font-size: 2.2em;
+  }
+
+  @media (max-width: 1028px) {
+    font-size: 2em;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    display: none;
+  }
+}
+
+.scoreboard__avatar {
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    margin-left: -5px;
+  }
+
+  @media (max-width: 480px) {
+    width: 110px;
+    margin-top: -60px;
+    margin-left: -10px;
+    margin-bottom: -60px;
+  }
+}
+
+.scoreboard-right__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 40px;
+}
+
+.scoreboard-info__image {
+  cursor: pointer;
+  width: clamp(24px, 4vw, 60px);
+  height: clamp(24px, 4vw, 60px);
+  background: transparent;
+  border: transparent;
+  border-radius: 100%;
+  &:hover {
+    outline: white 2px;
+    outline-offset: 2px;
+  }
+}
+
+.scoreboard__home-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  gap: 12px;
+  background: transparent;
+  border: transparent;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.scoreboard__home-image {
+  width: clamp(24px, 4vw, 60px);
+  height: clamp(24px, 4vw, 60px);
+  flex-shrink: 0;
+}
+.scoreboard__home-button-small {
+  display: block;
+  color: white;
+  font-family: "Subway Berlin", sans-serif;
+  font-size: clamp(12px, 2 0.5rem, 60px);
+  margin: 0;
+  line-height: 1.2;
+
+  @media (max-height: 600px) {
+    display: none;
+  }
+}
+
+.scoreboard-audio__button {
+  background: transparent;
+  border: transparent;
+  border-radius: 100%;
+  cursor: pointer;
+  width: clamp(24px, 4vw, 60px);
+  height: clamp(24px, 4vw, 60px);
+  margin-left: 20px;
+}
