@@ -29,8 +29,16 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
   setMainTableItems,
   setSubmitForScoring,
 }) => {
-  const { setThemeStyle } = useGlobalContext();
-  const { gameRoom, gameRound, setEndGame, setFinalRound } = useGameContext();
+  const { setThemeStyle, playerName } = useGlobalContext();
+  const {
+    gameRoom,
+    gameRound,
+    setEndGame,
+    setFinalRound,
+    setPlayers,
+    setGameRoom,
+    currentPlayer,
+  } = useGameContext();
   const [playerReady, setPlayerReady] = React.useState<boolean>(false);
   const [message, setMessage] = React.useState<string>("");
 
@@ -72,8 +80,6 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
     gameCards,
     message,
   ]);
-
-  console.log("current influencer:", currentInfluencer);
 
   const indexRef = React.useRef(0);
   const newPlayerRef = React.useRef(true);
@@ -124,9 +130,31 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
   }, [currentInfluencer]);
 
   const handlePlayerReady = () => {
-    sendWebSocketMessage({ type: "playerReady", players: gameRoom?.roomData });
+    const name = playerName || currentPlayer || localStorage.getItem("playerName") || "";
+    const updatedPlayers = (gameRoom?.roomData?.players || []).map((p) =>
+      p?.name === name ? { ...p, isReady: true } : p
+    );
+
+    // Optimistically update local context so Scoreboard reflects ready state
+    setPlayers?.(updatedPlayers);
+    setGameRoom?.({
+      ...gameRoom,
+      roomData: {
+        ...gameRoom.roomData,
+        players: updatedPlayers,
+      },
+    });
+
+    sendWebSocketMessage({
+      type: "playerReady",
+      room: gameRoom?.room,
+      player: name,
+      players: updatedPlayers,
+    });
     setPlayerReady(true);
   };
+
+  console.log("here is what I have in the gameroom", gameRoom);
 
   const handleReturnCard = (cardId: string) => {
     console.log("Card ID to return:", cardId);
@@ -148,7 +176,6 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
       }
     }
   };
-  console.log(gameRoom);
 
   return (
     <div className="main-table">
@@ -187,8 +214,10 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
         ))}
         {
           <button
+            type="button"
             onClick={handlePlayerReady}
             className="main-table__finish-round"
+            aria-label={playerReady ? "Ready" : finishRound ? "Mark ready" : "Place a card to get ready"}
           >
             <img
               src={

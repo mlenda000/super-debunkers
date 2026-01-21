@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AvatarImage from "@/components/atoms/avatarImage/AvatarImage";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
@@ -25,6 +25,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   const { setThemeStyle } = useGlobalContext();
   const { gameRoom: ctxGameRoom, gameRound: ctxGameRound } = useGameContext();
   const navigate = useNavigate();
+  const [isSoundPlaying, setIsSoundPlaying] = useState(true);
 
   // Prefer context values, fallback to props
   const gameRoom = ctxGameRoom || propGameRoom;
@@ -39,20 +40,15 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
 
   return (
     <div className="scoreboard">
-      <img
-        src={`/images/buttons/home-button.webp`}
-        alt="home"
-        onClick={goHome}
-        style={{ cursor: "pointer", zIndex: 2 }}
-        className="scoreboard__home-button"
-      />
-      <img
-        src={`/images/buttons/home-button-small.webp`}
-        alt="home"
-        onClick={goHome}
-        style={{ cursor: "pointer", zIndex: 2 }}
-        className="scoreboard__home-button-small"
-      />
+      <button className="scoreboard__home-button" onClick={goHome}>
+        <img
+          src={`/images/buttons/home.png`}
+          alt="home"
+          style={{ cursor: "pointer", zIndex: 2 }}
+          className="scoreboard__home-image"
+        />
+        <p className="scoreboard__home-button-small">Home</p>
+      </button>
 
       <div className="scoreboard__avatar">
         {gameRoom?.roomData?.players.length > 0 &&
@@ -102,6 +98,20 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
             alt="Scoreboard"
             width={"100%"}
             style={{ zIndex: 2 }}
+          />
+        </button>
+        <button className="scoreboard-audio__button">
+          <img
+            src={
+              isSoundPlaying
+                ? "/images/buttons/audio.png"
+                : "/images/buttons/mute.png"
+            }
+            alt="Sound Toggle"
+            width={"100%"}
+            style={{ zIndex: 2 }}
+            onClick={() => setIsSoundPlaying(!isSoundPlaying)}
+            className="scoreboard-audio__image"
           />
         </button>
       </div>

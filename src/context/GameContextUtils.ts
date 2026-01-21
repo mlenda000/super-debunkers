@@ -41,13 +41,14 @@ export function handleGameMessage(
     }
     case "roomUpdate": {
       const roomData = message.roomData as RoomData | undefined;
+      const players = (message.players ?? roomData?.players ?? []) as Player[];
       const gameRoomObj: GameRoom = {
         count: Number(message.count ?? roomData?.count),
         room: String(message.room),
         type: "roomUpdate",
         roomData: {
           count: Number(roomData?.count ?? message.count),
-          players: (roomData?.players ?? []) as Player[],
+          players: players,
           name: String(roomData?.name ?? message.room),
           deck: message.deck as GameDeck | undefined,
         },

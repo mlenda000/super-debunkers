@@ -68,14 +68,35 @@ const GameTable: React.FC<GameTableProps> = ({
     if (active.id !== over.id) {
       const activeCard = playersHandItems.find((item) => item.id === active.id);
       if (!activeCard) return;
-      
+
       setPlayersHandItems((items) =>
         items.filter((item) => item.id !== active.id)
       );
-      const removeStartingText = mainTableItems.filter((card) => String(card.id) !== "1");
+      const removeStartingText = mainTableItems.filter(
+        (card) => String(card.id) !== "1"
+      );
       setMainTableItems([...removeStartingText, activeCard]);
     }
   };
+
+  const handleMoveCardToTable = useCallback(
+    (cardId: string) => {
+      const cardToMove = playersHandItems.find((item) => item.id === cardId);
+      if (!cardToMove) return;
+
+      // Remove from hand
+      setPlayersHandItems((items) =>
+        items.filter((item) => item.id !== cardId)
+      );
+
+      // Add to table (remove placeholder first)
+      const removeStartingText = mainTableItems.filter(
+        (card) => String(card.id) !== "1"
+      );
+      setMainTableItems([...removeStartingText, cardToMove]);
+    },
+    [playersHandItems, mainTableItems]
+  );
 
   useEffect(() => {
     setFinishRound(mainTableItems.length > 0);
@@ -189,13 +210,25 @@ const GameTable: React.FC<GameTableProps> = ({
                   items={mainTableItems}
                   currentInfluencer={currentInfluencer}
                   setCurrentInfluencer={setCurrentInfluencer}
-                  playersHandItems={playersHandItems as unknown as TacticCardProps[]}
+                  playersHandItems={
+                    playersHandItems as unknown as TacticCardProps[]
+                  }
                   finishRound={finishRound}
                   setFinishRound={setFinishRound}
                   setRoundEnd={setRoundEnd}
-                  setPlayersHandItems={setPlayersHandItems as unknown as (items: TacticCardProps[]) => void}
-                  mainTableItems={mainTableItems as unknown as TacticCardProps[]}
-                  setMainTableItems={setMainTableItems as unknown as (items: TacticCardProps[]) => void}
+                  setPlayersHandItems={
+                    setPlayersHandItems as unknown as (
+                      items: TacticCardProps[]
+                    ) => void
+                  }
+                  mainTableItems={
+                    mainTableItems as unknown as TacticCardProps[]
+                  }
+                  setMainTableItems={
+                    setMainTableItems as unknown as (
+                      items: TacticCardProps[]
+                    ) => void
+                  }
                   originalItems={playersHand}
                   setSubmitForScoring={setSubmitForScoring}
                 />
@@ -207,7 +240,10 @@ const GameTable: React.FC<GameTableProps> = ({
               aria-label="Your cards"
               style={{ width: "100%" }}
             >
-              <PlayersHand items={playersHandItems} />
+              <PlayersHand
+                items={playersHandItems}
+                onMoveCardToTable={handleMoveCardToTable}
+              />
             </div>
           </div>
         </div>

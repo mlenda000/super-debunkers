@@ -8,6 +8,15 @@ let messageListeners: Array<(message: Record<string, unknown>) => void> = [];
 let connectionPromise: Promise<void> | null = null;
 let contextSetters: Partial<GameContextType> | null = null;
 let messageBuffer: Record<string, unknown>[] = [];
+const lastRegisteredSetters: Partial<GameContextType> | null = null;
+let currentRoomId: string | null = null;
+
+/**
+ * Get current contextSetters status (for debugging)
+ */
+export const getContextSettersStatus = () => {
+  return contextSetters !== null;
+};
 
 /**
  * Register GameContext setters for use in WebSocket message handling
@@ -15,23 +24,44 @@ let messageBuffer: Record<string, unknown>[] = [];
 export const registerGameContextSetters = (
   setters: Partial<GameContextType>
 ) => {
-  console.log("Registering context setters:", setters);
   contextSetters = setters;
   // Process any buffered messages
   if (messageBuffer.length > 0) {
-    console.log("Processing buffered messages:", messageBuffer);
     messageBuffer.forEach((msg) => {
+      console.log("[WebSocket] Processing buffered message:", msg.type);
       handleGameMessage(msg, contextSetters!);
     });
     messageBuffer = [];
+  } else {
+    console.log("[WebSocket] No buffered messages to process");
   }
 };
 
 export const initializeWebSocket = (
   roomId: string = "lobby"
 ): Promise<PartySocket> => {
-  if (wsInstance && wsInstance.readyState === wsInstance.OPEN) {
+  // Recover setters after HMR or if cleared
+  if (!contextSetters && lastRegisteredSetters) {
+    contextSetters = lastRegisteredSetters;
+  }
+
+  // If already connected to the same room, return existing instance
+  if (
+    wsInstance &&
+    wsInstance.readyState === wsInstance.OPEN &&
+    currentRoomId === roomId
+  ) {
     return Promise.resolve(wsInstance);
+  }
+
+  // If switching rooms, close the existing connection
+  if (wsInstance && currentRoomId !== roomId) {
+    const oldInstance = wsInstance;
+    wsInstance = null;
+    connectionPromise = null;
+    currentRoomId = null;
+    // Close the old connection after clearing references
+    oldInstance.close();
   }
 
   // If already connecting, wait for that connection
@@ -39,6 +69,7 @@ export const initializeWebSocket = (
     return connectionPromise.then(() => wsInstance!);
   }
 
+  currentRoomId = roomId;
   wsInstance = new PartySocket({
     host: PARTYKIT_HOST,
     room: roomId,
@@ -69,6 +100,10 @@ export const initializeWebSocket = (
       try {
         const parsedMessage = JSON.parse(message);
         if (contextSetters) {
+          console.log(
+            `[WebSocket] Calling handleGameMessage with type:`,
+            parsedMessage.type
+          );
           handleGameMessage(parsedMessage, contextSetters);
         } else {
           console.warn(
@@ -83,10 +118,18 @@ export const initializeWebSocket = (
     }
   });
 
-  wsInstance.addEventListener("close", () => {
-    console.log("Disconnected from the WebSocket server");
+  wsInstance.addEventListener("close", (event: CloseEvent) => {
+    // Ignore closes from stale sockets (e.g., previous room connections)
+    if (event.target !== wsInstance) {
+      console.log(
+        `[WebSocket] Ignoring close from stale socket code=${event.code} reason=${event.reason}`
+      );
+      return;
+    }
     connectionPromise = null;
     wsInstance = null;
+    // keep contextSetters so they survive reconnects / HMR
+    currentRoomId = null;
   });
 
   wsInstance.addEventListener("error", (error: Event) => {
@@ -233,5 +276,6 @@ export const closeWebSocket = (): void => {
     wsInstance.close();
     wsInstance = null;
     messageListeners = [];
+    currentRoomId = null;
   }
 };

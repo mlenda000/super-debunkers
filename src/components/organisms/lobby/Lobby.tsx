@@ -4,6 +4,7 @@ import {
   sendPlayerEnters,
   sendEnteredLobby,
   initializeWebSocket,
+  subscribeToMessages,
 } from "@/services/webSocketService";
 
 import RoomTab from "@/components/atoms/roomTab/RoomTab";
@@ -25,8 +26,23 @@ const Lobby = ({ rooms }: { rooms: string[] }) => {
       navigate("/game/create-room");
     } else {
       await initializeWebSocket(room);
+      // Subscribe to room updates and wait for confirmation
+      const unsubscribe = subscribeToMessages((message) => {
+        if (message.type === "roomUpdate" && message.room === room) {
+          // Player successfully added to room
+          unsubscribe();
+          navigate(`/game/${room}`);
+        }
+      });
+
       sendPlayerEnters(room, { name, avatar: avatarName, room });
-      navigate(`/game/${room}`);
+
+      // Fallback: navigate after 2 seconds if no confirmation received
+      setTimeout(() => {
+        console.log(`[Lobby] Timeout reached, navigating to game anyway`);
+        unsubscribe();
+        navigate(`/game/${room}`);
+      }, 2000);
     }
   };
 
