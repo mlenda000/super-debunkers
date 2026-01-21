@@ -2,10 +2,10 @@ import { useState } from "react";
 // import Scoreboard from "@/components/organisms/scoreboard/Scoreboard";
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
 import GameTable from "@/components/organisms/gameTable/GameTable";
-import ResultModal from "@/components/organisms/resultModal/ResultModal";
-import RoundModal from "@/components/organisms/modals/roundModal/RoundModal";
+import ResultModal from "@/components/organisms/modals/ResultModal/ResultModal";
+import RoundModal from "@/components/organisms/modals/RoundModal/RoundModal";
 import ResponseModal from "@/components/organisms/modals/responseModal/ResponseModal";
-import ScoreModal from "@/components/organisms/modals/scoreModal/ScoreModal";
+import ScoreModal from "@/components/organisms/modals/ScoreModal/ScoreModal";
 import EndGameModal from "@/components/organisms/modals/endGameModal/EndGameModal";
 import InfoModal from "@/components/organisms/modals/infoModal/InfoModal";
 
