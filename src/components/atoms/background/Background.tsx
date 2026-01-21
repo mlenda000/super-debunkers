@@ -7,10 +7,10 @@ const Background = () => {
   const getBackgroundImage = () => {
     const imageMap: Record<string, string> = {
       all: "/images/backgrounds/all.webp",
-      oligs: "/images/backgrounds/olig.webp",
-      bots: "/images/backgrounds/bots.webp",
-      celebs: "/images/backgrounds/celeb.webp",
-      biosts: "/images/backgrounds/biost.webp",
+      The_Olig: "/images/backgrounds/olig.webp",
+      The_Bots: "/images/backgrounds/bots.webp",
+      The_Celeb: "/images/backgrounds/celeb.webp",
+      The_Biost: "/images/backgrounds/biost.webp",
     };
     return imageMap[themeStyle] || imageMap.all;
   };

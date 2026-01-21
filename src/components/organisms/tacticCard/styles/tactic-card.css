@@ -1,0 +1,18 @@
+.tactic-card-item {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  position: relative;
+  width: 120px;
+  aspect-ratio: 921 / 1422;
+}
+
+.tactic-card-item:hover,
+.tactic-card-item:focus,
+.tactic-card-item:focus-visible,
+.tactic-card-item:active {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}

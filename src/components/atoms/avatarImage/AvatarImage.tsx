@@ -8,6 +8,7 @@ const AvatarImage = ({
   setAvatar,
   display,
   playerSelection,
+  playerReady = false,
 }: AvatarImageProps) => {
   const srcName = useMemo(() => {
     if (!src) return "";
@@ -56,16 +57,23 @@ const AvatarImage = ({
       tabIndex={playerSelection ? 0 : undefined}
       aria-label={playerSelection ? `Select avatar ${alt || src}` : undefined}
     >
-      <img
-        src={src && src.includes("/") ? src : `/images/avatars/${src}`}
-        alt={alt}
-        style={{
-          borderRadius: "50%",
-          cursor: playerSelection ? "pointer" : "default",
-          zIndex: 2,
-        }}
-        className="avatar-image"
-      />
+      {playerReady ? (
+        <img
+          src={src && src.includes("/") ? src : `/images/buttons/ready.webp`}
+          alt="player is ready"
+        />
+      ) : (
+        <img
+          src={src && src.includes("/") ? src : `/images/avatars/${src}`}
+          alt={alt}
+          style={{
+            borderRadius: "50%",
+            cursor: playerSelection ? "pointer" : "default",
+            zIndex: 2,
+          }}
+          className="avatar-image"
+        />
+      )}
     </div>
   );
 };
