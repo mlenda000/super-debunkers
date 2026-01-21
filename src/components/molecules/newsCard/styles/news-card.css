@@ -67,7 +67,7 @@
     --color-primary: black;
     padding: 12px;
     background-color: white;
-    background-image: url("/public/images/news/news-bg.png");
+    background-image: url("/public/images/news/news-bg.webp");
     color: var(--color-primary);
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
