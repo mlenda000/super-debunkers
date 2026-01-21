@@ -1,9 +1,7 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import { useGameContext } from "@/hooks/useGameContext";
 
 const RoundModal = () => {
-  const gameRound = useSelector((state) => state.game.gameRound);
-  const finalRound = useSelector((state) => state.game.finalRound);
+  const { gameRound, finalRound } = useGameContext();
 
   return (
     <div className="round-modal__overlay" style={{ zIndex: 100 }}>

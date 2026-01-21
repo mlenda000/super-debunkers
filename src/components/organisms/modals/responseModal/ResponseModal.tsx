@@ -1,22 +1,17 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  setShowScoreCard,
-  setShowResponseModal,
-} from "../../../store/gameSlice";
+import { useGameContext } from "@/hooks/useGameContext";
+import { useEffect } from "react";
 
-const ResponseModal = () => {
-  const dispatch = useDispatch();
-  const responseMsg = useSelector((state) => state.game.responseMsg);
+const ResponseModal = ({ setShowScoreCard, setShowResponseModal }) => {
+  const { responseMsg } = useGameContext();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      dispatch(setShowScoreCard(true));
-      dispatch(setShowResponseModal(false));
+      setShowScoreCard(true);
+      setShowResponseModal(false);
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [dispatch]);
+  }, [setShowScoreCard, setShowResponseModal]);
 
   return (
     <div className="round-modal__overlay" style={{ zIndex: 100 }}>
@@ -25,15 +20,15 @@ const ResponseModal = () => {
           {responseMsg?.hasStreak
             ? "WIN STREAK!"
             : responseMsg?.wasCorrect
-            ? "DEBUNKED!"
-            : "OOPS!"}
+              ? "DEBUNKED!"
+              : "OOPS!"}
         </h1>
         <h3 className="response-modal__subtitle">
           {responseMsg?.hasStreak
             ? `YOU DEBUNKED ${responseMsg?.streak} IN A ROW`
             : responseMsg?.wasCorrect
-            ? "YOU NAILED IT"
-            : "YOU'LL GET THEM NEXT TIME"}
+              ? "YOU NAILED IT"
+              : "YOU'LL GET THEM NEXT TIME"}
         </h3>
       </div>
     </div>

@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
 
-import Tool from "@/components/organisms/"; // Assuming Tool is a component you want to show in the modal
+import Tool from "@/components/molecules/tool/Tool"; // Assuming Tool is a component you want to show in the modal
 
-const ResultModal = () => {
-  const dispatch = useDispatch();
-
+const ResultModal = ({ setRoundEnd, setShowResponseModal }) => {
   const [showComponents, setShowComponents] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      dispatch(setRoundEnd(false));
-      dispatch(setShowResponseModal(true));
+      setRoundEnd(false);
+      setShowResponseModal(true);
     }, 9000);
     const componentTimer = setTimeout(() => {
       setShowComponents(true);
@@ -21,7 +18,7 @@ const ResultModal = () => {
       clearTimeout(timer);
       clearTimeout(componentTimer);
     };
-  }, [dispatch]);
+  }, [setRoundEnd, setShowResponseModal]);
 
   return (
     <div className="result-modal__overlay" style={{ zIndex: 100 }}>
