@@ -2,7 +2,7 @@ import { useState } from "react";
 // import Scoreboard from "@/components/organisms/scoreboard/Scoreboard";
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
 import GameTable from "@/components/organisms/gameTable/GameTable";
-import ResultModal from "@/components/organisms/resultModal/ResultModal";
+import ResultModal from "@/components/organisms/modals/resultModal/ResultModal";
 import RoundModal from "@/components/organisms/modals/roundModal/RoundModal";
 import ResponseModal from "@/components/organisms/modals/responseModal/ResponseModal";
 import ScoreModal from "@/components/organisms/modals/scoreModal/ScoreModal";
@@ -13,12 +13,12 @@ const GamePage = () => {
   // const [finalRound, setFinalRound] = useState<boolean>(false);
 
   // TODO: Aaron change these from false to true to test modals and see them on the gamepage
-  const [roundStart, setRoundStart] = useState<boolean>(false);
+  const [roundStart] = useState<boolean>(false);
   const [roundEnd, setRoundEnd] = useState<boolean>(false);
   const [roundHasEnded, setRoundHasEnded] = useState<boolean>(false);
   const [isEndGame, setIsEndGame] = useState<boolean>(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState<boolean>(false);
-  const [showResponseModal, setShowResponseModal] = useState<any>(null);
+  const [showResponseModal, setShowResponseModal] = useState<boolean>(false);
   const [showScoreCard, setShowScoreCard] = useState<boolean>(false);
 
   return (
@@ -32,7 +32,12 @@ const GamePage = () => {
         setRoundHasEnded={setRoundHasEnded}
       />
       {roundStart && <RoundModal />}
-      {roundEnd && <ResultModal />}
+      {roundEnd && (
+        <ResultModal
+          setRoundEnd={setRoundEnd}
+          setShowResponseModal={setShowResponseModal}
+        />
+      )}
       {showResponseModal && (
         <ResponseModal
           setShowScoreCard={setShowScoreCard}
