@@ -74,6 +74,6 @@
   }
   
   @media (max-height: 600px) {
-    margin-bottom: clamp(16px, 0.3vh, 32px);
+    margin-bottom: var(--spacing-xl);
   }
 }

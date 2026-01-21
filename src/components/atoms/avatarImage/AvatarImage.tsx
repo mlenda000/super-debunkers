@@ -34,20 +34,21 @@ const AvatarImage = ({
 
   return (
     <div
-      className={
+      className={`${
         display
           ? `avatar-image-container__${display}`
           : "avatar-image-container"
-      }
+      }${avatarName === srcName ? " avatar-image-container--selected" : ""}`}
       style={
         avatarName === srcName
           ? {
-              scale: 1.2,
-              border: "3px solid rgb(226, 31, 73)",
-              boxShadow: "0 0 10px rgb(226, 31, 73)",
+              border: "3px solid white",
+              boxShadow: "0 0 10px white",
               zIndex: 2,
             }
-          : { zIndex: 2 }
+          : avatar
+            ? { scale: 0.9, zIndex: 1 }
+            : { zIndex: 2 }
       }
       onClick={playerSelection ? handleSelect : undefined}
       onKeyDown={playerSelection ? handleKeyDown : undefined}

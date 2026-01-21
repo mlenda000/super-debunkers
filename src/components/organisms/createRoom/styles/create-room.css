@@ -8,11 +8,15 @@
 }
 .create-room__title {
     font-family: "Subway Berlin", sans-serif;
-    font-size: var(--font-size-xl);
+    font-size: clamp(20px, 6vw, 100px);
     line-height: var(--line-height-snug);
     color: white;
     text-align: center;
     margin: 0;
+
+    @media (max-width: 768px) {
+        font-size: clamp(18px, 5vw, 36px);
+    }
 }
 .create-room__title h1 {
     margin: 0;

@@ -46,7 +46,7 @@ const CreateRoom = ({
           </div>
         </form>
 
-        <Button onClick={handleSubmit}>Create Room</Button>
+        <Button onClick={handleSubmit}>Next</Button>
       </div>
     </>
   );

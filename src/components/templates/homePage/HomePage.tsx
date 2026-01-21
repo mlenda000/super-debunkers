@@ -14,6 +14,8 @@ const HomePage = () => {
     const handleScroll = () => {
       if (container.scrollTop > 10) {
         setHasScrolled(true);
+      } else {
+        setHasScrolled(false);
       }
     };
 
@@ -39,8 +41,7 @@ const HomePage = () => {
       <h2>Welcome Debunkers</h2>
       <p className="home-description">
         This is Base Camp, where you'll learn to spot lies and expose fake news
-        on your journey to becoming a Super Debunker. <br />
-        Stay focused, check the facts and uncover what's real and what's fake!
+        on your journey to becoming a Super Debunker. Stay focused, check the facts and uncover what's real and what's fake!
       </p>
       <img
         src="/images/home/newscard.webp"
