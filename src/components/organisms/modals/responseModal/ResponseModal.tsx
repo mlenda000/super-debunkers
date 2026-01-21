@@ -1,8 +1,26 @@
 import { useGameContext } from "@/hooks/useGameContext";
 import { useEffect } from "react";
 
-const ResponseModal = ({ setShowScoreCard, setShowResponseModal }) => {
-  const { responseMsg } = useGameContext();
+interface ResponseModalProps {
+  setShowScoreCard: (value: boolean) => void;
+  setShowResponseModal: (value: boolean) => void;
+}
+
+interface ResponseMessage {
+  wasCorrect?: boolean;
+  streak?: number;
+  hasStreak?: boolean;
+}
+
+const ResponseModal = ({
+  setShowScoreCard,
+  setShowResponseModal,
+}: ResponseModalProps) => {
+  const context = useGameContext();
+  const responseMsg: ResponseMessage =
+    context && typeof context === "object" && "responseMsg" in context
+      ? (context as unknown as Record<string, ResponseMessage>).responseMsg
+      : { wasCorrect: true, streak: 0, hasStreak: false };
 
   useEffect(() => {
     const timer = setTimeout(() => {

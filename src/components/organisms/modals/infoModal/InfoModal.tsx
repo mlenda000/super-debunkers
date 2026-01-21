@@ -1,10 +1,18 @@
 import { useEffect, useRef } from "react";
 
-const InfoModal = ({ isOpen, onClose }) => {
-  const modalRef = useRef(null);
+interface InfoModalProps {
+  isOpen: boolean;
+  onClose: (value: boolean) => void;
+}
+
+const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
+  const modalRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         onClose(false);
       }
     }
@@ -19,7 +27,7 @@ const InfoModal = ({ isOpen, onClose }) => {
   }, [isOpen, onClose]);
 
   return (
-    <modal className="info-modal">
+    <div className="info-modal">
       <div className="info-modal__content" ref={modalRef}>
         <h1 className="info-modal__title">How to play</h1>
         <ol>
@@ -59,7 +67,7 @@ const InfoModal = ({ isOpen, onClose }) => {
           </li>
         </ol>
       </div>
-    </modal>
+    </div>
   );
 };
 

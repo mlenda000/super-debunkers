@@ -1,19 +1,24 @@
 import { useGameContext } from "@/hooks/useGameContext";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { useNavigate } from "react-router-dom";
+import type { Player } from "@/types/gameTypes";
 
-const EndGameModal = ({ setIsEndGame }) => {
+interface EndGameModalProps {
+  setIsEndGame: (value: boolean) => void;
+}
+
+const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
   const navigate = useNavigate();
   const gameRoom = useGameContext().gameRoom;
   const { setThemeStyle } = useGlobalContext();
 
-  const topPlayer = gameRoom?.roomData?.reduce(
-    (top, player) => (player?.score > (top?.score || 0) ? player : top),
+  const topPlayer = (gameRoom?.roomData?.players || []).reduce<Player | null>(
+    (top: Player | null, player: Player) =>
+      (player?.score ?? 0) > (top?.score ?? 0) ? player : top,
     null
   );
 
   const handleClick = () => {
-    setEndGame(false);
     setThemeStyle("all");
     navigate("/");
     setIsEndGame(false);
@@ -35,9 +40,9 @@ const EndGameModal = ({ setIsEndGame }) => {
             <div>Rank</div>
             <div>Followers</div>
           </h1>
-          {gameRoom?.roomData
-            ?.sort((a, b) => b.score - a.score) // Sort players by score in descending order
-            .map((player, index) => (
+          {(gameRoom?.roomData?.players || [])
+            .sort((a: Player, b: Player) => (b?.score || 0) - (a?.score || 0)) // Sort players by score in descending order
+            .map((player: Player, index: number) => (
               <div className="score-modal__players" key={player?.name}>
                 <div className="score-modal__player-left">
                   <div style={{ marginRight: "12px" }}>{index + 1} .</div>
