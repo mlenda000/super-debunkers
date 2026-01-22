@@ -204,6 +204,8 @@ const GamePage = () => {
         roundHasEnded={roundHasEnded}
         setRoundHasEnded={setRoundHasEnded}
         gameRoom={gameRoom}
+        isInfoModalOpen={isInfoModalOpen}
+        setIsInfoModalOpen={setIsInfoModalOpen}
       />
       {showRoundModal && <RoundModal />}
       {roundEnd && (

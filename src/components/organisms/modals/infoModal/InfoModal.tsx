@@ -9,6 +9,11 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+      // Ignore clicks on the info button
+      if (target.closest(".scoreboard-info__image")) {
+        return;
+      }
       if (
         modalRef.current &&
         !modalRef.current.contains(event.target as Node)
@@ -27,8 +32,13 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
   }, [isOpen, onClose]);
 
   return (
-    <div className="info-modal">
-      <div className="info-modal__content" ref={modalRef}>
+    <>
+      <div className="info-modal__overlay" />
+      <div className="info-modal">
+        <div className="info-modal__content" ref={modalRef}>
+        <button className="info-modal__close" onClick={() => onClose(false)}>
+          <img src="/images/buttons/close.webp" alt="Close" />
+        </button>
         <h1 className="info-modal__title">How to play</h1>
         <ol>
           <li>
@@ -66,8 +76,9 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
             <span style={{ fontWeight: 900 }}>wins!</span>
           </li>
         </ol>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

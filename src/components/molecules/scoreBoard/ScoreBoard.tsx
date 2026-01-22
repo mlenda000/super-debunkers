@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import AvatarImage from "@/components/atoms/avatarImage/AvatarImage";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
@@ -27,6 +27,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   const { gameRoom: ctxGameRoom, gameRound: ctxGameRound } = useGameContext();
   const navigate = useNavigate();
   const [isSoundPlaying, setIsSoundPlaying] = useState(true);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   // Prefer context values, fallback to props
   const gameRoom = ctxGameRoom || propGameRoom;
@@ -42,12 +43,37 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
       navigate(-1);
     }
   };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {}, [JSON.stringify(gameRoom?.roomData)]);
+
+  // Auto-play music when component mounts
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.5;
+      audioRef.current.play().catch(() => {
+        // Auto-play blocked by browser, user needs to interact first
+        setIsSoundPlaying(false);
+      });
+    }
+  }, []);
+
+  // Control play/pause based on isSoundPlaying state
+  useEffect(() => {
+    if (audioRef.current) {
+      if (isSoundPlaying) {
+        audioRef.current.play().catch(() => {});
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, [isSoundPlaying]);
 
   return (
     <div className="scoreboard">
+      <audio ref={audioRef} src="/images/music/music.mp3" loop />
       <button
         className="scoreboard__home-button"
-        onClick={handleReturnToLobby}
+        onClick={() => handleReturnToLobby()}
         title="Return to Lobby"
       >
         <img
@@ -98,9 +124,12 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
         </div>
         <button
           className="scoreboard-info__image"
-          onClick={() =>
-            setIsInfoModalOpen && setIsInfoModalOpen(!isInfoModalOpen)
-          }
+          onClick={(e) => {
+            e.stopPropagation();
+            if (setIsInfoModalOpen) {
+              setIsInfoModalOpen(!isInfoModalOpen);
+            }
+          }}
         >
           <img
             src={`/images/buttons/info-button.webp`}
@@ -127,4 +156,5 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
     </div>
   );
 };
+
 export default Scoreboard;

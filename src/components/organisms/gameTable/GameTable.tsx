@@ -24,6 +24,8 @@ interface GameTableProps {
   roundHasEnded: boolean;
   setRoundHasEnded: (val: boolean) => void;
   gameRoom?: any;
+  isInfoModalOpen: boolean;
+  setIsInfoModalOpen: (val: boolean) => void;
 }
 
 const GameTable: React.FC<GameTableProps> = ({
@@ -31,6 +33,8 @@ const GameTable: React.FC<GameTableProps> = ({
   roundEnd,
   //   roundHasEnded,
   setRoundHasEnded,
+  isInfoModalOpen,
+  setIsInfoModalOpen,
 }) => {
   const { gameRoom, gameRound, activeNewsCard, setActiveNewsCard } =
     useGameContext();
@@ -190,7 +194,10 @@ const GameTable: React.FC<GameTableProps> = ({
           >
             {/* Grid Row Top - Scoreboard */}
             <div className="score" inert={showingHand}>
-              <Scoreboard />
+              <Scoreboard
+                isInfoModalOpen={isInfoModalOpen}
+                setIsInfoModalOpen={setIsInfoModalOpen}
+              />
             </div>
 
             {/* Grid Row Middle - Main Table */}
