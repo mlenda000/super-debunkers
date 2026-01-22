@@ -1,15 +1,28 @@
-import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import NewsCard from "../newsCard/NewsCard";
 
 interface ToolProps {
   showResults: boolean;
+  currentInfluencer?: {
+    caption?: string;
+    bodyCopy?: string;
+    tacticUsed?: string[];
+    villain?: string;
+    newsImage?: string;
+  } | null;
 }
 
-const Tool = ({ showResults }: ToolProps) => {
-  const currentInfluencer = useSelector(
-    (state: any) => state.game.currentInfluencer
-  );
+// Mock data for testing/styling - using realistic content from influencerCards.json
+const mockInfluencer = {
+  caption: "🚨 ALERT: Your school water fountain is FILLED with deadly chemicals! ☠️🚰",
+  bodyCopy: "Scientists just discovered that school water fountains contain a dangerous chemical also found in nuclear waste! Some schools have even been caught hiding the truth because they don't want to spend money fixing the pipes. Experts say drinking this water could cause permanent brain damage—but no one is warning students!",
+  tacticUsed: ["Fabrication", "Fear-mongering"],
+  villain: "The_Biost",
+  newsImage: "biost_water-fountain.webp",
+};
+
+const Tool = ({ showResults, currentInfluencer: propInfluencer }: ToolProps) => {
+  const currentInfluencer = propInfluencer ?? mockInfluencer;
 
   return (
     <div className="tool__container">
@@ -27,13 +40,7 @@ const Tool = ({ showResults }: ToolProps) => {
           }}
         />
       </div>
-      <div
-        style={{
-          position: "absolute",
-          top: "30px",
-          left: "-22%",
-        }}
-      >
+      <div className="tool-newscard">
         <div className="sliding-background">
           <NewsCard
             name={currentInfluencer?.caption}
@@ -58,15 +65,7 @@ const Tool = ({ showResults }: ToolProps) => {
         alt="tool swiper"
       />
 
-      <div
-        style={{
-          position: "absolute",
-          width: "150px",
-          top: "102px",
-          right: "52px",
-          zIndex: 5,
-        }}
-      >
+      <div className="tool-result">
         {!showResults ? (
           <img
             src={"/images/tool/answers/reading.webp"}
@@ -106,7 +105,7 @@ const Tool = ({ showResults }: ToolProps) => {
                             transform: translateX(0);
                         }
                         100% {
-                            transform: translateX(100%);
+                            transform: translateX(705px);
                         }
                     }
 
