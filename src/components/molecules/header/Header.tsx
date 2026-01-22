@@ -1,10 +1,18 @@
 import { useNavigate } from "react-router-dom";
 
-const Header = () => {
+interface HeaderProps {
+  showPlayButton?: boolean;
+}
+
+const Header = ({ showPlayButton = false }: HeaderProps) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const handlePlayGame = () => {
+    navigate("/character-creation");
   };
 
   return (
@@ -17,6 +25,16 @@ const Header = () => {
         />
         Back
       </button>
+      {showPlayButton && (
+        <button className="header-button header-button-play" onClick={handlePlayGame}>
+          Play Game
+          <img
+            src="/images/buttons/play-game.webp"
+            alt="Play Game"
+            className="header-button-image header-button-image-right"
+          />
+        </button>
+      )}
     </header>
   );
 };

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import AvatarImage from "@/components/atoms/avatarImage/AvatarImage";
@@ -6,6 +7,12 @@ import NextButton from "@/components/atoms/button/Button";
 const PlayerSelection = () => {
   const navigate = useNavigate();
   const { avatar, setAvatar } = useGlobalContext();
+
+  // Reset avatar selection when page loads
+  useEffect(() => {
+    setAvatar("");
+    localStorage.removeItem("avatarImage");
+  }, [setAvatar]);
 
   const avatars = [
     `/images/avatars/avatar1.webp`,

@@ -8,7 +8,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const Carousel = ({ slides }: CarouselProps) => {
+interface ExtendedCarouselProps extends CarouselProps {
+  onSlideChange?: (isEnd: boolean) => void;
+}
+
+const Carousel = ({ slides, onSlideChange }: ExtendedCarouselProps) => {
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
@@ -16,6 +20,7 @@ const Carousel = ({ slides }: CarouselProps) => {
   const handleSlideChange = (swiper: SwiperType) => {
     setIsBeginning(swiper.isBeginning);
     setIsEnd(swiper.isEnd);
+    onSlideChange?.(swiper.isEnd);
   };
 
   return (

@@ -90,22 +90,20 @@
   align-items: center;
   justify-content: center;
   margin-bottom: var(--spacing-3xl);
-  
+
   @media (max-width: 1024px) {
     margin-bottom: var(--spacing-md);
   }
-  
+
   @media (max-width: 768px) {
     margin-bottom: var(--spacing-xs);
   }
-  
+
   @media (max-width: 480px) {
     margin-bottom: clamp(2px, 0.5vh, 4px);
   }
-  
-  @media (max-height: 600px) {
-    margin-bottom: clamp(16px, 0.3vh, 32px);
 
-    
+  @media (max-height: 600px) {
+    margin-bottom: var(--spacing-xl);
   }
 }

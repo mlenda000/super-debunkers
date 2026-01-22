@@ -3,23 +3,23 @@
   top: 7px;
   left: 0;
   width: 30px;
-  height: 500px;
+  height: 400px;
   animation: slide-in 4.5s ease-out forwards;
   z-index: 3;
 }
 
 .tool__container {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   @media (max-width: 1028px) {
-    margin-top: -5px;
-    margin-left: 80px;
+    margin: 0 auto;
   }
   @media (max-width: 480px) {
-    margin-top: -18px;
-    margin-left: -180px;
-    max-width: 80%;
-    max-height: 210px;
+    margin: 0 auto;
+    max-width: 100%;
   }
   .influencer-card {
     @media (max-width: 768px) {
@@ -64,8 +64,8 @@
   content: "";
   position: absolute;
   top: 0;
-  left: 190px;
-  width: 450px;
+  left: 0;
+  width: 100%;
   height: 100%;
   background: rgba(255, 0, 0, 0.5); /* Red background with transparency */
   animation: slideBackground 4.5s ease-out forwards;
@@ -81,19 +81,79 @@
     margin-left: 10px;
   }
 }
+.tool-newscard {
+  position: absolute;
+  top: 30px;
+  left: 3%;
+
+  @media (max-width: 1200px) {
+    top: 26px;
+    left: 3%;
+  }
+
+  @media (max-width: 1028px) {
+    top: 21px;
+    left: 1%;
+  }
+
+  @media (max-width: 768px) {
+    top: 16px;
+    left: 0%;
+  }
+
+  @media (max-width: 480px) {
+    top: 12px;
+    left: -1%;
+  }
+}
+
+.tool-result {
+  position: absolute;
+  width: 150px;
+  top: 102px;
+  right: 48px;
+  z-index: 5;
+
+  @media (max-width: 1200px) {
+    width: 128px;
+    top: 87px;
+    right: 41px;
+  }
+
+  @media (max-width: 1028px) {
+    width: 105px;
+    top: 71px;
+    right: 34px;
+  }
+
+  @media (max-width: 768px) {
+    width: 83px;
+    top: 56px;
+    right: 26px;
+  }
+
+  @media (max-width: 480px) {
+    width: 60px;
+    top: 41px;
+    right: 19px;
+  }
+}
+
 .tool-image {
-  width: 755px;
+  width: 1000px;
   height: auto;
 
   @media (max-width: 1200px) {
+    width: 850px;
   }
   @media (max-width: 1028px) {
-    width: 660px;
-    height: auto;
+    width: 700px;
   }
   @media (max-width: 768px) {
-    width: 450px;
-    height: auto;
+    width: 550px;
+  }
+  @media (max-width: 480px) {
+    width: 400px;
   }
 }
 
@@ -113,102 +173,102 @@
     transform: translateX(0);
   }
   to {
-    transform: translateX(450px);
+    transform: translateX(705px);
   }
 }
 
 @media (max-width: 1200px) {
   .tool-swiper {
-    width: 25px;
-    height: 400px;
+    width: 26px;
+    height: 340px;
   }
 
   .sliding-background::before {
-    left: 150px;
-    width: 400px;
+    left: 0;
+    width: 100%;
   }
 
   @keyframes slide-in {
     to {
-      transform: translateX(400px);
+      transform: translateX(600px);
     }
   }
 
   @keyframes slide-in-after {
     to {
-      transform: translateX(400px);
+      transform: translateX(600px);
     }
   }
 }
 
 @media (max-width: 1028px) {
   .tool-swiper {
-    width: 20px;
-    height: 350px;
+    width: 22px;
+    height: 280px;
   }
 
   .sliding-background::before {
-    left: 120px;
-    width: 350px;
+    left: 0;
+    width: 100%;
   }
 
   @keyframes slide-in {
     to {
-      transform: translateX(350px);
+      transform: translateX(494px);
     }
   }
 
   @keyframes slide-in-after {
     to {
-      transform: translateX(350px);
+      transform: translateX(494px);
     }
   }
 }
 
 @media (max-width: 768px) {
   .tool-swiper {
-    width: 15px;
-    height: 300px;
+    width: 17px;
+    height: 220px;
   }
 
   .sliding-background::before {
-    left: 100px;
-    width: 300px;
+    left: 0;
+    width: 100%;
   }
 
   @keyframes slide-in {
     to {
-      transform: translateX(300px);
+      transform: translateX(388px);
     }
   }
 
   @keyframes slide-in-after {
     to {
-      transform: translateX(300px);
+      transform: translateX(388px);
     }
   }
 }
 
 @media (max-width: 480px) {
   .tool-swiper {
-    width: 10px;
-    height: 250px;
+    width: 12px;
+    height: 160px;
   }
 
   .sliding-background::before {
-    left: 80px;
-    width: 250px;
+    left: 0;
+    width: 100%;
   }
 
   @keyframes slide-in {
     to {
-      transform: translateX(250px);
+      transform: translateX(282px);
     }
   }
 
   @keyframes slide-in-after {
     to {
-      transform: translateX(250px);
+      transform: translateX(282px);
     }
   }
 }
