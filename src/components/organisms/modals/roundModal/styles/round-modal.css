@@ -1,0 +1,48 @@
+.round-modal__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.round-modal__content {
+  display: flex;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-family: "subway-berlin-ot", sans-serif;
+  font-size: 74px;
+  -webkit-text-stroke: black 3px;
+}
+
+.round-modal__button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+}
+.round-modal__title {
+  font-size: 74px;
+
+  @media (max-width: 1200px) {
+    -webkit-text-stroke: black 1.5px;
+  }
+
+  @media (max-width: 1024px) {
+    -webkit-text-stroke: black 1.3px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 72px;
+    -webkit-text-stroke: 1px black;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 70px;
+    -webkit-text-stroke: 1px black;
+  }
+}
