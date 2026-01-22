@@ -30,6 +30,8 @@ const GamePage = () => {
         }
         roundHasEnded={roundHasEnded}
         setRoundHasEnded={setRoundHasEnded}
+        isInfoModalOpen={isInfoModalOpen}
+        setIsInfoModalOpen={setIsInfoModalOpen}
       />
       {roundStart && <RoundModal />}
       {roundEnd && (

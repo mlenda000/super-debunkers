@@ -22,12 +22,16 @@ interface GameTableProps {
   setRoundEnd: (val: boolean) => void;
   roundHasEnded: boolean;
   setRoundHasEnded: (val: boolean) => void;
+  isInfoModalOpen: boolean;
+  setIsInfoModalOpen: (val: boolean) => void;
 }
 
 const GameTable: React.FC<GameTableProps> = ({
   setRoundEnd,
   //   roundHasEnded,
   setRoundHasEnded,
+  isInfoModalOpen,
+  setIsInfoModalOpen,
 }) => {
   const { playerName } = useGlobalContext();
   const { gameRoom, gameRound, activeNewsCard, setActiveNewsCard } =
@@ -170,7 +174,10 @@ const GameTable: React.FC<GameTableProps> = ({
         onKeyDown={handleKeyDown}
       >
         <div className="scoreboard-section">
-          <Scoreboard />{" "}
+          <Scoreboard
+            isInfoModalOpen={isInfoModalOpen}
+            setIsInfoModalOpen={setIsInfoModalOpen}
+          />{" "}
         </div>
 
         {/* Mobile navigation button */}
