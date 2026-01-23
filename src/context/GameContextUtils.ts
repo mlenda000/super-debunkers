@@ -70,7 +70,27 @@ export function handleGameMessage(
         setters.setCustomState({ villain: message.villain as string });
       break;
     case "playerReady":
-      if (setters.setPlayers) setters.setPlayers(message.roomData as Player[]);
+      // Support payload shapes:
+      // - { players: Player[] }
+      // - { roomData: { players: Player[] } }
+      // - { roomData: Player[] } (server broadcasts array directly)
+      if (setters.setPlayers) {
+        let playersFromMsg: Player[] | undefined;
+        const msgAny = message as any;
+        if (Array.isArray(msgAny.players)) {
+          playersFromMsg = msgAny.players as Player[];
+        } else if (
+          msgAny.roomData &&
+          Array.isArray((msgAny.roomData as RoomData)?.players)
+        ) {
+          playersFromMsg = (msgAny.roomData as RoomData).players as Player[];
+        } else if (Array.isArray(msgAny.roomData)) {
+          playersFromMsg = msgAny.roomData as Player[];
+        }
+        if (playersFromMsg) {
+          setters.setPlayers(playersFromMsg);
+        }
+      }
       break;
     case "allReady":
       if (setters.setCustomState)

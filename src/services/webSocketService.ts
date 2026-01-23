@@ -1,281 +1,241 @@
 import PartySocket from "partysocket";
+import type {
+  MessageType,
+  WebSocketMessage,
+  MessageHandler,
+} from "@/types/serverTypes";
 import { PARTYKIT_HOST } from "./env";
-import { handleGameMessage } from "@/context/GameContextUtils";
-import type { GameContextType } from "@/types/gameTypes";
 
-let wsInstance: PartySocket | null = null;
-let messageListeners: Array<(message: Record<string, unknown>) => void> = [];
-let connectionPromise: Promise<void> | null = null;
-let contextSetters: Partial<GameContextType> | null = null;
-let messageBuffer: Record<string, unknown>[] = [];
-const lastRegisteredSetters: Partial<GameContextType> | null = null;
-let currentRoomId: string | null = null;
+class WebSocketService {
+  private host: string;
+  private partyName: string;
+  private socket: PartySocket | null = null;
+  private userId: string | null = null;
+  private currentRoom: string | null = null;
+  private messageHandlers: Map<MessageType, MessageHandler[]> = new Map();
+  private isConnected: boolean = false;
 
-/**
- * Get current contextSetters status (for debugging)
- */
-export const getContextSettersStatus = () => {
-  return contextSetters !== null;
-};
-
-/**
- * Register GameContext setters for use in WebSocket message handling
- */
-export const registerGameContextSetters = (
-  setters: Partial<GameContextType>
-) => {
-  contextSetters = setters;
-  // Process any buffered messages
-  if (messageBuffer.length > 0) {
-    messageBuffer.forEach((msg) => {
-      console.log("[WebSocket] Processing buffered message:", msg.type);
-      handleGameMessage(msg, contextSetters!);
-    });
-    messageBuffer = [];
-  } else {
-    console.log("[WebSocket] No buffered messages to process");
-  }
-};
-
-export const initializeWebSocket = (
-  roomId: string = "lobby"
-): Promise<PartySocket> => {
-  // Recover setters after HMR or if cleared
-  if (!contextSetters && lastRegisteredSetters) {
-    contextSetters = lastRegisteredSetters;
+  constructor(host: string, partyName: string = "main") {
+    this.host = host;
+    this.partyName = partyName;
   }
 
-  // If already connected to the same room, return existing instance
-  if (
-    wsInstance &&
-    wsInstance.readyState === wsInstance.OPEN &&
-    currentRoomId === roomId
-  ) {
-    return Promise.resolve(wsInstance);
+  // Connect or reconnect options
+  private buildSocketOptions(room: string, token?: string) {
+    const query = token ? { token } : undefined;
+    return {
+      host: this.host,
+      party: this.partyName,
+      room,
+      id: this.userId || undefined,
+      query,
+    } as const;
   }
 
-  // If switching rooms, close the existing connection
-  if (wsInstance && currentRoomId !== roomId) {
-    const oldInstance = wsInstance;
-    wsInstance = null;
-    connectionPromise = null;
-    currentRoomId = null;
-    // Close the old connection after clearing references
-    oldInstance.close();
+  // Generate unique user ID
+  private generateUserId(): string {
+    return `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  // If already connecting, wait for that connection
-  if (connectionPromise && wsInstance) {
-    return connectionPromise.then(() => wsInstance!);
-  }
-
-  currentRoomId = roomId;
-  wsInstance = new PartySocket({
-    host: PARTYKIT_HOST,
-    room: roomId,
-  });
-
-  connectionPromise = new Promise<void>((resolve, reject) => {
-    const onOpen = () => {
-      console.log("Connected to the WebSocket server");
-      wsInstance?.removeEventListener("open", onOpen);
-      wsInstance?.removeEventListener("error", onError);
-      resolve();
-    };
-
-    const onError = (error: Event) => {
-      console.error("WebSocket connection error:", error);
-      wsInstance?.removeEventListener("open", onOpen);
-      wsInstance?.removeEventListener("error", onError);
-      reject(error);
-    };
-
-    wsInstance!.addEventListener("open", onOpen);
-    wsInstance!.addEventListener("error", onError);
-  });
-
-  wsInstance.addEventListener("message", (event: MessageEvent) => {
-    const message = event.data;
-    if (message && typeof message === "string") {
+  // Initialize connection
+  connect(
+    options: { room?: string; token?: string; party?: string } = {}
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
       try {
-        const parsedMessage = JSON.parse(message);
-        if (contextSetters) {
-          console.log(
-            `[WebSocket] Calling handleGameMessage with type:`,
-            parsedMessage.type
-          );
-          handleGameMessage(parsedMessage, contextSetters);
-        } else {
-          console.warn(
-            "contextSetters is null when message received! Buffering message."
-          );
-          messageBuffer.push(parsedMessage);
-        }
-        messageListeners.forEach((listener) => listener(parsedMessage));
-      } catch (error) {
-        console.error("Error parsing message:", error);
-      }
-    }
-  });
+        this.userId = this.generateUserId();
 
-  wsInstance.addEventListener("close", (event: CloseEvent) => {
-    // Ignore closes from stale sockets (e.g., previous room connections)
-    if (event.target !== wsInstance) {
-      console.log(
-        `[WebSocket] Ignoring close from stale socket code=${event.code} reason=${event.reason}`
-      );
+        if (options.party) {
+          this.partyName = options.party;
+        }
+
+        const room = options.room ?? "lobby";
+
+        this.socket = new PartySocket(
+          this.buildSocketOptions(room, options.token)
+        );
+
+        this.currentRoom = room;
+
+        this.socket.addEventListener("open", () => {
+          this.isConnected = true;
+          console.log("Connected to WebSocket");
+          resolve(this.userId!);
+        });
+
+        this.socket.addEventListener("message", (event) => {
+          this.handleMessage(event.data);
+        });
+
+        this.socket.addEventListener("close", () => {
+          this.isConnected = false;
+          console.log("Disconnected from WebSocket");
+        });
+
+        this.socket.addEventListener("error", (error) => {
+          console.error("WebSocket error:", error);
+          reject(error);
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  // Handle incoming messages
+  private handleMessage(data: string): void {
+    try {
+      const message: WebSocketMessage = JSON.parse(data);
+      const handlers = this.messageHandlers.get(message.type);
+
+      if (handlers) {
+        handlers.forEach((handler) => handler(message));
+      }
+    } catch (error) {
+      console.error("Error parsing message:", error);
+    }
+  }
+
+  // Subscribe to specific message types
+  on(messageType: MessageType, handler: MessageHandler): () => void {
+    if (!this.messageHandlers.has(messageType)) {
+      this.messageHandlers.set(messageType, []);
+    }
+    this.messageHandlers.get(messageType)!.push(handler);
+
+    // Return unsubscribe function
+    return () => {
+      const handlers = this.messageHandlers.get(messageType);
+      if (handlers) {
+        const index = handlers.indexOf(handler);
+        if (index > -1) {
+          handlers.splice(index, 1);
+        }
+      }
+    };
+  }
+
+  // Subscribe to all raw messages (used by UI to react to server updates)
+  subscribeToMessages(
+    handler: (message: WebSocketMessage) => void
+  ): () => void {
+    const socket = this.socket;
+
+    if (!socket) {
+      return () => {};
+    }
+
+    const listener = (event: MessageEvent) => {
+      try {
+        const parsed = JSON.parse(event.data as string);
+        handler(parsed);
+      } catch (error) {
+        console.error("Error parsing message in subscribeToMessages", error);
+      }
+    };
+
+    socket.addEventListener("message", listener);
+
+    return () => {
+      socket.removeEventListener("message", listener);
+    };
+  }
+
+  // Switch from lobby to game room using updateProperties + reconnect
+  async switchToRoom(options: {
+    roomId: string;
+    party?: string;
+    token?: string;
+  }): Promise<void> {
+    const { roomId, party, token } = options;
+
+    if (!this.socket) {
+      // If no socket exists yet, establish a connection first
+      await this.connect({ room: roomId, party, token });
       return;
     }
-    connectionPromise = null;
-    wsInstance = null;
-    // keep contextSetters so they survive reconnects / HMR
-    currentRoomId = null;
-  });
 
-  wsInstance.addEventListener("error", (error: Event) => {
-    console.error("WebSocket error:", error);
-  });
-
-  return connectionPromise.then(() => wsInstance!);
-};
-
-/**
- * Get current WebSocket instance
- */
-export const getWebSocketInstance = (): PartySocket | null => {
-  return wsInstance;
-};
-
-/**
- * Send a message through the WebSocket
- * Waits for connection if currently connecting
- */
-export const sendWebSocketMessage = async (
-  message: Record<string, unknown>
-): Promise<void> => {
-  // If connection is in progress, wait for it
-  if (
-    connectionPromise &&
-    wsInstance &&
-    wsInstance.readyState !== wsInstance.OPEN
-  ) {
-    await connectionPromise;
-  }
-
-  if (!wsInstance || wsInstance.readyState !== wsInstance.OPEN) {
-    console.error("WebSocket connection is not open. Cannot send message.");
-    return;
-  }
-
-  wsInstance.send(JSON.stringify(message));
-};
-
-/**
- * Subscribe to incoming WebSocket messages
- */
-export const subscribeToMessages = (
-  callback: (message: Record<string, unknown>) => void
-): (() => void) => {
-  messageListeners.push(callback);
-
-  // Return unsubscribe function
-  return () => {
-    messageListeners = messageListeners.filter(
-      (listener) => listener !== callback
-    );
-  };
-};
-
-/**
- * Validate existing playerId with server or request a new one
- * Waits for connection to be open before sending
- * Saves playerId to localStorage automatically
- */
-export const requestPlayerId = async (): Promise<() => void> => {
-  // Wait for connection to be ready
-  await initializeWebSocket();
-
-  const existingPlayerId = localStorage.getItem("playerId");
-  console.log("Existing playerId from localStorage:", existingPlayerId);
-
-  // Subscribe BEFORE sending so we don't miss the response
-  const unsubscribe = subscribeToMessages((message) => {
-    console.log("Checking message for playerId:", message);
-
-    // Handle new playerId response
-    if (
-      message.type === "playerId" &&
-      message.id &&
-      typeof message.id === "string"
-    ) {
-      console.log("Received playerId:", message.id);
-      localStorage.setItem("playerId", message.id);
+    if (party) {
+      this.partyName = party;
     }
 
-    // Handle validation response
-    if (message.type === "playerIdValid" && message.valid === true) {
-      console.log("Existing playerId is valid");
-    }
+    const query = token ? { token } : undefined;
 
-    if (message.type === "playerIdInvalid" || message.valid === false) {
-      console.log("Existing playerId is invalid, requesting new one");
-      localStorage.removeItem("playerId");
-      sendWebSocketMessage({ type: "getPlayerId" });
-    }
-  });
-
-  if (existingPlayerId) {
-    console.log("Validating existing playerId:", existingPlayerId);
-    sendWebSocketMessage({
-      type: "validatePlayerId",
-      playerId: existingPlayerId,
+    this.socket.updateProperties({
+      room: roomId,
+      party: this.partyName,
+      query,
     });
-  } else {
-    console.log("Sending getPlayerId request...");
-    sendWebSocketMessage({ type: "getPlayerId" });
+    this.socket.reconnect();
+    this.currentRoom = roomId;
   }
 
-  return unsubscribe;
-};
-
-/**
- * Send player enters room message
- */
-export const sendPlayerEnters = (
-  room: string,
-  player: { name: string; avatar: string; room: string }
-): void => {
-  sendWebSocketMessage({
-    type: "playerEnters",
-    room,
-    player,
-  });
-};
-
-/**
- * Send entered lobby message
- */
-export const sendEnteredLobby = (
-  room: string | undefined,
-  avatar: string,
-  name: string
-): void => {
-  sendWebSocketMessage({
-    type: "enteredLobby",
-    room,
-    avatar,
-    name,
-  });
-};
-
-/**
- * Close WebSocket connection
- */
-export const closeWebSocket = (): void => {
-  if (wsInstance) {
-    wsInstance.close();
-    wsInstance = null;
-    messageListeners = [];
-    currentRoomId = null;
+  // Return to lobby
+  returnToLobby(): void {
+    this.switchToRoom({ roomId: "lobby" });
+    this.currentRoom = null;
   }
+
+  // Get connection status
+  getConnectionStatus(): boolean {
+    return this.isConnected && this.socket?.readyState === PartySocket.OPEN;
+  }
+
+  // Get user ID
+  getUserId(): string | null {
+    return this.userId;
+  }
+
+  // Get current room
+  getCurrentRoom(): string | null {
+    return this.currentRoom;
+  }
+
+  // Disconnect
+  disconnect(): void {
+    if (this.socket) {
+      this.socket.close();
+      this.socket = null;
+    }
+    this.messageHandlers.clear();
+    this.isConnected = false;
+  }
+
+  // Get socket instance for utils
+  getSocket(): PartySocket | null {
+    return this.socket;
+  }
+}
+
+export default WebSocketService;
+
+// --- Singleton helpers for app-wide usage ---
+const defaultService = new WebSocketService(PARTYKIT_HOST, "game");
+
+export const initializeWebSocket = (
+  roomOrOptions:
+    | string
+    | { room?: string; token?: string; party?: string } = "lobby"
+): Promise<string> => {
+  const opts =
+    typeof roomOrOptions === "string" ? { room: roomOrOptions } : roomOrOptions;
+  return defaultService.connect(opts);
+};
+
+export const subscribeToMessages = (
+  handler: (message: WebSocketMessage) => void
+): (() => void) => {
+  return defaultService.subscribeToMessages(handler);
+};
+
+export const switchRoom = async (options: {
+  roomId: string;
+  party?: string;
+  token?: string;
+}): Promise<void> => {
+  await defaultService.switchToRoom(options);
+};
+
+export const getWebSocketInstance = (): PartySocket | null => {
+  return defaultService.getSocket();
 };

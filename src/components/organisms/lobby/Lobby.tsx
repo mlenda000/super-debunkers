@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  sendPlayerEnters,
-  sendEnteredLobby,
   initializeWebSocket,
   subscribeToMessages,
+  switchRoom,
+  getWebSocketInstance,
 } from "@/services/webSocketService";
+import { sendEnteredLobby, sendPlayerEnters } from "@/utils/gameMessageUtils";
 
 import RoomTab from "@/components/atoms/roomTab/RoomTab";
 
@@ -25,7 +26,8 @@ const Lobby = ({ rooms }: { rooms: string[] }) => {
     if (room === "Create room") {
       navigate("/game/create-room");
     } else {
-      await initializeWebSocket(room);
+      const token = localStorage.getItem("authToken") || undefined;
+      await switchRoom({ party: "game", roomId: room, token });
       // Subscribe to room updates and wait for confirmation
       const unsubscribe = subscribeToMessages((message) => {
         if (message.type === "roomUpdate" && message.room === room) {
@@ -35,7 +37,8 @@ const Lobby = ({ rooms }: { rooms: string[] }) => {
         }
       });
 
-      sendPlayerEnters(room, { name, avatar: avatarName, room });
+      const socket = getWebSocketInstance();
+      sendPlayerEnters(socket, { name, avatar: avatarName, room }, room);
 
       // Fallback: navigate after 2 seconds if no confirmation received
       setTimeout(() => {
@@ -52,7 +55,8 @@ const Lobby = ({ rooms }: { rooms: string[] }) => {
         ? avatar.substring(avatar.lastIndexOf("/") + 1)
         : "";
       await initializeWebSocket("lobby");
-      sendEnteredLobby("lobby", avatarName, playerName || "");
+      const socket = getWebSocketInstance();
+      sendEnteredLobby(socket, "lobby", avatarName, playerName || "");
     };
     sendLobbyMessage();
   }, [avatar, playerName]);

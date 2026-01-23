@@ -11,8 +11,8 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { sendWebSocketMessage } from "@/services/webSocketService";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
+import { sendEndOfRound } from "@/utils/gameMessageUtils";
 import MainTable from "../mainTable/MainTable";
 import PlayersHand from "@/components/organisms/playersHand/PlayersHand";
 import categoryCards from "@/data/tacticsCards.json";
@@ -129,7 +129,7 @@ const GameTable: React.FC<GameTableProps> = ({
     Array.isArray(gameRoom?.roomData) &&
     gameRoom.roomData.length > 0 &&
     gameRoom.roomData.every(
-      (player) => player?.status === true && player?.tacticUsed?.length > 0
+      (player) => player?.isReady === true && player?.tacticUsed?.length > 0
     );
 
   useEffect(() => {
@@ -143,11 +143,7 @@ const GameTable: React.FC<GameTableProps> = ({
 
       const player = players.find((p: Player) => p.name === playerName);
       console.log("Player in handleFinishRound after firing from conditional");
-      sendWebSocketMessage({
-        type: "endOfRound",
-        players: [player],
-        round: gameRound,
-      });
+      sendEndOfRound([player], gameRound ?? 0);
       setRoundEnd(true);
       setSubmitForScoring(true);
       setRoundHasEnded(false);

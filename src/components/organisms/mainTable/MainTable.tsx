@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
-import { sendWebSocketMessage } from "@/services/webSocketService";
+import {
+  sendInfluencerReady,
+  sendPlayerNotReady,
+  sendPlayerReady,
+} from "@/utils/gameMessageUtils";
 import type {
   MainTableProps,
   ThemeStyle,
@@ -118,21 +122,42 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
 
     // Ensure villain is ThemeStyle (cast for type safety after NewsCardType update)
     setThemeStyle((currentInfluencer?.villain as ThemeStyle) || "all");
-    const messageRdyInfluencer = {
-      type: "influencer",
-      villain: currentInfluencer?.villain as ThemeStyle,
-      tactic: Array.isArray(currentInfluencer?.tacticUsed)
-        ? currentInfluencer?.tacticUsed
-        : [currentInfluencer?.tacticUsed],
-    };
-    sendWebSocketMessage(messageRdyInfluencer);
+    const tactic = Array.isArray(currentInfluencer?.tacticUsed)
+      ? currentInfluencer?.tacticUsed
+      : [currentInfluencer?.tacticUsed];
+    sendInfluencerReady(
+      currentInfluencer?.villain as ThemeStyle,
+      tactic as string[]
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentInfluencer]);
 
   const handlePlayerReady = () => {
-    const name = playerName || currentPlayer || localStorage.getItem("playerName") || "";
+    // Prevent duplicate sends if already marked ready or if no cards placed
+    if (playerReady || !finishRound) {
+      return;
+    }
+    const name =
+      playerName || localStorage.getItem("playerName") || currentPlayer || "";
     const updatedPlayers = (gameRoom?.roomData?.players || []).map((p) =>
       p?.name === name ? { ...p, isReady: true } : p
+    );
+
+    console.log("Updated players after ready:", updatedPlayers);
+
+    // Determine playerId; prefer context `currentPlayer` (server-issued id), fallback to matched player's id
+    const matched = (gameRoom?.roomData?.players || []).find(
+      (p) => p?.name === name
+    );
+    const playerId = currentPlayer || matched?.id || name;
+
+    // Send a single, well-formed playerReady message expected by server
+    // Include `players` so the server can merge states safely
+    sendPlayerReady(
+      gameRoom?.room ?? "lobby",
+      playerId,
+      true,
+      updatedPlayers as unknown as import("@/types/gameTypes").Player[]
     );
 
     // Optimistically update local context so Scoreboard reflects ready state
@@ -145,12 +170,6 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
       },
     });
 
-    sendWebSocketMessage({
-      type: "playerReady",
-      room: gameRoom?.room,
-      player: name,
-      players: updatedPlayers,
-    });
     setPlayerReady(true);
   };
 
@@ -169,10 +188,7 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
         console.log("No cards left on the table");
         setPlayerReady(false);
         setFinishRound(false);
-        sendWebSocketMessage({
-          type: "playerNotReady",
-          players: gameRoom?.roomData,
-        });
+        sendPlayerNotReady(gameRoom?.roomData);
       }
     }
   };
@@ -217,7 +233,13 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
             type="button"
             onClick={handlePlayerReady}
             className="main-table__finish-round"
-            aria-label={playerReady ? "Ready" : finishRound ? "Mark ready" : "Place a card to get ready"}
+            aria-label={
+              playerReady
+                ? "Ready"
+                : finishRound
+                  ? "Mark ready"
+                  : "Place a card to get ready"
+            }
           >
             <img
               src={

@@ -9,9 +9,9 @@ import type {
 } from "@/types/types";
 import {
   initializeWebSocket,
-  sendWebSocketMessage,
   subscribeToMessages,
 } from "@/services/webSocketService";
+import { sendGetPlayerId } from "@/utils/gameMessageUtils";
 
 const PLAYER_ID_EXPIRY_HOURS = 24;
 
@@ -84,7 +84,7 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
       localStorage.removeItem("playerId");
       localStorage.removeItem("playerIdTimestamp");
 
-      sendWebSocketMessage({ type: "getPlayerId" });
+      sendGetPlayerId();
     };
 
     fetchPlayerId();
