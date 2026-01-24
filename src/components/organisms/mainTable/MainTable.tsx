@@ -197,15 +197,6 @@ const MainTable: React.FC<
       (tactic) => !expectedTactics.includes(tactic)
     );
 
-    console.log("🎯 TACTIC COMPARISON:", {
-      "Your tactics": tacticIds,
-      "NewsCard expects": expectedTactics,
-      "✅ Correct matches": matches,
-      "❌ Wrong choices": mismatches,
-      "Score preview":
-        matches.length > 0 ? "+100" : mismatches.length > 0 ? "-50" : "0",
-    });
-
     const updatedPlayers = (gameRoom?.roomData?.players || []).map((p) =>
       p?.name === name ? { ...p, isReady: true, tacticUsed: tacticIds } : p
     );

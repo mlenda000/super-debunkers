@@ -32,15 +32,6 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   const gameRoom = ctxGameRoom || propGameRoom;
   const gameRound = ctxGameRound || propGameRound;
 
-  // Debug logging
-  useEffect(() => {
-    console.log("[Scoreboard] gameRoom data:", {
-      gameRoom,
-      players: gameRoom?.roomData?.players,
-      playerCount: gameRoom?.roomData?.players?.length,
-    });
-  }, [gameRoom?.roomData?.players]);
-
   const goHome = () => {
     setThemeStyle("all");
     navigate("/");

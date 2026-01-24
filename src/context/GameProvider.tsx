@@ -25,6 +25,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   });
   const [messages, setMessages] = useState<Message[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
+  const [lastScoreUpdatePlayers, setLastScoreUpdatePlayers] = useState<
+    Player[] | undefined
+  >(undefined);
   const [tacticCards, setTacticCards] = useState<
     TacticCardProps[] | undefined
   >();
@@ -54,6 +57,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       value={{
         players: memoPlayers,
         setPlayers,
+        lastScoreUpdatePlayers,
+        setLastScoreUpdatePlayers,
         currentPlayer: memoCurrentPlayer,
         setCurrentPlayer,
         gameRoom: memoGameRoom,

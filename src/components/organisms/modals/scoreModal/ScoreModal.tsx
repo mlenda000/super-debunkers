@@ -14,8 +14,14 @@ const ScoreModal = ({
   setShowRoundModal,
   setShowScoreCard,
 }: ScoreModalProps) => {
-  const { gameRoom, setGameRound, gameRound, activeNewsCard } =
-    useGameContext();
+  const {
+    gameRoom,
+    setGameRound,
+    gameRound,
+    activeNewsCard,
+    players,
+    lastScoreUpdatePlayers,
+  } = useGameContext();
   const { setThemeStyle } = useGlobalContext();
 
   const handleDeal = useCallback(() => {
@@ -58,7 +64,12 @@ const ScoreModal = ({
     return () => clearTimeout(timer);
   }, [handleDeal]);
 
-  const players = (gameRoom?.roomData?.players || []) as Player[];
+  const sourcePlayers: Player[] =
+    lastScoreUpdatePlayers && lastScoreUpdatePlayers.length > 0
+      ? (lastScoreUpdatePlayers as Player[])
+      : gameRoom?.roomData?.players && gameRoom.roomData.players.length > 0
+        ? (gameRoom.roomData.players as Player[])
+        : (players as Player[]);
 
   return (
     <div className="round-modal__overlay" style={{ zIndex: 100 }}>
@@ -74,7 +85,7 @@ const ScoreModal = ({
             <div>Rank</div>
             <div>Followers</div>
           </h1>
-          {players
+          {sourcePlayers
             .sort((a: Player, b: Player) => (b?.score ?? 0) - (a?.score ?? 0))
             .map((player: Player, index: number) => (
               <div className="score-modal__players" key={player?.name ?? index}>

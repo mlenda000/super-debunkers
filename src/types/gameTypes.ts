@@ -36,6 +36,14 @@ export interface Player {
   score?: number;
   isReady?: boolean;
   tacticUsed?: string[];
+  // Scoring-related fields sent by server
+  wasCorrect?: boolean;
+  streak?: number;
+  hasStreak?: boolean;
+  scoreUpdated?: boolean;
+  streakUpdated?: boolean;
+  status?: boolean;
+  room?: string;
 }
 
 export interface PlayersHandProps {
@@ -89,6 +97,8 @@ export interface GameRoom {
 export type GameContextType = {
   players: Player[];
   setPlayers: (players: Player[]) => void;
+  lastScoreUpdatePlayers?: Player[];
+  setLastScoreUpdatePlayers?: (players: Player[] | undefined) => void;
   currentPlayer: string;
   setCurrentPlayer: (id: string) => void;
   gameRoom: GameRoom;

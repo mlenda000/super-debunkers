@@ -47,7 +47,8 @@ const GameTable: React.FC<GameTableProps> = ({
     .filter((card) => card.image)
     .map((card, idx) => ({
       ...card,
-      id: card.category ?? idx + 1,
+      category: card.tactic ?? "", // Map tactic to category for compatibility
+      id: card.tactic ?? String(idx + 1),
       alt: card.imageAlt ?? card.title ?? "Card image",
     }));
   const [mainTableItems, setMainTableItems] = useState<typeof playersHand>([]);
@@ -159,7 +160,6 @@ const GameTable: React.FC<GameTableProps> = ({
 
   useEffect(() => {
     if (allPlayersReady && !submitForScoring) {
-      console.log("✅ All players ready - starting endOfRound");
       setRoundHasEnded(true);
       const players = gameRoom.roomData.players;
 
@@ -251,7 +251,6 @@ const GameTable: React.FC<GameTableProps> = ({
                   originalItems={playersHand}
                   setSubmitForScoring={setSubmitForScoring}
                   resetKey={resetKey}
-                  roundEnd={roundEnd}
                   syncCardIndex={gameRoom?.cardIndex}
                 />
               </Droppable>

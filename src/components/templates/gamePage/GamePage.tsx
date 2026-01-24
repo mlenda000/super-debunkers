@@ -19,8 +19,13 @@ import InfoModal from "@/components/organisms/modals/infoModal/InfoModal";
 const GamePage = () => {
   const { room: roomId } = useParams<{ room: string }>();
   const location = useLocation();
-  const { gameRoom, setGameRoom, setPlayers, setIsDeckShuffled } =
-    useGameContext();
+  const {
+    gameRoom,
+    setGameRoom,
+    setPlayers,
+    setIsDeckShuffled,
+    setLastScoreUpdatePlayers,
+  } = useGameContext();
   const hasJoinedRef = useRef(false);
   const setupTimeRef = useRef<number>(0);
 
@@ -92,11 +97,6 @@ const GamePage = () => {
     setupTimeRef.current = Date.now();
 
     const unsubscribe = subscribeToMessages((message) => {
-      // Only log important message types
-      if (message.type === "scoreUpdate" || message.type === "endOfRound") {
-        console.log(`📩 ${message.type}:`, message);
-      }
-
       if (message.type === "roomUpdate" && message.room === roomId) {
         console.log(
           "[GamePage] ✅ Processing roomUpdate - updating context with players:",
@@ -154,6 +154,22 @@ const GamePage = () => {
             roomData: {
               ...prev.roomData,
               players: message.roomData,
+            },
+          }));
+        }
+      }
+
+      if (message.type === "scoreUpdate") {
+        if (message.room === roomId && message.players) {
+          setPlayers?.(message.players);
+          setLastScoreUpdatePlayers?.(message.players);
+
+          // Also update gameRoom context with the scored players
+          setGameRoom?.((prev) => ({
+            ...prev,
+            roomData: {
+              ...prev.roomData,
+              players: message.players,
             },
           }));
         }

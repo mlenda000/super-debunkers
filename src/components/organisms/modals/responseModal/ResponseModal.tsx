@@ -17,13 +17,20 @@ const ResponseModal = ({
   setShowScoreCard,
   setShowResponseModal,
 }: ResponseModalProps) => {
-  const { gameRoom } = useGameContext();
+  const { gameRoom, players, lastScoreUpdatePlayers } = useGameContext();
   const { playerName } = useGlobalContext();
 
   // Find the current player's result from the players array
   const currentPlayerName =
     playerName || localStorage.getItem("playerName") || "";
-  const currentPlayer = gameRoom?.roomData?.players?.find(
+  const sourcePlayers =
+    lastScoreUpdatePlayers && lastScoreUpdatePlayers.length > 0
+      ? lastScoreUpdatePlayers
+      : gameRoom?.roomData?.players && gameRoom.roomData.players.length > 0
+        ? gameRoom.roomData.players
+        : players;
+
+  const currentPlayer = sourcePlayers?.find(
     (p) => p.name === currentPlayerName
   );
 
@@ -33,31 +40,39 @@ const ResponseModal = ({
     hasStreak: currentPlayer?.hasStreak ?? false,
   };
 
+  // Wait until scoring data is available before advancing to score modal
+  const hasScoring = typeof currentPlayer?.wasCorrect !== "undefined";
+
   useEffect(() => {
+    if (!hasScoring) return;
     const timer = setTimeout(() => {
       setShowScoreCard(true);
       setShowResponseModal(false);
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [setShowScoreCard, setShowResponseModal]);
+  }, [hasScoring, setShowScoreCard, setShowResponseModal]);
 
   return (
     <div className="round-modal__overlay" style={{ zIndex: 100 }}>
       <div className="response-modal__content ">
         <h1 className="response-modal__title">
-          {responseMsg?.hasStreak
-            ? "WIN STREAK!"
-            : responseMsg?.wasCorrect
-              ? "DEBUNKED!"
-              : "OOPS!"}
+          {hasScoring
+            ? responseMsg?.hasStreak
+              ? "WIN STREAK!"
+              : responseMsg?.wasCorrect
+                ? "DEBUNKED!"
+                : "OOPS!"
+            : "Processing results…"}
         </h1>
         <h3 className="response-modal__subtitle">
-          {responseMsg?.hasStreak
-            ? `YOU DEBUNKED ${responseMsg?.streak} IN A ROW`
-            : responseMsg?.wasCorrect
-              ? "YOU NAILED IT"
-              : "YOU'LL GET THEM NEXT TIME"}
+          {hasScoring
+            ? responseMsg?.hasStreak
+              ? `YOU DEBUNKED ${responseMsg?.streak} IN A ROW`
+              : responseMsg?.wasCorrect
+                ? "YOU NAILED IT"
+                : "YOU'LL GET THEM NEXT TIME"
+            : "PLEASE WAIT WHILE WE UPDATE YOUR SCORE"}
         </h3>
       </div>
     </div>
