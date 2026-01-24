@@ -4,6 +4,7 @@ import type {
   WebSocketMessage,
   MessageHandler,
 } from "@/types/serverTypes";
+import type { RoomData } from "@/types/gameTypes";
 import { PARTYKIT_HOST } from "./env";
 
 class WebSocketService {
@@ -39,14 +40,14 @@ class WebSocketService {
 
   // Initialize connection
   connect(
-    options: { room?: string; token?: string; party?: string } = {}
+    options: { room?: string; token?: string; roomData?: RoomData } = {}
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       try {
         this.userId = this.generateUserId();
 
-        if (options.party) {
-          this.partyName = options.party;
+        if (options.roomData) {
+          this.partyName = options.roomData.name;
         }
 
         const room = options.room ?? "lobby";
@@ -144,19 +145,19 @@ class WebSocketService {
   // Switch from lobby to game room using updateProperties + reconnect
   async switchToRoom(options: {
     roomId: string;
-    party?: string;
+    roomData?: RoomData;
     token?: string;
   }): Promise<void> {
-    const { roomId, party, token } = options;
+    const { roomId, roomData, token } = options;
 
     if (!this.socket) {
       // If no socket exists yet, establish a connection first
-      await this.connect({ room: roomId, party, token });
+      await this.connect({ room: roomId, roomData, token });
       return;
     }
 
-    if (party) {
-      this.partyName = party;
+    if (roomData) {
+      this.partyName = roomData.name;
     }
 
     const query = token ? { token } : undefined;
@@ -210,12 +211,12 @@ class WebSocketService {
 export default WebSocketService;
 
 // --- Singleton helpers for app-wide usage ---
-const defaultService = new WebSocketService(PARTYKIT_HOST, "game");
+const defaultService = new WebSocketService(PARTYKIT_HOST, "main");
 
 export const initializeWebSocket = (
   roomOrOptions:
     | string
-    | { room?: string; token?: string; party?: string } = "lobby"
+    | { room?: string; token?: string; roomData?: RoomData } = "lobby"
 ): Promise<string> => {
   const opts =
     typeof roomOrOptions === "string" ? { room: roomOrOptions } : roomOrOptions;
@@ -230,10 +231,14 @@ export const subscribeToMessages = (
 
 export const switchRoom = async (options: {
   roomId: string;
-  party?: string;
+  roomData?: RoomData;
   token?: string;
 }): Promise<void> => {
   await defaultService.switchToRoom(options);
+};
+
+export const returnToLobby = async (): Promise<void> => {
+  await defaultService.switchToRoom({ roomId: "lobby" });
 };
 
 export const getWebSocketInstance = (): PartySocket | null => {

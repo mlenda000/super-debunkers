@@ -13,6 +13,7 @@ import {
 } from "@dnd-kit/core";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { sendEndOfRound } from "@/utils/gameMessageUtils";
+import { subscribeToMessages } from "@/services/webSocketService";
 import MainTable from "../mainTable/MainTable";
 import PlayersHand from "@/components/organisms/playersHand/PlayersHand";
 import categoryCards from "@/data/tacticsCards.json";
@@ -20,12 +21,15 @@ import Scoreboard from "@/components/molecules/scoreBoard/ScoreBoard";
 
 interface GameTableProps {
   setRoundEnd: (val: boolean) => void;
+  roundEnd: boolean;
   roundHasEnded: boolean;
   setRoundHasEnded: (val: boolean) => void;
+  gameRoom?: any;
 }
 
 const GameTable: React.FC<GameTableProps> = ({
   setRoundEnd,
+  roundEnd,
   //   roundHasEnded,
   setRoundHasEnded,
 }) => {
@@ -52,6 +56,7 @@ const GameTable: React.FC<GameTableProps> = ({
   const [playersHandItems, setPlayersHandItems] =
     useState<typeof playersHand>(playersHand);
   const [showingHand, setShowingHand] = useState(false);
+  const [resetKey, setResetKey] = useState(0); // increments to signal table reset
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const playersHandRef = useRef<HTMLDivElement>(null);
 
@@ -102,6 +107,25 @@ const GameTable: React.FC<GameTableProps> = ({
     setFinishRound(mainTableItems.length > 0);
   }, [mainTableItems]);
 
+  // Listen for server score/end-of-round messages to reset UI for all players
+  useEffect(() => {
+    const unsubscribe = subscribeToMessages((message) => {
+      if (
+        (message.type === "scoreUpdate" || message.type === "endOfRound") &&
+        message.room === (gameRoom?.room || gameRoom?.roomData?.name)
+      ) {
+        // Show end-of-round modal and schedule reset
+        setRoundEnd(true);
+        // Prevent re-triggering endOfRound loop
+        setSubmitForScoring(true);
+        setFinishRound(false);
+        setResetKey((prev) => prev + 1);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [gameRoom?.room, gameRoom?.roomData?.name, setRoundEnd]);
+
   const scrollToSection = useCallback((section: "table" | "hand") => {
     if (!scrollContainerRef.current) return;
 
@@ -125,28 +149,26 @@ const GameTable: React.FC<GameTableProps> = ({
     [scrollToSection]
   );
 
-  const allPlayersReady =
-    Array.isArray(gameRoom?.roomData) &&
-    gameRoom.roomData.length > 0 &&
-    gameRoom.roomData.every(
-      (player) => player?.isReady === true && player?.tacticUsed?.length > 0
-    );
+  // All players in the room are ready and have played at least one tactic
+  const allPlayersReady = Array.isArray(gameRoom?.roomData?.players)
+    ? gameRoom.roomData.players.length > 0 &&
+      gameRoom.roomData.players.every(
+        (player) => player?.isReady === true && player?.tacticUsed?.length > 0
+      )
+    : false;
 
   useEffect(() => {
     if (allPlayersReady && !submitForScoring) {
-      console.log(
-        "All players are ready to finish the round and I am in the conditional"
-      );
+      console.log("✅ All players ready - starting endOfRound");
       setRoundHasEnded(true);
-      // Moved handleFinishRound logic here
       const players = gameRoom.roomData.players;
 
-      const player = players.find((p: Player) => p.name === playerName);
-      console.log("Player in handleFinishRound after firing from conditional");
-      sendEndOfRound([player], gameRound ?? 0);
+      const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
+      sendEndOfRound(players as any, gameRound ?? 0, roomName);
       setRoundEnd(true);
       setSubmitForScoring(true);
       setRoundHasEnded(false);
+      setResetKey((prev) => prev + 1);
     }
   }, [
     allPlayersReady,
@@ -212,6 +234,7 @@ const GameTable: React.FC<GameTableProps> = ({
                   finishRound={finishRound}
                   setFinishRound={setFinishRound}
                   setRoundEnd={setRoundEnd}
+                  roundEnd={roundEnd}
                   setPlayersHandItems={
                     setPlayersHandItems as unknown as (
                       items: TacticCardProps[]
@@ -227,6 +250,9 @@ const GameTable: React.FC<GameTableProps> = ({
                   }
                   originalItems={playersHand}
                   setSubmitForScoring={setSubmitForScoring}
+                  resetKey={resetKey}
+                  roundEnd={roundEnd}
+                  syncCardIndex={gameRoom?.cardIndex}
                 />
               </Droppable>
             </div>

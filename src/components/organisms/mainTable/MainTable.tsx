@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
+import { getWebSocketInstance } from "@/services/webSocketService";
 import {
   sendInfluencerReady,
   sendPlayerNotReady,
@@ -19,19 +20,28 @@ type MainTablePropsWithHand = MainTableProps & {
   setPlayersHandItems: (items: TacticCardProps[]) => void;
 };
 
-const MainTable: React.FC<MainTablePropsWithHand> = ({
+const MainTable: React.FC<
+  MainTablePropsWithHand & {
+    resetKey: number;
+    roundEnd: boolean;
+    syncCardIndex?: number;
+  }
+> = ({
   items,
   currentInfluencer,
   setCurrentInfluencer,
   finishRound,
   setFinishRound,
   setRoundEnd,
+  roundEnd,
   playersHandItems,
   setPlayersHandItems,
   originalItems,
   mainTableItems,
   setMainTableItems,
   setSubmitForScoring,
+  resetKey,
+  syncCardIndex,
 }) => {
   const { setThemeStyle, playerName } = useGlobalContext();
   const {
@@ -44,7 +54,7 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
     currentPlayer,
   } = useGameContext();
   const [playerReady, setPlayerReady] = React.useState<boolean>(false);
-  const [message, setMessage] = React.useState<string>("");
+  // message was unused; reset is driven by resetKey now
 
   const gameCards = React.useMemo(
     () =>
@@ -58,42 +68,74 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
     [gameRoom.roomData.deck]
   );
 
+  // Reset table when resetKey bumps (end-of-round). Keep deps minimal to avoid loops.
   useEffect(() => {
-    const resetTable = () => {
-      setMessage("");
-      setPlayersHandItems(originalItems);
-      setPlayerReady(false);
-      setMainTableItems(originalItems);
-      setSubmitForScoring(false);
-    };
-    if (message === "endOfRound") {
-      resetTable();
-      setTimeout(() => {
-        setCurrentInfluencer(gameCards[indexRef.current]);
+    if (resetKey === 0) return; // skip initial mount
+    if (!roundEnd) return; // only run reset when scoring modal shown
+
+    // Snapshot deck and players at the moment reset is requested
+    const deckData = Array.isArray(gameRoom?.roomData?.deck?.data)
+      ? gameRoom.roomData.deck.data
+      : [];
+    const resetPlayers = (gameRoom?.roomData?.players || []).map((p) => ({
+      ...p,
+      isReady: false,
+      tacticUsed: [],
+    }));
+
+    // Reset hands/table: all cards back to hand, table empty
+    setPlayersHandItems(originalItems);
+    setPlayerReady(false);
+    setMainTableItems([]);
+    setSubmitForScoring(false);
+    setFinishRound(false);
+    setPlayers?.(resetPlayers);
+    setGameRoom?.((prev) => ({
+      ...prev,
+      roomData: {
+        ...prev.roomData,
+        players: resetPlayers,
+      },
+    }));
+
+    const timeout = setTimeout(() => {
+      const nextCard = deckData[indexRef.current];
+      if (nextCard) {
+        setCurrentInfluencer(nextCard);
         indexRef.current++;
-      }, 11000); // Wait for 11 seconds before setting the next influencer
-    }
-  }, [
-    mainTableItems,
-    originalItems,
-    setMainTableItems,
-    setPlayersHandItems,
-    setRoundEnd,
-    setSubmitForScoring,
-    setCurrentInfluencer,
-    gameCards,
-    message,
-  ]);
+      }
+    }, 11000);
+
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resetKey]);
 
   const indexRef = React.useRef(0);
   const newPlayerRef = React.useRef(true);
+
+  // Sync card index from server if provided (ensures all players see same card)
+  React.useEffect(() => {
+    if (syncCardIndex !== undefined && syncCardIndex !== indexRef.current) {
+      console.log("[MainTable] Syncing card index to:", syncCardIndex);
+      indexRef.current = syncCardIndex;
+      if (gameCards.length > 0) {
+        const card = gameCards[syncCardIndex];
+        if (card) {
+          setCurrentInfluencer(card);
+        }
+      }
+    }
+  }, [syncCardIndex, gameCards, setCurrentInfluencer]);
+
   useEffect(() => {
     if (gameCards.length > 0 && isDeckShuffled) {
       if (newPlayerRef.current) {
-        setCurrentInfluencer(gameCards[(gameRound ?? 1) - 1]);
+        // Use synced index if available, otherwise use round
+        const cardIndex =
+          syncCardIndex !== undefined ? syncCardIndex : (gameRound ?? 1) - 1;
+        setCurrentInfluencer(gameCards[cardIndex]);
+        indexRef.current = cardIndex + 1;
         newPlayerRef.current = false; // Mark the player as no longer new
-      } else {
-        console.log("newPlayerRef.current is false, skipping influencer set");
       }
     } else {
       console.log(
@@ -114,6 +156,7 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
     setFinalRound,
     setEndGame,
     isDeckShuffled,
+    syncCardIndex,
   ]);
 
   useEffect(() => {
@@ -126,6 +169,7 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
       ? currentInfluencer?.tacticUsed
       : [currentInfluencer?.tacticUsed];
     sendInfluencerReady(
+      currentInfluencer,
       currentInfluencer?.villain as ThemeStyle,
       tactic as string[]
     );
@@ -139,26 +183,38 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
     }
     const name =
       playerName || localStorage.getItem("playerName") || currentPlayer || "";
+
+    // Get the tactics that were placed on the table (excluding the placeholder)
+    const tacticIds = mainTableItems
+      .filter((card) => String(card.id) !== "1")
+      .map((card) => card.category); // Use category (which is now the tactic name like "clickbait")
+
+    const expectedTactics = currentInfluencer?.tacticUsed || [];
+    const matches = tacticIds.filter((tactic) =>
+      expectedTactics.includes(tactic)
+    );
+    const mismatches = tacticIds.filter(
+      (tactic) => !expectedTactics.includes(tactic)
+    );
+
+    console.log("🎯 TACTIC COMPARISON:", {
+      "Your tactics": tacticIds,
+      "NewsCard expects": expectedTactics,
+      "✅ Correct matches": matches,
+      "❌ Wrong choices": mismatches,
+      "Score preview":
+        matches.length > 0 ? "+100" : mismatches.length > 0 ? "-50" : "0",
+    });
+
     const updatedPlayers = (gameRoom?.roomData?.players || []).map((p) =>
-      p?.name === name ? { ...p, isReady: true } : p
+      p?.name === name ? { ...p, isReady: true, tacticUsed: tacticIds } : p
     );
-
-    console.log("Updated players after ready:", updatedPlayers);
-
-    // Determine playerId; prefer context `currentPlayer` (server-issued id), fallback to matched player's id
-    const matched = (gameRoom?.roomData?.players || []).find(
-      (p) => p?.name === name
-    );
-    const playerId = currentPlayer || matched?.id || name;
 
     // Send a single, well-formed playerReady message expected by server
     // Include `players` so the server can merge states safely
-    sendPlayerReady(
-      gameRoom?.room ?? "lobby",
-      playerId,
-      true,
-      updatedPlayers as unknown as import("@/types/gameTypes").Player[]
-    );
+    const socket = getWebSocketInstance();
+    const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
+    sendPlayerReady(socket, updatedPlayers as any, roomName);
 
     // Optimistically update local context so Scoreboard reflects ready state
     setPlayers?.(updatedPlayers);
@@ -173,8 +229,6 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
     setPlayerReady(true);
   };
 
-  console.log("here is what I have in the gameroom", gameRoom);
-
   const handleReturnCard = (cardId: string) => {
     console.log("Card ID to return:", cardId);
     const cardToReturn = mainTableItems.find((item) => item.id === cardId);
@@ -188,7 +242,8 @@ const MainTable: React.FC<MainTablePropsWithHand> = ({
         console.log("No cards left on the table");
         setPlayerReady(false);
         setFinishRound(false);
-        sendPlayerNotReady(gameRoom?.roomData);
+        const socket = getWebSocketInstance();
+        sendPlayerNotReady(socket, (gameRoom?.roomData?.players || []) as any);
       }
     }
   };

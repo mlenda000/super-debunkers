@@ -4,6 +4,7 @@ import type {
   Player,
 } from "@/types/serverTypes";
 import PartySocket from "partysocket";
+import { getWebSocketInstance } from "@/services/webSocketService";
 
 // Base send message utility
 export const sendMessage = (
@@ -31,25 +32,27 @@ export const sendMessage = (
 
 // Client -> Server message senders
 
-export const sendGetPlayerId = (socket: PartySocket | null): void => {
-  if (!socket || socket.readyState !== PartySocket.OPEN) {
-    console.error("Socket not ready");
+export const sendGetPlayerId = (socket?: PartySocket | null): void => {
+  const sock = socket || getWebSocketInstance();
+  if (!sock || sock.readyState !== PartySocket.OPEN) {
+    console.warn("Socket not ready - getPlayerId will retry on connection");
     return;
   }
-  socket.send(JSON.stringify({ type: "getPlayerId" }));
+  sock.send(JSON.stringify({ type: "getPlayerId" }));
 };
 
 export const sendEnteredLobby = (
-  socket: PartySocket | null,
+  socket: PartySocket | null | undefined,
   room: string,
   avatar?: string,
   name?: string
 ): void => {
-  if (!socket || socket.readyState !== PartySocket.OPEN) {
-    console.error("Socket not ready");
+  const sock = socket || getWebSocketInstance();
+  if (!sock || sock.readyState !== PartySocket.OPEN) {
+    console.warn("Socket not ready - enteredLobby will retry on connection");
     return;
   }
-  socket.send(JSON.stringify({ type: "enteredLobby", room, avatar, name }));
+  sock.send(JSON.stringify({ type: "enteredLobby", room, avatar, name }));
 };
 
 export const sendPlayerEnters = (
@@ -88,9 +91,31 @@ export const sendInfluencer = (
   );
 };
 
+export const sendInfluencerReady = (
+  newsCard: any,
+  villain?: string,
+  tactic?: string[]
+): void => {
+  const socket = getWebSocketInstance();
+
+  if (!socket || socket.readyState !== PartySocket.OPEN) {
+    console.warn("Socket not ready - influencerReady will retry on connection");
+    return;
+  }
+  socket.send(
+    JSON.stringify({
+      type: "influencer",
+      newsCard,
+      villain: villain || newsCard?.villain,
+      tactic: tactic || newsCard?.tacticUsed,
+    })
+  );
+};
+
 export const sendPlayerReady = (
   socket: PartySocket | null,
-  players: Player[]
+  players: Player[],
+  room?: string
 ): void => {
   if (!socket || socket.readyState !== PartySocket.OPEN) {
     console.error("Socket not ready");
@@ -100,6 +125,7 @@ export const sendPlayerReady = (
     JSON.stringify({
       type: "playerReady",
       players,
+      room,
     })
   );
 };
@@ -116,6 +142,22 @@ export const sendPlayerNotReady = (
     JSON.stringify({
       type: "playerNotReady",
       players,
+    })
+  );
+};
+
+export const sendPlayerLeaves = (
+  socket: PartySocket | null,
+  room?: string
+): void => {
+  if (!socket || socket.readyState !== PartySocket.OPEN) {
+    console.error("Socket not ready");
+    return;
+  }
+  socket.send(
+    JSON.stringify({
+      type: "playerLeaves",
+      room,
     })
   );
 };
@@ -147,17 +189,22 @@ export const sendStartingDeck = (
 };
 
 export const sendEndOfRound = (
-  socket: PartySocket | null,
-  players: Player[]
+  players: Player[],
+  round?: number,
+  room?: string,
+  socket?: PartySocket | null
 ): void => {
-  if (!socket || socket.readyState !== PartySocket.OPEN) {
-    console.error("Socket not ready");
+  const sock = socket || getWebSocketInstance();
+  if (!sock || sock.readyState !== PartySocket.OPEN) {
+    console.warn("Socket not ready - endOfRound will retry on connection");
     return;
   }
-  socket.send(
+  sock.send(
     JSON.stringify({
       type: "endOfRound",
       players,
+      round,
+      room,
     })
   );
 };

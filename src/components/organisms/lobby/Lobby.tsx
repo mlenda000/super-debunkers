@@ -26,19 +26,51 @@ const Lobby = ({ rooms }: { rooms: string[] }) => {
     if (room === "Create room") {
       navigate("/game/create-room");
     } else {
+      console.log("[Lobby] Switching to room:", room);
       const token = localStorage.getItem("authToken") || undefined;
-      await switchRoom({ party: "game", roomId: room, token });
+
       // Subscribe to room updates and wait for confirmation
       const unsubscribe = subscribeToMessages((message) => {
+        console.log("[Lobby] Received message:", message.type, message);
         if (message.type === "roomUpdate" && message.room === room) {
           // Player successfully added to room
+          console.log("[Lobby] Room update received, navigating to game");
           unsubscribe();
-          navigate(`/game/${room}`);
+
+          // Pass room data via navigation state
+          navigate(`/game/${room}`, {
+            state: {
+              gameRoom: {
+                count: message.count || 0,
+                room: message.room || "",
+                type: "roomUpdate",
+                roomData: {
+                  count: message.count || 0,
+                  players: message.players || [],
+                  name: message.room || "",
+                  deck: message.deck,
+                },
+              },
+            },
+          });
         }
       });
 
+      // Switch room and wait for reconnection
+      console.log("[Lobby] Calling switchRoom");
+      await switchRoom({ roomId: room, token });
+      console.log("[Lobby] switchRoom completed");
+
+      // Wait a bit for socket to reconnect
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Now send player enters message
       const socket = getWebSocketInstance();
-      sendPlayerEnters(socket, { name, avatar: avatarName, room }, room);
+      console.log("[Lobby] Socket ready:", socket?.readyState);
+      if (socket) {
+        console.log("[Lobby] Sending playerEnters");
+        sendPlayerEnters(socket, { name, avatar: avatarName, room }, room);
+      }
 
       // Fallback: navigate after 2 seconds if no confirmation received
       setTimeout(() => {
@@ -55,8 +87,11 @@ const Lobby = ({ rooms }: { rooms: string[] }) => {
         ? avatar.substring(avatar.lastIndexOf("/") + 1)
         : "";
       await initializeWebSocket("lobby");
-      const socket = getWebSocketInstance();
-      sendEnteredLobby(socket, "lobby", avatarName, playerName || "");
+
+      // Wait for socket to be ready before sending message
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      sendEnteredLobby(undefined, "lobby", avatarName, playerName || "");
     };
     sendLobbyMessage();
   }, [avatar, playerName]);

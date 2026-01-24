@@ -5,24 +5,50 @@ import type { Player } from "@/types/gameTypes";
 
 interface ScoreModalProps {
   setIsEndGame: (value: boolean) => void;
+  setShowRoundModal?: (value: boolean) => void;
+  setShowScoreCard?: (value: boolean) => void;
 }
 
-const ScoreModal = ({ setIsEndGame }: ScoreModalProps) => {
-  const { gameRoom, setGameRound, gameRound } = useGameContext();
+const ScoreModal = ({
+  setIsEndGame,
+  setShowRoundModal,
+  setShowScoreCard,
+}: ScoreModalProps) => {
+  const { gameRoom, setGameRound, gameRound, activeNewsCard } =
+    useGameContext();
   const { setThemeStyle } = useGlobalContext();
 
   const handleDeal = useCallback(() => {
     if (gameRoom?.roomData?.players) {
       const currentRound = gameRound ?? 0;
-      setGameRound?.(currentRound + 1);
-      setThemeStyle("all");
+      const nextRound = currentRound + 1;
+      setGameRound?.(nextRound);
 
-      if (gameRoom.roomData.players.length > 0) {
+      // Keep the current villain's theme (don't reset to "all")
+      // The theme will change when the next influencer is dealt
+      // setThemeStyle("all");
+
+      // Only show endgame modal if we've completed all 5 rounds
+      if (nextRound > 5) {
         setIsEndGame(true);
+      } else {
+        // Show the round modal for the next round (2 seconds)
+        setShowRoundModal?.(true);
       }
+
+      // Hide the score modal
+      setShowScoreCard?.(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameRoom, gameRound, setGameRound, setThemeStyle, setIsEndGame]);
+  }, [
+    gameRoom,
+    gameRound,
+    setGameRound,
+    setThemeStyle,
+    setIsEndGame,
+    setShowRoundModal,
+    setShowScoreCard,
+  ]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

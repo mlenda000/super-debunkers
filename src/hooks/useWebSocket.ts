@@ -118,9 +118,9 @@ export const useWebSocket = (host: string) => {
   );
 
   const endRound = useCallback(
-    (players: Player[]) => {
+    (players: Player[], room?: string, round?: number) => {
       const socket = getSocket();
-      if (socket) WSUtils.sendEndOfRound(socket, players);
+      if (socket) WSUtils.sendEndOfRound(players, round, room, socket);
     },
     [getSocket]
   );

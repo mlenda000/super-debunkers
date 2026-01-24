@@ -29,13 +29,13 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
       <div className="score-modal__content ">
         <div className="score-modal__scores">
           <img
-            src={`/images/winningAvatars/${topPlayer?.avatar}`}
+            src={`/images/avatars/winning/${topPlayer?.avatar}`}
             alt={topPlayer?.name}
             width={"150px"}
             height={"auto"}
           />
           <h1>{topPlayer?.name} Wins!!!</h1>
-          <img src="/images/scoreboard.png" alt="Scoreboard" width={"32%"} />
+          <img src="/images/scoreboard.webp" alt="Scoreboard" width={"32%"} />
           <h1 className="score-modal__title">
             <div>Rank</div>
             <div>Followers</div>
@@ -61,7 +61,7 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
       </div>
       <div className="round-modal__button">
         <img
-          src={"/images/home-button.png"}
+          src={"/images/home-button.webp"}
           alt="Ready for next round"
           width={"50%"}
           height={"auto"}

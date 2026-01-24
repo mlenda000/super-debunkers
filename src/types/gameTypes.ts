@@ -35,6 +35,7 @@ export interface Player {
   avatar?: string;
   score?: number;
   isReady?: boolean;
+  tacticUsed?: string[];
 }
 
 export interface PlayersHandProps {

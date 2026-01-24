@@ -39,6 +39,7 @@ export type MessageType =
   | "playerEnters"
   | "influencer"
   | "playerReady"
+  | "playerLeaves"
   | "playerNotReady"
   | "allReady"
   | "startingDeck"

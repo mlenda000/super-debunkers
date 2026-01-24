@@ -1,4 +1,5 @@
 import { useGameContext } from "@/hooks/useGameContext";
+import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { useEffect } from "react";
 
 interface ResponseModalProps {
@@ -16,11 +17,21 @@ const ResponseModal = ({
   setShowScoreCard,
   setShowResponseModal,
 }: ResponseModalProps) => {
-  const context = useGameContext();
-  const responseMsg: ResponseMessage =
-    context && typeof context === "object" && "responseMsg" in context
-      ? (context as unknown as Record<string, ResponseMessage>).responseMsg
-      : { wasCorrect: true, streak: 0, hasStreak: false };
+  const { gameRoom } = useGameContext();
+  const { playerName } = useGlobalContext();
+
+  // Find the current player's result from the players array
+  const currentPlayerName =
+    playerName || localStorage.getItem("playerName") || "";
+  const currentPlayer = gameRoom?.roomData?.players?.find(
+    (p) => p.name === currentPlayerName
+  );
+
+  const responseMsg: ResponseMessage = {
+    wasCorrect: currentPlayer?.wasCorrect ?? false,
+    streak: currentPlayer?.streak ?? 0,
+    hasStreak: currentPlayer?.hasStreak ?? false,
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
