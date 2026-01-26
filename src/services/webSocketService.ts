@@ -60,7 +60,7 @@ class WebSocketService {
 
         this.socket.addEventListener("open", () => {
           this.isConnected = true;
-          console.log("Connected to WebSocket");
+          console.log("✅ Connected to PartyKit WebSocket");
           resolve(this.userId!);
         });
 
