@@ -29,7 +29,15 @@ const Lobby = ({ rooms }: { rooms: string[] }) => {
       console.log("[Lobby] Switching to room:", room);
       const token = localStorage.getItem("authToken") || undefined;
 
-      // Subscribe to room updates and wait for confirmation
+      // Switch room and wait for reconnection
+      console.log("[Lobby] Calling switchRoom");
+      await switchRoom({ roomId: room, token });
+      console.log("[Lobby] switchRoom completed");
+
+      // Wait a bit for socket to reconnect
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Subscribe to room updates AFTER switching rooms (so we're on the new socket)
       const unsubscribe = subscribeToMessages((message) => {
         console.log("[Lobby] Received message:", message.type, message);
         if (message.type === "roomUpdate" && message.room === room) {
@@ -55,14 +63,6 @@ const Lobby = ({ rooms }: { rooms: string[] }) => {
           });
         }
       });
-
-      // Switch room and wait for reconnection
-      console.log("[Lobby] Calling switchRoom");
-      await switchRoom({ roomId: room, token });
-      console.log("[Lobby] switchRoom completed");
-
-      // Wait a bit for socket to reconnect
-      await new Promise((resolve) => setTimeout(resolve, 100));
 
       // Now send player enters message
       const socket = getWebSocketInstance();
