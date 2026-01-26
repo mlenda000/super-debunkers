@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import PartySocket from "partysocket";
 import {
   initializeWebSocket,
   subscribeToMessages,
@@ -64,12 +65,23 @@ const Lobby = ({ rooms }: { rooms: string[] }) => {
         }
       });
 
-      // Now send player enters message
+      // Wait for socket to be fully open before sending playerEnters
       const socket = getWebSocketInstance();
-      console.log("[Lobby] Socket ready:", socket?.readyState);
       if (socket) {
-        console.log("[Lobby] Sending playerEnters");
-        sendPlayerEnters(socket, { name, avatar: avatarName, room }, room);
+        // If socket is already open, send immediately
+        if (socket.readyState === PartySocket.OPEN) {
+          console.log("[Lobby] Socket ready: OPEN, sending playerEnters");
+          sendPlayerEnters(socket, { name, avatar: avatarName, room }, room);
+        } else {
+          // Otherwise wait for the 'open' event
+          console.log("[Lobby] Socket connecting, waiting for open event...");
+          const openHandler = () => {
+            console.log("[Lobby] Socket opened, sending playerEnters");
+            sendPlayerEnters(socket, { name, avatar: avatarName, room }, room);
+            socket.removeEventListener("open", openHandler);
+          };
+          socket.addEventListener("open", openHandler);
+        }
       }
 
       // Fallback: navigate after 2 seconds if no confirmation received
