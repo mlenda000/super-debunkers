@@ -197,6 +197,11 @@ const MainTable: React.FC<
       (tactic) => !expectedTactics.includes(tactic)
     );
 
+    console.log(`🃏 [MainTable] Player ${name} is ready with tactics:`, {
+      matches,
+      mismatches,
+    });
+
     const updatedPlayers = (gameRoom?.roomData?.players || []).map((p) =>
       p?.name === name ? { ...p, isReady: true, tacticUsed: tacticIds } : p
     );
