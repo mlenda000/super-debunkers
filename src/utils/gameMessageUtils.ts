@@ -199,10 +199,19 @@ export const sendEndOfRound = (
     console.warn("Socket not ready - endOfRound will retry on connection");
     return;
   }
+  
+  // Only send necessary player data for scoring (NOT scores - server will calculate)
+  const playersForScoring = players.map((p) => ({
+    id: p.id,
+    name: p.name,
+    avatar: p.avatar,
+    tacticUsed: p.tacticUsed,
+  }));
+  
   sock.send(
     JSON.stringify({
       type: "endOfRound",
-      players,
+      players: playersForScoring,
       round,
       room,
     })

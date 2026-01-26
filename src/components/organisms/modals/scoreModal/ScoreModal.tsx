@@ -14,14 +14,8 @@ const ScoreModal = ({
   setShowRoundModal,
   setShowScoreCard,
 }: ScoreModalProps) => {
-  const {
-    gameRoom,
-    setGameRound,
-    gameRound,
-    activeNewsCard,
-    players,
-    lastScoreUpdatePlayers,
-  } = useGameContext();
+  const { gameRoom, setGameRound, gameRound, players, lastScoreUpdatePlayers } =
+    useGameContext();
   const { setThemeStyle } = useGlobalContext();
 
   const handleDeal = useCallback(() => {
