@@ -174,10 +174,8 @@ const GameTable: React.FC<GameTableProps> = ({
     allPlayersReady,
     submitForScoring,
     gameRound,
-    playerName,
     setRoundEnd,
     setRoundHasEnded,
-    gameRoom.roomData,
   ]);
 
   return (
