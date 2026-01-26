@@ -12,7 +12,6 @@ const TacticCardBack = ({
   category,
   className,
 }: TacticCardBackProps) => {
-  console.log("category in TacticCardBack:", category);
   return (
     <div className={`tactic-card-back ${className ?? ""}`}>
       <img

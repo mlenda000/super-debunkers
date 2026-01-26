@@ -23,11 +23,7 @@ const PlayedCard: React.FC<PlayedCardProps> = ({ name, image, id, onUndo }) => {
       <div className="played-card__content">
         <div className="played-card__image-container">
           <img
-            src={
-              name === "The Truth" || id === 1
-                ? "/images/tactics/true.webp"
-                : image
-            }
+            src={name === "The Truth" ? "/images/tactics/true.webp" : image}
             alt={name}
             className="played-card__image"
             style={{ maxHeight: "250px", aspectRatio: "2.5 / 3.5" }}
