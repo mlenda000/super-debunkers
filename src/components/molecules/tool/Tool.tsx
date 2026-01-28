@@ -14,14 +14,19 @@ interface ToolProps {
 
 // Mock data for testing/styling - using realistic content from influencerCards.json
 const mockInfluencer = {
-  caption: "🚨 ALERT: Your school water fountain is FILLED with deadly chemicals! ☠️🚰",
-  bodyCopy: "Scientists just discovered that school water fountains contain a dangerous chemical also found in nuclear waste! Some schools have even been caught hiding the truth because they don't want to spend money fixing the pipes. Experts say drinking this water could cause permanent brain damage—but no one is warning students!",
+  caption:
+    "🚨 ALERT: Your school water fountain is FILLED with deadly chemicals! ☠️🚰",
+  bodyCopy:
+    "Scientists just discovered that school water fountains contain a dangerous chemical also found in nuclear waste! Some schools have even been caught hiding the truth because they don't want to spend money fixing the pipes. Experts say drinking this water could cause permanent brain damage—but no one is warning students!",
   tacticUsed: ["Fabrication", "Fear-mongering"],
   villain: "The_Biost",
   newsImage: "biost_water-fountain.webp",
 };
 
-const Tool = ({ showResults, currentInfluencer: propInfluencer }: ToolProps) => {
+const Tool = ({
+  showResults,
+  currentInfluencer: propInfluencer,
+}: ToolProps) => {
   const currentInfluencer = propInfluencer ?? mockInfluencer;
 
   return (
@@ -76,7 +81,7 @@ const Tool = ({ showResults, currentInfluencer: propInfluencer }: ToolProps) => 
               top: "160px",
             }}
           />
-        ) : currentInfluencer?.tacticUsed[0] === "True" ? (
+        ) : currentInfluencer?.tacticUsed[0] === "true" ? (
           <img
             src={"/images/tool/answers/facts.webp"}
             alt="reading"

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useGameContext } from "@/hooks/useGameContext";
-import type { Player, NewsCard } from "@/types/gameTypes";
+import type { NewsCard } from "@/types/gameTypes";
 import type { TacticCardProps } from "@/types/types";
 import { Droppable } from "@/components/atoms/droppable/Droppable";
 import {
@@ -33,7 +33,6 @@ const GameTable: React.FC<GameTableProps> = ({
   //   roundHasEnded,
   setRoundHasEnded,
 }) => {
-  const { playerName } = useGlobalContext();
   const { gameRoom, gameRound, activeNewsCard, setActiveNewsCard } =
     useGameContext();
   const currentInfluencer =
@@ -186,7 +185,7 @@ const GameTable: React.FC<GameTableProps> = ({
         onKeyDown={handleKeyDown}
       >
         <div className="scoreboard-section">
-          <Scoreboard />{" "}
+          <Scoreboard />
         </div>
 
         {/* Mobile navigation button */}

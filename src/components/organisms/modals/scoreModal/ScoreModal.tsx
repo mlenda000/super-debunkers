@@ -69,16 +69,11 @@ const ScoreModal = ({
     <div className="round-modal__overlay" style={{ zIndex: 100 }}>
       <div className="score-modal__content">
         <div className="score-modal__scores">
-          <img
-            src="/images/scoreboard.png"
-            alt="Scoreboard"
-            width="32%"
-            height="auto"
-          />
-          <h1 className="score-modal__title">
+          <h1 className="score-modal__header">Scoreboard</h1>
+          <h2 className="score-modal__title">
             <div>Rank</div>
             <div>Followers</div>
-          </h1>
+          </h2>
           {sourcePlayers
             .sort((a: Player, b: Player) => (b?.score ?? 0) - (a?.score ?? 0))
             .map((player: Player, index: number) => (

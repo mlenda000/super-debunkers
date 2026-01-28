@@ -29,10 +29,7 @@ const GamePage = () => {
   const hasJoinedRef = useRef(false);
   const setupTimeRef = useRef<number>(0);
 
-  // const [finalRound, setFinalRound] = useState<boolean>(false);
-
-  // TODO: Aaron change these from false to true to test modals and see them on the gamepage
-  const [showRoundModal, setShowRoundModal] = useState<boolean>(true); // Show on initial load
+  const [showRoundModal, setShowRoundModal] = useState<boolean>(true);
   const [roundEnd, setRoundEnd] = useState<boolean>(false);
   const [roundHasEnded, setRoundHasEnded] = useState<boolean>(false);
   const [isEndGame, setIsEndGame] = useState<boolean>(false);
