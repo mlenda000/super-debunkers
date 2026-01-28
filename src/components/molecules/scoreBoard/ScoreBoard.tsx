@@ -4,6 +4,7 @@ import AvatarImage from "@/components/atoms/avatarImage/AvatarImage";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { useGameContext } from "@/hooks/useGameContext";
 import type { GameRoom, Player } from "@/types/gameTypes";
+import { returnToLobby } from "@/services/webSocketService";
 
 interface ScoreboardProps {
   roundHasEnded?: boolean;
@@ -32,9 +33,6 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   const gameRoom = ctxGameRoom || propGameRoom;
   const gameRound = ctxGameRound || propGameRound;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {}, [JSON.stringify(gameRoom?.roomData)]);
-
   // Auto-play music when component mounts
   useEffect(() => {
     if (audioRef.current) {
@@ -56,22 +54,33 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
       }
     }
   }, [isSoundPlaying]);
-  const goHome = () => {
-    setThemeStyle("all");
-    navigate("/");
+
+  const handleReturnToLobby = async () => {
+    try {
+      setThemeStyle("all");
+      await returnToLobby();
+      navigate("/game/lobby");
+    } catch (error) {
+      console.error("[Scoreboard] Failed to return to lobby:", error);
+      navigate("/game/lobby");
+    }
   };
 
   return (
     <div className="scoreboard">
       <audio ref={audioRef} src="/images/music/music.mp3" loop />
-      <button className="scoreboard__home-button" onClick={goHome}>
+      <button
+        className="scoreboard__home-button"
+        onClick={handleReturnToLobby}
+        title="Return to Lobby"
+      >
         <img
           src={`/images/buttons/home.png`}
-          alt="home"
+          alt="Return to lobby"
           style={{ cursor: "pointer", zIndex: 2 }}
           className="scoreboard__home-image"
         />
-        <p className="scoreboard__home-button-small">Home</p>
+        <p className="scoreboard__home-button-small">Lobby</p>
       </button>
 
       <div className="scoreboard__avatar">

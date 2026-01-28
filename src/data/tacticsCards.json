@@ -1,6 +1,6 @@
 {
   "tactic-1": {
-    "category": "Emotional Manipulation",
+    "tactic": "emotional-manipulation",
     "title": "Playing with feelings",
     "description": "Using your feelings to trick you into doing something.",
     "image": "/images/tactics/emotional.webp",
@@ -9,7 +9,7 @@
     "example": "A TikTok comment says, 'If you don’t repost this, your Among Us account will get DELETED!'"
   },
   "tactic-2": {
-    "category": "tricky-jokes",
+    "tactic": "tricky-jokes",
     "title": "Jokes that trick people",
     "description": "Sharing funny memes as if they’re real news.",
     "image": "/images/tactics/tricky.webp",
@@ -18,7 +18,7 @@
     "example": "A Minecraft meme says: 'NEW GLITCH: PRESS ALT+F4 TO GET FREE DIAMONDS! 💎' — kids try it, but pressing ALT+F4 just closes their game!'"
   },
   "tactic-3": {
-    "category": "Deepfakes",
+    "tactic": "deepfakes",
     "title": "Fake Videos/Audio",
     "description": "Using tech to make someone look or sound like they did/said something they didn’t.",
     "image": "/images/tactics/deepfakes.webp",
@@ -27,7 +27,7 @@
     "example": "A YouTube short shows Taylor Swift saying, 'I hate cats!' — but it’s AI-generated."
   },
   "tactic-4": {
-    "category": "Cherry-picking",
+    "tactic": "cherry-picking",
     "title": "Only showing the good parts",
     "description": "Hiding bad stuff to make something look better.",
     "image": "/images/tactics/cherry-picking.webp",
@@ -36,7 +36,7 @@
     "example": "Your friend brags, 'I got 100% on one math test!' but doesn’t mention the five F’s he got."
   },
   "tactic-5": {
-    "category": "Clickbait",
+    "tactic": "clickbait",
     "title": "Trick headlines",
     "description": "Headlines that make you click… but the story is boring or fake.",
     "image": "/images/tactics/clickbait.webp",
@@ -45,7 +45,7 @@
     "example": "OMG! What this ROBOT can do will SHOCK you! → It’s just an ad for a toy car."
   },
   "tactic-6": {
-    "category": "Conspiracy_Theories",
+    "tactic": "conspiracy-theories",
     "title": "Crazy secret stories",
     "description": "Making up wild stories with no proof.",
     "image": "/images/tactics/conspiracy.webp",
@@ -54,7 +54,7 @@
     "example": "Roblox is spying on you through your mic to sell your voice to aliens! (Nope, Roblox just uses mics for voice chat.)"
   },
   "tactic-7": {
-    "category": "sock-puppetry",
+    "tactic": "sock-puppetry",
     "title": "Sock Puppetry",
     "description": "Using fake accounts to make it seem like lots of people agree with something.",
     "image": "/images/tactics/sock.webp",
@@ -63,7 +63,7 @@
     "example": "A TikTok post says, 'Mr. Beast is quitting music forever!' — but it's totally fake."
   },
   "tactic-8": {
-    "category": "Fear-mongering",
+    "tactic": "fear-mongering",
     "title": "Scaring people",
     "description": "Making small problems seem like disasters.",
     "image": "/images/tactics/fearmongering.webp",
@@ -72,7 +72,7 @@
     "example": "A Snapchat story screams, 'If you don’t share this in 10 seconds, Snapchat will BLOCK YOUR ACCOUNT!' (Nope, it’s just trying to go viral.)"
   },
   "tactic-9": {
-    "category": "Impersonation",
+    "tactic": "impersonation",
     "title": "Fake accounts",
     "description": "Pretending to be someone famous or a friend online.",
     "image": "/images/tactics/sneaky.webp",
@@ -81,7 +81,7 @@
     "example": "An Instagram account named '@Real_Taylor_Swift' asks you for money."
   },
   "tactic-10": {
-    "category": "Gaslighting",
+    "tactic": "gaslighting",
     "title": "Messing with your brain",
     "description": "Making you doubt what you know is true.",
     "image": "/images/tactics/gaslighting.webp",
@@ -90,7 +90,7 @@
     "example": "A classmate accuses you of cheating, then denies it: 'I never said that! You’re imagining things—you must be stressed.'"
   },
   "tactic-11": {
-    "category": "true",
+    "tactic": "true",
     "title": "Truth",
     "description": "It's the real deal!",
     "image": "/images/tactics/truth.webp",

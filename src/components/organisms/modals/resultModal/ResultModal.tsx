@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import { useGameContext } from "@/hooks/useGameContext";
 import Tool from "@/components/molecules/tool/Tool"; // Assuming Tool is a component you want to show in the modal
 
 interface ResultModalProps {
@@ -11,6 +11,7 @@ const ResultModal = ({
   setRoundEnd,
   setShowResponseModal,
 }: ResultModalProps) => {
+  const { activeNewsCard } = useGameContext();
   const [showComponents, setShowComponents] = useState(false);
 
   useEffect(() => {
@@ -31,7 +32,7 @@ const ResultModal = ({
   return (
     <div className="result-modal__overlay" style={{ zIndex: 100 }}>
       <div className="result-modal__content ">
-        <Tool showResults={showComponents} />
+        <Tool showResults={showComponents} currentInfluencer={activeNewsCard} />
       </div>
     </div>
   );

@@ -9,9 +9,9 @@ import type {
 } from "@/types/types";
 import {
   initializeWebSocket,
-  sendWebSocketMessage,
   subscribeToMessages,
 } from "@/services/webSocketService";
+import { sendGetPlayerId } from "@/utils/gameMessageUtils";
 
 const PLAYER_ID_EXPIRY_HOURS = 24;
 
@@ -65,26 +65,38 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
     let unsubscribe: (() => void) | null = null;
 
     const fetchPlayerId = async () => {
-      await initializeWebSocket("lobby");
+      try {
+        const userId = await initializeWebSocket("lobby");
+        console.log(
+          "[GlobalProvider] WebSocket initialized with userId:",
+          userId
+        );
 
-      unsubscribe = subscribeToMessages((message) => {
-        if (
-          message.type === "playerId" &&
-          message.id &&
-          typeof message.id === "string"
-        ) {
-          const newPlayerId = message.id;
-          localStorage.setItem("playerId", newPlayerId);
-          localStorage.setItem("playerIdTimestamp", Date.now().toString());
-          setPlayerId(newPlayerId);
-        }
-      });
+        unsubscribe = subscribeToMessages((message) => {
+          if (
+            message.type === "playerId" &&
+            message.id &&
+            typeof message.id === "string"
+          ) {
+            const newPlayerId = message.id;
+            console.log(
+              "[GlobalProvider] Received playerId from server:",
+              newPlayerId
+            );
+            localStorage.setItem("playerId", newPlayerId);
+            localStorage.setItem("playerIdTimestamp", Date.now().toString());
+            setPlayerId(newPlayerId);
+          }
+        });
 
-      // Clear expired data
-      localStorage.removeItem("playerId");
-      localStorage.removeItem("playerIdTimestamp");
-
-      sendWebSocketMessage({ type: "getPlayerId" });
+        // Send getPlayerId after socket is ready
+        sendGetPlayerId();
+      } catch (error) {
+        console.error(
+          "[GlobalProvider] Failed to initialize WebSocket:",
+          error
+        );
+      }
     };
 
     fetchPlayerId();

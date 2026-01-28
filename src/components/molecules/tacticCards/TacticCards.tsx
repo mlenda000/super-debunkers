@@ -8,34 +8,36 @@ const TacticCards = () => {
 
   return (
     <div className="tactic-cards-wrapper">
-      {Object.values(tacticCards).slice(0, 10).map((card) => (
-        <div
-          key={card.category}
-          className="tactic-card"
-          onClick={() =>
-            setHoveredCard(hoveredCard === card.category ? null : card.category)
-          }
-          onMouseEnter={() => setHoveredCard(card.category)}
-          onMouseLeave={() => setHoveredCard(null)}
-          onFocus={() => setHoveredCard(card.category)}
-          onBlur={() => setHoveredCard(null)}
-          tabIndex={0}
-        >
-          {hoveredCard === card.category ? (
-            <TacticCardBack
-              imageBack={card.imageBack}
-              description={card.description}
-              category={card.category}
-            />
-          ) : (
-            <TacticCardFront
-              image={card.image}
-              alt={card.imageAlt}
-              category={card.category}
-            />
-          )}
-        </div>
-      ))}
+      {Object.values(tacticCards)
+        .slice(0, 10)
+        .map((card) => (
+          <div
+            key={card.tactic}
+            className="tactic-card"
+            onClick={() =>
+              setHoveredCard(hoveredCard === card.tactic ? null : card.tactic)
+            }
+            onMouseEnter={() => setHoveredCard(card.tactic)}
+            onMouseLeave={() => setHoveredCard(null)}
+            onFocus={() => setHoveredCard(card.tactic)}
+            onBlur={() => setHoveredCard(null)}
+            tabIndex={0}
+          >
+            {hoveredCard === card.tactic ? (
+              <TacticCardBack
+                imageBack={card.imageBack}
+                description={card.description}
+                category={card.tactic}
+              />
+            ) : (
+              <TacticCardFront
+                image={card.image}
+                alt={card.imageAlt}
+                category={card.tactic}
+              />
+            )}
+          </div>
+        ))}
     </div>
   );
 };

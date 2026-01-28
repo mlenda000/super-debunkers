@@ -48,7 +48,7 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
       onKeyDown={handleKeyDown}
       tabIndex={0}
       role="button"
-      aria-label={`Tactic card: ${category[0]}. Press Enter or Space to move to table`}
+      aria-label={`Tactic card: ${category}. Press Enter or Space to move to table`}
     >
       {hoveredCardId === id ? (
         <TacticCardBack
