@@ -13,6 +13,8 @@
   .scoreboard-section {
     grid-area: scoreboard;
     width: 100%;
+    position: relative;
+    z-index: 103;
   }
 
   /* Mobile navigation button */
