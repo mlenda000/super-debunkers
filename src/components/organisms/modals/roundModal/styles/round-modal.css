@@ -1,3 +1,18 @@
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .round-modal__overlay {
   position: fixed;
   top: 0;
@@ -14,9 +29,8 @@
   padding: 20px;
   border-radius: 8px;
   text-align: center;
-  font-family: "subway-berlin-ot", sans-serif;
-  font-size: 74px;
-  -webkit-text-stroke: black 3px;
+  font-family: "Subway Berlin", sans-serif;
+  animation: pop-in 0.5s ease-out forwards;
 }
 
 .round-modal__button {
@@ -26,23 +40,20 @@
   z-index: 1;
 }
 .round-modal__title {
-  font-size: 74px;
-
-  @media (max-width: 1200px) {
-    -webkit-text-stroke: black 1.5px;
-  }
+  font-size: clamp(72px, 15vw, 180px);
+  -webkit-text-stroke: 25px black;
+  paint-order: stroke fill;
+  color: white;
 
   @media (max-width: 1024px) {
-    -webkit-text-stroke: black 1.3px;
+    -webkit-text-stroke: 15px black;
   }
 
   @media (max-width: 768px) {
-    font-size: 72px;
-    -webkit-text-stroke: 1px black;
+    -webkit-text-stroke: 10px black;
   }
 
   @media (max-width: 480px) {
-    font-size: 70px;
-    -webkit-text-stroke: 1px black;
+    -webkit-text-stroke: 8px black;
   }
 }

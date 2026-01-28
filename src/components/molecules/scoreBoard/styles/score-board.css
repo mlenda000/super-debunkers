@@ -59,6 +59,8 @@
   background: transparent;
   border: transparent;
   border-radius: 100%;
+  position: relative;
+  z-index: 103;
   &:hover {
     outline: white 2px;
     outline-offset: 2px;
