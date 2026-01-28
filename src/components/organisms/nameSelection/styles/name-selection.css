@@ -62,6 +62,7 @@
   .name-selection-next-button {
       display: flex;
       justify-content: flex-end;
+      margin-right: 110px;
   }
 }
 
@@ -92,7 +93,7 @@
   margin-bottom: var(--spacing-3xl);
 
   @media (max-width: 1024px) {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-2xl);
   }
 
   @media (max-width: 768px) {
@@ -105,5 +106,6 @@
 
   @media (max-height: 600px) {
     margin-bottom: var(--spacing-xl);
+    margin-top: -40px;
   }
 }

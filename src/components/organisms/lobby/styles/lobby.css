@@ -88,9 +88,20 @@
     margin-top: var(--spacing-2xl);
     margin-bottom: var(--spacing-md);
     z-index: 2;
+    -webkit-text-stroke: 25px black;
+    paint-order: stroke fill;
+
+    @media (max-width: 1024px) {
+        -webkit-text-stroke: 15px black;
+    }
 
     @media (max-width: 768px) {
         font-size: clamp(18px, 5vw, 36px);
         margin-top: var(--spacing-xl);
+        -webkit-text-stroke: 10px black;
+    }
+
+    @media (max-width: 480px) {
+        -webkit-text-stroke: 6px black;
     }
 }
