@@ -1,66 +1,76 @@
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .response-modal__content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: "subway-berlin-ot", sans-serif;
-  -webkit-text-stroke: black 1px;
+  font-family: "Subway Berlin", sans-serif;
+  animation: pop-in 0.5s ease-out forwards;
 }
 .response-modal__title {
-  font-size: 172px;
+  font-size: clamp(72px, 15vw, 180px);
   font-weight: 900;
   margin-bottom: 0;
   padding-bottom: 0;
+  -webkit-text-stroke: 25px black;
+  paint-order: stroke fill;
+  color: white;
 }
 .response-modal__subtitle {
-  font-size: 80px;
+  font-size: clamp(32px, 7vw, 80px);
   font-weight: 700;
   margin-bottom: 120px;
-  margin-top: 20px;
+  margin-top: -40px;
   text-align: center;
-}
-
-@media (max-width: 1200px) {
-  .response-modal__title {
-    font-size: 140px;
-  }
-  .response-modal__subtitle {
-    font-size: 70px;
-    margin-bottom: 100px;
-    margin-top: 15px;
-  }
+  -webkit-text-stroke: 15px black;
+  paint-order: stroke fill;
+  color: white;
 }
 
 @media (max-width: 1024px) {
   .response-modal__title {
-    font-size: 120px;
+    -webkit-text-stroke: 15px black;
   }
   .response-modal__subtitle {
-    font-size: 60px;
+    -webkit-text-stroke: 10px black;
     margin-bottom: 80px;
-    margin-top: 10px;
+    margin-top: -30px;
   }
 }
 
 @media (max-width: 768px) {
   .response-modal__title {
-    font-size: 100px;
+    -webkit-text-stroke: 10px black;
   }
   .response-modal__subtitle {
-    font-size: 44px;
+    -webkit-text-stroke: 8px black;
     margin-bottom: 60px;
-    margin-top: 8px;
+    margin-top: -25px;
   }
 }
 
 @media (max-width: 480px) {
   .response-modal__title {
-    font-size: 80px;
+    -webkit-text-stroke: 8px black;
   }
   .response-modal__subtitle {
-    font-size: 32px;
+    -webkit-text-stroke: 6px black;
     margin-bottom: 40px;
-    margin-top: 5px;
+    margin-top: -20px;
     padding-inline: 12px;
   }
 }

@@ -17,6 +17,14 @@
   animation: bounce 2s infinite;
   cursor: pointer;
   z-index: 10;
+
+  @media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+    bottom: calc(var(--spacing-xl) + 90px);
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    display: none;
+  }
 }
 
 @keyframes bounce {
@@ -44,6 +52,19 @@
   color: white;
   -webkit-text-stroke: 25px black;
   paint-order: stroke fill;
+
+  @media (max-height: 600px) and (orientation: landscape) {
+    margin-bottom: var(--spacing-5xl);
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    margin-top: calc(30vh - 200px);
+    margin-bottom: var(--spacing-5xl);
+  }
+
+  @media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+    margin-top: calc(30vh - 120px);
+  }
 }
 .home-hero-image {
   width: var(--width-80);
@@ -51,6 +72,14 @@
   height: auto;
   margin-inline: auto;
   margin-bottom: var(--spacing-5xl);
+
+  @media (max-height: 600px) and (orientation: landscape) {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    margin-bottom: var(--spacing-xl);
+  }
 }
 .homepage h2 {
   font-size: var(--font-size-lg);
@@ -94,6 +123,10 @@
   justify-content: center;
   align-items: center;
   margin: 0 auto var(--spacing-7xl) auto;
+
+  @media (max-height: 600px) and (orientation: landscape) {
+    margin-bottom: var(--spacing-xl);
+  }
 }
 
 .home-button {

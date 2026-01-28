@@ -42,7 +42,7 @@
 
   @media (max-width: 1024px) {
     font-size: 56px;
-    padding: var(--spacing-2xl) var(--spacing-3xl);
+    padding: var(--spacing-sm) var(--spacing-3xl);
     &::placeholder {
       color: rgba(255, 255, 255, 1) !important;
       opacity: 1 !important;
