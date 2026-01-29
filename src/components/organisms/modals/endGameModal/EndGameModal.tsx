@@ -31,7 +31,6 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
     navigate("/");
     setIsEndGame(false);
   };
-  console.log(topPlayer?.avatar);
 
   return (
     <div className="round-modal__overlay" style={{ zIndex: 100 }}>
