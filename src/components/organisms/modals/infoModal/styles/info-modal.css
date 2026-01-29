@@ -55,7 +55,7 @@
 .info-modal__title {
   text-align: center;
   font-size: 40px;
-  font-family: "alfa-slab-one", sans-serif;
+  font-family: "Alfa Slab", sans-serif;
   margin-bottom: 4px;
 
   @media (max-width: 1200px) {
