@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import NewsCard from "../newsCard/NewsCard";
+import type { ThemeStyle } from "@/types/types";
 
 interface ToolProps {
   showResults: boolean;
@@ -7,7 +8,7 @@ interface ToolProps {
     caption?: string;
     bodyCopy?: string;
     tacticUsed?: string[];
-    villain?: string;
+    villain?: ThemeStyle;
     newsImage?: string;
   } | null;
 }
@@ -20,7 +21,7 @@ const mockInfluencer = {
     "Scientists just discovered that school water fountains contain a dangerous chemical also found in nuclear waste! Some schools have even been caught hiding the truth because they don't want to spend money fixing the pipes. Experts say drinking this water could cause permanent brain damage—but no one is warning students!",
   tacticUsed: ["Fabrication", "Fear-mongering"],
   villain: "The_Biost",
-  newsImage: "biost_water-fountain.webp",
+  newsImage: "scientist.webp",
 };
 
 const Tool = ({
@@ -48,11 +49,11 @@ const Tool = ({
       <div className="tool-newscard">
         <div className="sliding-background">
           <NewsCard
-            name={currentInfluencer?.caption}
-            description={currentInfluencer?.bodyCopy}
+            name={currentInfluencer?.caption ?? ""}
+            description={currentInfluencer?.bodyCopy ?? ""}
             example="Influencer Example"
-            category={currentInfluencer?.tacticUsed}
-            villain={currentInfluencer?.villain}
+            category={currentInfluencer?.tacticUsed ?? []}
+            villain={currentInfluencer?.villain as ThemeStyle}
             image={
               currentInfluencer?.newsImage
                 ? `/images/news/${currentInfluencer.newsImage}`
@@ -81,7 +82,8 @@ const Tool = ({
               top: "160px",
             }}
           />
-        ) : currentInfluencer?.tacticUsed[0] === "true" ? (
+        ) : currentInfluencer?.tacticUsed &&
+          currentInfluencer.tacticUsed[0] === "true" ? (
           <img
             src={"/images/tool/answers/facts.webp"}
             alt="reading"
@@ -91,7 +93,7 @@ const Tool = ({
             }}
           />
         ) : (
-          <ImageCarousel images={currentInfluencer?.tacticUsed} />
+          <ImageCarousel images={currentInfluencer?.tacticUsed ?? []} />
         )}
       </div>
       <style>

@@ -32,19 +32,14 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   const gameRoom = ctxGameRoom || propGameRoom;
   const gameRound = ctxGameRound || propGameRound;
 
-  const goHome = () => {
-    setThemeStyle("all");
-    navigate("/");
-  };
-
   const handleReturnToLobby = async () => {
     try {
       setThemeStyle("all");
       await returnToLobby();
-      navigate("/game/lobby");
+      navigate(-1);
     } catch (error) {
       console.error("[Scoreboard] Failed to return to lobby:", error);
-      navigate("/game/lobby");
+      navigate(-1);
     }
   };
 
@@ -56,7 +51,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
         title="Return to Lobby"
       >
         <img
-          src={`/images/buttons/home.png`}
+          src={`/images/buttons/home.webp`}
           alt="Return to lobby"
           style={{ cursor: "pointer", zIndex: 2 }}
           className="scoreboard__home-image"
@@ -71,7 +66,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
               <React.Fragment key={player?.id}>
                 {player?.isReady ? (
                   <img
-                    src={`/icons/player-ready.png`}
+                    src={`/icons/player-ready.webp`}
                     alt="Player ready"
                     width="60px"
                     style={{ zIndex: 2 }}
@@ -118,8 +113,8 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
           <img
             src={
               isSoundPlaying
-                ? "/images/buttons/audio.png"
-                : "/images/buttons/mute.png"
+                ? "/images/buttons/audio.webp"
+                : "/images/buttons/mute.webp"
             }
             alt="Sound Toggle"
             width={"100%"}
