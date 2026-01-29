@@ -62,7 +62,13 @@
   font-display: swap;
 }
 
-/* TODO: ad alfa slab one font here */
+@font-face {
+  font-family: "Alfa Slab";
+  src: url("/fonts/AlfaSlabOne-Regular.ttf") format("truetype");
+  font-weight: var(--font-weight-normal);
+  font-style: normal;
+  font-display: swap;
+}
 
 /* Global styles */
 #root {
