@@ -31,8 +31,15 @@ const ResponseModal = ({
         : players;
 
   const currentPlayer = sourcePlayers?.find(
-    (p) => p.name === currentPlayerName
+    (p) => p.name === currentPlayerName,
   );
+
+  console.log("[ResponseModal] Debug:", {
+    currentPlayerName,
+    currentPlayer,
+    hasWasCorrect: typeof currentPlayer?.wasCorrect !== "undefined",
+    sourcePlayers,
+  });
 
   const responseMsg: ResponseMessage = {
     wasCorrect: currentPlayer?.wasCorrect ?? false,
@@ -44,13 +51,26 @@ const ResponseModal = ({
   const hasScoring = typeof currentPlayer?.wasCorrect !== "undefined";
 
   useEffect(() => {
-    if (!hasScoring) return;
-    const timer = setTimeout(() => {
+    // If we have scoring data, show it for 3 seconds then advance
+    if (hasScoring) {
+      const timer = setTimeout(() => {
+        setShowScoreCard(true);
+        setShowResponseModal(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+
+    // Fallback: If no scoring data arrives within 5 seconds, advance anyway
+    const fallbackTimer = setTimeout(() => {
+      console.warn(
+        "[ResponseModal] No scoring data received, advancing to score modal",
+      );
       setShowScoreCard(true);
       setShowResponseModal(false);
-    }, 3000);
+    }, 5000);
 
-    return () => clearTimeout(timer);
+    return () => clearTimeout(fallbackTimer);
   }, [hasScoring, setShowScoreCard, setShowResponseModal]);
 
   return (
