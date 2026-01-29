@@ -1,8 +1,8 @@
 {
   "name": "super-debunkers",
-  "homepage": "https://dfg-five.vercel.app/",
+  "homepage": "https://super-debunkers.vercel.app/",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "packageManager": "pnpm@9.15.0",
   "scripts": {
