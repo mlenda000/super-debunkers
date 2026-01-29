@@ -10,6 +10,7 @@
   font-family: "Subway Berlin", sans-serif;
   font-size: clamp(52px, 4vw, 96px);
   -webkit-text-stroke: black 1px;
+  margin: 0;
 }
 .score-modal__title {
   display: flex;
@@ -20,7 +21,7 @@
   font-family: "Subway Berlin", sans-serif;
   -webkit-text-stroke: black 1px;
   width: var(--max-height-lg);
-  margin-bottom: 0;
+  margin: 0;
 }
 .score-modal__scores {
   display: flex;
@@ -29,7 +30,7 @@
   justify-content: center;
   width: var(--width-full);
   height: var(--height-full);
-  gap: var(--gap-grid-sm);
+  gap: var(--gap-grid-lg);
 }
 .score-modal__players {
   font-family: "Subway Berlin", sans-serif;
@@ -39,7 +40,7 @@
   justify-content: space-between;
   background-color: rgba(0, 0, 0, 0.7);
   width: var(--max-height-lg);
-  padding: var(--spacing-md);
+  padding: var(--spacing-xl);
   border-radius: var(--radius-md);
 }
 .score-modal__player-left {

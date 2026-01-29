@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AvatarImage from "@/components/atoms/avatarImage/AvatarImage";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
