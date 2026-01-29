@@ -5,6 +5,14 @@
   justify-content: space-between;
   font-family: "Subway Berlin", sans-serif;
   white-space: nowrap;
+  margin-top: 10px;
+}
+
+/* Tablet landscape */
+@media (orientation: landscape) and (min-height: 600px) and (max-height: 1100px) and (max-width: 1366px) {
+  .scoreboard {
+    margin-top: 20px;
+  }
 }
 
 .scoreboard__names {
@@ -61,6 +69,7 @@
   border-radius: 100%;
   position: relative;
   z-index: 103;
+  margin-left: 30px;
   &:hover {
     outline: white 2px;
     outline-offset: 2px;
@@ -77,6 +86,7 @@
   border: transparent;
   border-radius: 12px;
   cursor: pointer;
+  margin-left: 20px;
 }
 .scoreboard__home-image {
   width: clamp(24px, 4vw, 60px);
@@ -87,12 +97,46 @@
   display: block;
   color: white;
   font-family: "Subway Berlin", sans-serif;
-  font-size: clamp(12px, 2 0.5rem, 60px);
+  font-size: clamp(12px, 2vw + 0.5rem, 60px);
   margin: 0;
   line-height: 1.2;
+  -webkit-text-stroke: 15px black;
+  paint-order: stroke fill;
+}
 
-  @media (max-height: 600px) {
-    display: none;
+
+.scoreboard-timer h1 {
+  font-size: clamp(12px, 2vw + 0.5rem, 60px);
+  margin: 0;
+  -webkit-text-stroke: 15px black;
+  paint-order: stroke fill;
+  color: white;
+}
+
+/* Mobile landscape - reduce stroke and spacing */
+@media (orientation: landscape) and (max-height: 500px) {
+  .scoreboard__home-button {
+    margin-left: 16px;
+  }
+
+  .scoreboard__home-button-small {
+    -webkit-text-stroke: 8px black;
+  }
+
+  .scoreboard-timer h1 {
+    -webkit-text-stroke: 8px black;
+  }
+
+  .scoreboard-info__image {
+    margin-left: 10px;
+  }
+
+  .scoreboard-audio__button {
+    margin-left: 4px !important;
+  }
+
+  .scoreboard-right__container {
+    margin-right: 16px;
   }
 }
 

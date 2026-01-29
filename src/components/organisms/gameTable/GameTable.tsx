@@ -61,6 +61,9 @@ const GameTable: React.FC<GameTableProps> = ({
   const [playersHandItems, setPlayersHandItems] =
     useState<typeof playersHand>(playersHand);
   const [showingHand, setShowingHand] = useState(false);
+  const [showCardsModal, setShowCardsModal] = useState(false);
+  const [previewCard, setPreviewCard] = useState<typeof playersHand[0] | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [resetKey, setResetKey] = useState(0); // increments to signal table reset
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const playersHandRef = useRef<HTMLDivElement>(null);
@@ -90,7 +93,7 @@ const GameTable: React.FC<GameTableProps> = ({
   };
 
   const handleMoveCardToTable = useCallback(
-    (cardId: string) => {
+    (cardId: string, slotIndex?: number | null) => {
       const cardToMove = playersHandItems.find((item) => item.id === cardId);
       if (!cardToMove) return;
 
@@ -103,7 +106,15 @@ const GameTable: React.FC<GameTableProps> = ({
       const removeStartingText = mainTableItems.filter(
         (card) => String(card.id) !== "1"
       );
-      setMainTableItems([...removeStartingText, cardToMove]);
+
+      // If slot index is specified, insert at that position
+      if (slotIndex !== null && slotIndex !== undefined) {
+        const newItems = [...removeStartingText];
+        newItems.splice(slotIndex, 0, cardToMove);
+        setMainTableItems(newItems);
+      } else {
+        setMainTableItems([...removeStartingText, cardToMove]);
+      }
     },
     [playersHandItems, mainTableItems]
   );
@@ -193,19 +204,93 @@ const GameTable: React.FC<GameTableProps> = ({
           <Scoreboard
             isInfoModalOpen={isInfoModalOpen}
             setIsInfoModalOpen={setIsInfoModalOpen}
-          />{" "}
+          />
         </div>
 
         {/* Mobile navigation button */}
         <button
           className="scroll-nav-button"
-          onClick={() => scrollToSection(showingHand ? "table" : "hand")}
-          onTouchEnd={() => scrollToSection(showingHand ? "table" : "hand")}
+          onClick={() => {
+            const isMobileLandscape = window.matchMedia("(orientation: landscape) and (max-height: 500px)").matches;
+            if (isMobileLandscape) {
+              setShowCardsModal(true);
+            } else {
+              scrollToSection(showingHand ? "table" : "hand");
+            }
+          }}
           aria-label={showingHand ? "View game table" : "View your cards"}
           tabIndex={0}
         >
           {showingHand ? "← Table" : "Cards →"}
         </button>
+
+        {/* Fullscreen cards modal for mobile landscape */}
+        {showCardsModal && (
+          <div className="cards-modal-overlay">
+            <div className="cards-modal">
+              <button
+                className="cards-modal__close"
+                onClick={() => { setShowCardsModal(false); setSelectedSlot(null); }}
+                aria-label="Close cards"
+              >
+                <img src="/images/buttons/close.webp" alt="Close" />
+              </button>
+              <h2 className="cards-modal__title">Your Cards</h2>
+              <div className="cards-modal__grid">
+                {playersHandItems.map((card) => (
+                  <button
+                    key={card.id}
+                    className="cards-modal__card"
+                    onClick={() => setPreviewCard(card)}
+                  >
+                    <img src={card.image} alt={card.alt} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Card detail preview modal */}
+        {previewCard && (
+          <div className="card-preview-overlay" onClick={() => setPreviewCard(null)}>
+            <div className="card-preview" onClick={(e) => e.stopPropagation()}>
+              <div className="card-preview__container">
+                <div className="card-preview__image">
+                  <img src={previewCard.image} alt={previewCard.alt} />
+                </div>
+                <div className="card-preview__details">
+                  <h3 className="card-preview__title">{previewCard.category}</h3>
+                  <p className="card-preview__description">{previewCard.description}</p>
+                  {previewCard.example && (
+                    <p className="card-preview__example">
+                      <strong>Example:</strong> {previewCard.example}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="card-preview__actions">
+                <button
+                  className="card-preview__select"
+                  onClick={() => {
+                    handleMoveCardToTable(previewCard.id, selectedSlot);
+                    setPreviewCard(null);
+                    setShowCardsModal(false);
+                    setSelectedSlot(null);
+                  }}
+                >
+                  Select Card
+                </button>
+                <button
+                  className="card-preview__cancel"
+                  onClick={() => setPreviewCard(null)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div
           className="game-content-scroll"
@@ -257,6 +342,10 @@ const GameTable: React.FC<GameTableProps> = ({
                   setSubmitForScoring={setSubmitForScoring}
                   resetKey={resetKey}
                   syncCardIndex={gameRoom?.cardIndex}
+                  onOpenCardsModal={(slotIndex) => {
+                    setSelectedSlot(slotIndex);
+                    setShowCardsModal(true);
+                  }}
                 />
               </Droppable>
             </div>
