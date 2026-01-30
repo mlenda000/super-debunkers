@@ -25,13 +25,20 @@ const SortableCard = ({ id, children }: SortableCardProps) => {
   const style = {
     transform: CSS?.Transform?.toString(adjustedTransform),
     ...(transition ? { transition } : {}),
+    // Ensure dragged items appear above everything else
+    zIndex: transform ? 1000 : 1,
   };
+
+  // Only apply drag listeners on desktop (where drag and drop is useful)
+  // On mobile/touch, let the card's own touch handlers work
+  const isTouchDevice = "ontouchstart" in window;
+  const dragListeners = isTouchDevice ? {} : listeners;
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      {...listeners}
+      {...dragListeners}
       {...attributes}
       tabIndex={-1}
       className="sortable-item"

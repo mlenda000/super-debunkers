@@ -7,6 +7,7 @@
   position: relative;
   width: 120px;
   aspect-ratio: 921 / 1422;
+  z-index: 1;
 }
 
 .tactic-card-item:hover,
@@ -15,10 +16,13 @@
 .tactic-card-item:active {
   outline: 2px solid white;
   outline-offset: 2px;
+  z-index: 10;
 }
 
 @media (max-height: 600px) {
   .tactic-card-item {
     width: calc((100vw - 32px) / 6);
-    aspect-ratio: 921 / 1422;    max-height: 35vh;  }
+    aspect-ratio: 921 / 1422;
+    max-height: 35vh;
+  }
 }

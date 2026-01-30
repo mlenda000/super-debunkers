@@ -23,7 +23,7 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
   onMoveToTable,
 }) => {
   const tapCountRef = useRef(0);
-  const tapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const tapTimeoutRef = useRef<number | null>(null);
   const touchStartTimeRef = useRef<number>(0);
 
   const handleMouseEnter = () => {
@@ -73,6 +73,17 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
     }
   };
 
+  const handleClick = (e: React.MouseEvent) => {
+    // Only handle click on desktop (non-touch devices)
+    // Touch devices will use the touch handlers
+    if (!("ontouchstart" in window)) {
+      e.preventDefault();
+      if (onMoveToTable) {
+        onMoveToTable(id);
+      }
+    }
+  };
+
   return (
     <div
       key={category}
@@ -82,6 +93,7 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
       onFocus={handleFocus}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
+      onClick={handleClick}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       tabIndex={0}

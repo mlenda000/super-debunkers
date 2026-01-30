@@ -6,6 +6,7 @@ import { Droppable } from "@/components/atoms/droppable/Droppable";
 import {
   DndContext,
   type DragEndEvent,
+  DragOverlay,
   MouseSensor,
   TouchSensor,
   useSensor,
@@ -15,6 +16,7 @@ import { sendEndOfRound } from "@/utils/gameMessageUtils";
 import { subscribeToMessages } from "@/services/webSocketService";
 import MainTable from "../mainTable/MainTable";
 import PlayersHand from "@/components/organisms/playersHand/PlayersHand";
+import TacticCard from "@/components/organisms/tacticCard/TacticCard";
 import categoryCards from "@/data/tacticsCards.json";
 import Scoreboard from "@/components/molecules/scoreBoard/ScoreBoard";
 
@@ -60,6 +62,8 @@ const GameTable: React.FC<GameTableProps> = ({
     useState<typeof playersHand>(playersHand);
   const [showingHand, setShowingHand] = useState(false);
   const [resetKey, setResetKey] = useState(0); // increments to signal table reset
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const playersHandRef = useRef<HTMLDivElement>(null);
 
@@ -68,8 +72,31 @@ const GameTable: React.FC<GameTableProps> = ({
   const touchSensor = useSensor(TouchSensor);
   const sensors = useSensors(mouseSensor, touchSensor);
 
-  const handleDrop = (event: DragEndEvent) => {
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      const newIsMobile = window.innerHeight <= 600;
+      const previousIsMobile = isMobile;
+
+      if (previousIsMobile !== newIsMobile) {
+        // Resolution changed - reset showingHand to ensure clean state
+        setShowingHand(false);
+        setIsMobile(newIsMobile);
+      }
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, [isMobile]);
+
+  const handleDragStart = (event: any) => {
+    setActiveId(event.active.id);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    setActiveId(null);
+
     if (over?.id == null) {
       return;
     }
@@ -181,7 +208,11 @@ const GameTable: React.FC<GameTableProps> = ({
   ]);
 
   return (
-    <DndContext onDragEnd={handleDrop} sensors={sensors}>
+    <DndContext
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      sensors={sensors}
+    >
       <>
         <div className="game-wrapper">
           <div
@@ -193,7 +224,10 @@ const GameTable: React.FC<GameTableProps> = ({
             onKeyDown={handleKeyDown}
           >
             {/* Grid Row Top - Scoreboard */}
-            <div className="score" inert={showingHand}>
+            <div
+              className="score"
+              {...(isMobile && showingHand ? { inert: true } : {})}
+            >
               <Scoreboard
                 isInfoModalOpen={isInfoModalOpen}
                 setIsInfoModalOpen={setIsInfoModalOpen}
@@ -204,7 +238,7 @@ const GameTable: React.FC<GameTableProps> = ({
             <div
               className="maintable"
               aria-label="Game table"
-              inert={showingHand}
+              {...(isMobile && showingHand ? { inert: true } : {})}
             >
               <Droppable className="main-table-droppable">
                 <MainTable
@@ -244,7 +278,7 @@ const GameTable: React.FC<GameTableProps> = ({
               className="playershand"
               ref={playersHandRef}
               aria-label="Your cards"
-              inert={!showingHand}
+              {...(isMobile && !showingHand ? { inert: true } : {})}
             >
               <PlayersHand
                 items={playersHandItems}
@@ -264,6 +298,31 @@ const GameTable: React.FC<GameTableProps> = ({
           {showingHand ? "← Table" : "Cards →"}
         </button>
       </>
+
+      {/* DragOverlay renders the dragged card at root level, above all other content */}
+      <DragOverlay>
+        {activeId
+          ? (() => {
+              const card = playersHandItems.find(
+                (item) => item.id === activeId,
+              );
+              return card ? (
+                <TacticCard
+                  title={card.title}
+                  category={card.category}
+                  image={card.image}
+                  example={card.example}
+                  alt={card.alt}
+                  imageBack={card.imageBack}
+                  description={card.description}
+                  id={card.id}
+                  hoveredCardId={null}
+                  setHoveredCardId={() => {}}
+                />
+              ) : null;
+            })()
+          : null}
+      </DragOverlay>
     </DndContext>
   );
 };
