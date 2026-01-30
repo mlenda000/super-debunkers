@@ -100,6 +100,51 @@
       bottom: 5px;
     }
   }
+
+  /* Tablet landscape - keep side by side */
+  @media (orientation: landscape) and (min-height: 600px) and (max-height: 1100px) and (max-width: 1366px) {
+    grid-template-columns: repeat(2, 1fr);
+    padding-inline: 100px;
+
+    .main-table__influencer {
+      width: 80%;
+    }
+
+    .main-table__tactics {
+      height: 280px;
+      margin-right: 0;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: center;
+      place-content: center;
+      padding-bottom: 0;
+    }
+
+    .main-table__finish-round {
+      position: static;
+      transform: none;
+      scale: 1;
+      margin-left: 20px;
+      align-self: center;
+    }
+  }
+
+  /* Mobile landscape */
+  @media (orientation: landscape) and (max-height: 500px) {
+    grid-template-columns: repeat(2, 1fr);
+
+    .main-table__tactics {
+      height: 200px;
+      margin-right: 0;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      outline: none;
+    }
+  }
 }
 
 .main-table__place-cards {
@@ -112,4 +157,108 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Card placeholder slots */
+.main-table__card-slots {
+  display: none;
+}
+
+.main-table__desktop-cards {
+  display: contents;
+}
+
+.main-table__finish-round--mobile {
+  display: none;
+}
+
+.main-table__card-slot {
+  aspect-ratio: 2.5 / 3.5;
+  border: 1px dashed rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: transparent;
+  padding: 0;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.main-table__card-slot:hover,
+.main-table__card-slot:focus {
+  border-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+.main-table__card-slot-text {
+  font-family: "Subway Berlin", sans-serif;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  padding: 4px;
+}
+
+/* Mobile landscape - show card slots instead of text */
+@media (orientation: landscape) and (max-height: 500px) {
+  .main-table__background {
+    display: none !important;
+  }
+
+  .main-table__place-cards {
+    display: none;
+  }
+
+  .main-table__card-slots {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .main-table__card-slot {
+    height: 160px;
+  }
+
+  .main-table__card-slot-text {
+    font-size: 14px;
+  }
+
+  .main-table__card-slots .played-card {
+    margin: 0 !important;
+    height: 160px !important;
+    overflow: visible;
+  }
+
+  .main-table__card-slots .played-card .played-card__image {
+    height: 160px !important;
+    max-height: 160px !important;
+  }
+
+  .main-table__desktop-cards {
+    display: none;
+  }
+
+  .main-table__finish-round:not(.main-table__finish-round--mobile) {
+    display: none;
+  }
+
+  .main-table__finish-round.main-table__finish-round--mobile {
+    display: flex !important;
+    align-items: center;
+    position: static;
+    transform: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-left: 20px;
+    cursor: pointer;
+    height: 100px;
+  }
 }
