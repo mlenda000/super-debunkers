@@ -6,6 +6,7 @@ import {
 } from "@/services/webSocketService";
 import { useGameContext } from "@/hooks/useGameContext";
 import { sendPlayerLeaves } from "@/utils/gameMessageUtils";
+// import Scoreboard from "@/components/organisms/scoreboard/Scoreboard";
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
 import GameTable from "@/components/organisms/gameTable/GameTable";
 import ResultModal from "@/components/organisms/modals/resultModal/ResultModal";
@@ -14,7 +15,6 @@ import ResponseModal from "@/components/organisms/modals/responseModal/ResponseM
 import ScoreModal from "@/components/organisms/modals/scoreModal/ScoreModal";
 import EndGameModal from "@/components/organisms/modals/endGameModal/EndGameModal";
 import InfoModal from "@/components/organisms/modals/infoModal/InfoModal";
-import type { GameDeck } from "@/types/gameTypes";
 
 const GamePage = () => {
   const { room: roomId } = useParams<{ room: string }>();
@@ -29,7 +29,10 @@ const GamePage = () => {
   const hasJoinedRef = useRef(false);
   const setupTimeRef = useRef<number>(0);
 
-  const [showRoundModal, setShowRoundModal] = useState<boolean>(true);
+  // const [finalRound, setFinalRound] = useState<boolean>(false);
+
+  // TODO: Aaron change these from false to true to test modals and see them on the gamepage
+  const [showRoundModal, setShowRoundModal] = useState<boolean>(true); // Show on initial load
   const [roundEnd, setRoundEnd] = useState<boolean>(false);
   const [roundHasEnded, setRoundHasEnded] = useState<boolean>(false);
   const [isEndGame, setIsEndGame] = useState<boolean>(false);
@@ -43,7 +46,7 @@ const GamePage = () => {
     if (state?.gameRoom) {
       console.log(
         "[GamePage] Initializing with navigation state:",
-        state.gameRoom,
+        state.gameRoom
       );
       setGameRoom?.(state.gameRoom);
 
@@ -87,7 +90,7 @@ const GamePage = () => {
   useEffect(() => {
     console.log(
       "[GamePage] Setting up message subscription for roomId:",
-      roomId,
+      roomId
     );
 
     // Mark when subscription was set up (to guard against StrictMode cleanup)
@@ -97,7 +100,7 @@ const GamePage = () => {
       if (message.type === "roomUpdate" && message.room === roomId) {
         console.log(
           "[GamePage] ✅ Processing roomUpdate - updating context with players:",
-          message.players,
+          message.players
         );
 
         setGameRoom?.({
@@ -108,7 +111,7 @@ const GamePage = () => {
             count: message.count || 0,
             players: message.players || [],
             name: message.room || "",
-            deck: message.deck as GameDeck,
+            deck: message.deck,
           },
         });
 
@@ -119,6 +122,19 @@ const GamePage = () => {
 
         if (message.deck) {
           setIsDeckShuffled?.(message.deck.isShuffled || false);
+        }
+
+        if (message.newsCard) {
+          console.log(
+            "[GamePage] Setting newsCard/activeNewsCard to:",
+            message.newsCard
+          );
+          setActiveNewsCard?.(message.newsCard);
+        }
+
+        if (message.themeStyle) {
+          console.log("[GamePage] Setting theme to:", message.themeStyle);
+          // Note: themeStyle is set in MainTable when influencer changes
         }
       } else if (message.type === "roomUpdate") {
         console.log("[GamePage] ❌ Ignoring roomUpdate for different room", {
@@ -183,7 +199,7 @@ const GamePage = () => {
         if (socket && roomId) {
           console.log(
             "[GamePage] Window closing, sending playerLeaves for room:",
-            roomId,
+            roomId
           );
           sendPlayerLeaves(socket, roomId);
         }
@@ -204,6 +220,8 @@ const GamePage = () => {
         roundHasEnded={roundHasEnded}
         setRoundHasEnded={setRoundHasEnded}
         gameRoom={gameRoom}
+        isInfoModalOpen={isInfoModalOpen}
+        setIsInfoModalOpen={setIsInfoModalOpen}
       />
       {showRoundModal && <RoundModal />}
       {roundEnd && (

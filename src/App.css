@@ -35,6 +35,7 @@
 @import "./components/organisms/modals/resultModal/styles/result-modal.css";
 @import "./components/organisms/modals/roundModal/styles/round-modal.css";
 @import "./components/organisms/modals/scoreModal/styles/score-modal.css";
+@import "./components/organisms/modals/endGameModal/styles/end-game-modal.css";
 @import "./components/templates/createRoomPage/styles/create-room-page.css";
 @import "./components/templates/gamePage/styles/game-page.css";
 @import "./components/templates/homePage/styles/home-page.css";
@@ -57,14 +58,6 @@
 @font-face {
   font-family: "Subway Berlin";
   src: url("/fonts/subway-berlin-sc.otf") format("opentype");
-  font-weight: var(--font-weight-normal);
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Alfa Slab";
-  src: url("/fonts/AlfaSlabOne-Regular.ttf") format("truetype");
   font-weight: var(--font-weight-normal);
   font-style: normal;
   font-display: swap;
