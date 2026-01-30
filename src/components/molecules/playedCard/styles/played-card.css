@@ -3,6 +3,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   .played-card__content {
     border-radius: 10px;
@@ -55,105 +57,31 @@
   cursor: pointer;
 }
 
-@media (max-width: 1200px) {
+@media (max-height: 600px) {
   .played-card {
-    margin: 10px;
+    margin: 2px;
+    width: 100%;
+    height: 100%;
+    max-width: calc((100vw - 40px) / 6);
+    max-height: 100%;
 
     .played-card__content {
-      height: 250px;
+      width: 100%;
+      height: 100%;
     }
 
     .played-card__image {
-      height: 275px;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .played-card__title {
-      font-size: 1.2rem;
-      margin-top: 45%;
+      display: none;
     }
 
     .played-card__description {
-      font-size: 0.7rem;
-    }
-  }
-
-  .played-card__undo-icon {
-    width: 45px;
-    height: 45px;
-  }
-}
-
-@media (max-width: 1028px) {
-  .played-card {
-    margin: 8px;
-
-    .played-card__content {
-      height: 225px;
-    }
-
-    .played-card__title {
-      font-size: 1.1rem;
-      margin-top: 40%;
-    }
-
-    .played-card__description {
-      font-size: 0.65rem;
-    }
-  }
-
-  .played-card__undo-icon {
-    width: 40px;
-    height: 40px;
-  }
-}
-
-@media (max-width: 768px) {
-  .played-card {
-    margin: 6px;
-
-    .played-card__content {
-      height: 200px;
-    }
-
-    .played-card__image {
-      height: 275px;
-    }
-
-    .played-card__title {
-      font-size: 1rem;
-      margin-top: 35%;
-    }
-
-    .played-card__description {
-      font-size: 0.6rem;
-    }
-  }
-
-  .played-card__undo-icon {
-    width: 35px;
-    height: 35px;
-  }
-}
-
-@media (max-width: 480px) {
-  .played-card {
-    margin: 4px;
-
-    .played-card__content {
-      height: 175px;
-    }
-
-    .played-card__image {
-      height: 225px;
-    }
-
-    .played-card__title {
-      font-size: 0.9rem;
-      margin-top: 30%;
-    }
-
-    .played-card__description {
-      font-size: 0.55rem;
+      display: none;
     }
   }
 

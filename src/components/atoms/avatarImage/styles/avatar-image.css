@@ -15,7 +15,6 @@
   transition: transform 0.3s ease;
   stroke: 2px transparent;
 
-  
   @media (max-width: 1024px) {
     max-width: clamp(50px, 11vw, 100px);
   }
@@ -26,6 +25,10 @@
 
   @media (max-width: 480px) {
     max-width: clamp(30px, 16vw, 60px);
+  }
+
+  @media (max-height: 600px) {
+    max-width: clamp(24px, 5vh, 60px);
   }
 }
 
@@ -66,7 +69,8 @@
 }
 
 @keyframes avatar-pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1.2);
   }
   50% {

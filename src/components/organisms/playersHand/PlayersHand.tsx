@@ -9,8 +9,12 @@ const PlayersHand: React.FC<PlayersHandProps> = ({
 }) => {
   const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
   return (
-    <div className="players-area">
-      <div className="players-hand" style={{ maxHeight: "185px" }}>
+    <div
+      className="players-area"
+      role="region"
+      aria-label="Player's hand of cards"
+    >
+      <div className="players-hand">
         {items.map((card) => (
           <SortableCard key={card?.id} id={card?.id}>
             <TacticCard

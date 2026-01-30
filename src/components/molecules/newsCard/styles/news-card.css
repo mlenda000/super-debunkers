@@ -2,7 +2,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 580px;
+  width: fit-content;
+  max-width: 100%;
+  min-width: auto;
   position: relative;
   border: solid 3px black;
   border-radius: 10px;
@@ -20,24 +22,25 @@
     padding-left: 0;
     padding-block: 0;
     overflow: hidden;
-    max-width: 700px;
-    max-height: 400px;
+    width: fit-content;
+    max-height: clamp(200px, 50vh, 400px);
   }
 
   .news-card__images {
-    max-height: 400px;
+    max-height: clamp(200px, 50vh, 400px);
     width: auto;
+    flex-shrink: 0;
   }
 
   .news-card__title {
     font-family: "DIN", sans-serif;
-    font-size: 22px;
+    font-size: clamp(12px, 2.2vw, 22px);
     font-weight: 400;
     margin-block: 4px;
   }
 
   .news-card__description {
-    font-size: 16px;
+    font-size: clamp(10px, 1.6vw, 16px);
     font-weight: 400;
     margin-bottom: 0;
     padding-bottom: 0;
@@ -50,8 +53,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    padding-inline: 24px;
-    width: 400px;
+    padding-inline: clamp(12px, 2vw, 24px);
+    width: clamp(150px, 100%, 400px);
     text-wrap: balance;
   }
 }
@@ -60,14 +63,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 25px;
-  min-width: 480px;
+  padding: clamp(8px, 2vw, 25px);
+  min-width: auto;
+  width: 100%;
+  max-width: 100%;
 
   .news-card__content {
     --color-primary: black;
     padding: 12px;
     background-color: white;
     background-image: url("/images/news/news-bg.webp");
+    background-size: cover;
     color: var(--color-primary);
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -75,24 +81,25 @@
     padding-left: 0;
     padding-block: 0;
     overflow: hidden;
-    width: 660px;
-    height: 350px;
+    width: clamp(264px, 100%, 660px);
+    height: clamp(140px, 50vh, 350px);
   }
 
   .news-card__images {
-    max-height: 350px;
+    max-height: clamp(140px, 50vh, 350px);
     width: auto;
+    flex-shrink: 0;
   }
 
   .news-card__title {
     font-family: "Alfa Slab", serif;
-    font-size: 22px;
+    font-size: clamp(11px, 2.2vw, 22px);
     font-weight: 400;
     margin-bottom: 0.5rem;
   }
 
   .news-card__description {
-    font-size: 14px;
+    font-size: clamp(7px, 1.4vw, 14px);
     font-weight: 400;
     margin-bottom: 0.5rem;
     font-family: "Plus Jakarta Sans", sans-serif;
@@ -103,202 +110,201 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    font-size: 14px;
+    font-size: clamp(7px, 1vw, 14px);
     font-weight: 400;
-    padding: 24px;
+    padding: clamp(8px, 2vw, 24px);
+    overflow: hidden;
+    max-height: 100%;
   }
 }
 
 .news-card__tactic-count {
   position: absolute;
-  bottom: 25px;
-  right: 30px;
+  bottom: 20px;
+  right: 20px;
+}
+
+@media (max-height: 600px) {
+  .news-card {
+    .news-card__content {
+      max-width: clamp(250px, 90%, 500px);
+      max-height: clamp(200px, 60vh, 400px);
+      flex-direction: row;
+      overflow: visible;
+      position: relative;
+    }
+
+    .news-card__images {
+      height: 100%;
+      width: auto;
+      max-width: none;
+      min-width: auto;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      margin-left: -20%;
+      flex-shrink: 0;
+    }
+
+    .news-card__title {
+      font-size: clamp(8px, 1.4vw, 13px);
+      margin-block: 2px;
+    }
+
+    .news-card__description {
+      font-size: clamp(8px, 1.2vw, 11px);
+      line-height: 1.2;
+    }
+
+    .news-card__text {
+      padding-inline: clamp(8px, 1vw, 12px);
+    }
+
+    .news-card__tactic-count {
+      bottom: 5px;
+      right: 5px;
+    }
+  }
+
+  .news-card__modal {
+    padding: clamp(6px, 1.5vw, 12px);
+
+    .news-card__content {
+      width: clamp(220px, 85%, 500px);
+      height: clamp(120px, 35vh, 250px);
+      flex-direction: row;
+    }
+
+    .news-card__images {
+      max-height: clamp(120px, 35vh, 250px);
+      max-width: 28%;
+      min-width: 70px;
+    }
+
+    .news-card__title {
+      font-size: clamp(9px, 1.6vw, 14px);
+      margin-bottom: 2px;
+    }
+
+    .news-card__description {
+      font-size: clamp(6px, 1vw, 10px);
+      margin-bottom: 0;
+      line-height: 1.1;
+    }
+
+    .news-card__text {
+      padding: clamp(6px, 1vw, 12px);
+    }
+  }
 }
 
 @media (max-width: 1200px) {
   .news-card__modal {
-    min-width: 450px;
-    padding: 20px;
+    padding: clamp(12px, 2vw, 20px);
 
     .news-card__content {
-      width: 560px;
-      height: 298px;
+      width: clamp(264px, 90%, 560px);
+      height: clamp(140px, 40vh, 298px);
     }
 
     .news-card__images {
-      max-height: 298px;
-    }
-
-    .news-card__title {
-      font-size: 19px;
-    }
-
-    .news-card__description {
-      font-size: 12px;
-    }
-
-    .news-card__text {
-      padding: 20px;
+      max-height: clamp(140px, 40vh, 298px);
     }
   }
 }
 
 @media (max-width: 1028px) {
   .news-card {
-    min-width: 500px;
-
-    .news-card__title {
-      font-size: 20px;
-    }
-
-    .news-card__description {
-      font-size: 14px;
-    }
-
-    .news-card__text {
-      width: 350px;
-      padding-inline: 20px;
-    }
+    max-width: clamp(250px, 90%, 500px);
   }
 
   .news-card__modal {
-    min-width: 380px;
-    padding: 16px;
+    padding: clamp(12px, 1.5vw, 16px);
 
     .news-card__content {
-      width: 462px;
-      height: 245px;
+      width: clamp(264px, 85%, 462px);
+      height: clamp(140px, 35vh, 245px);
     }
 
     .news-card__images {
-      max-height: 245px;
-    }
-
-    .news-card__title {
-      font-size: 16px;
-    }
-
-    .news-card__description {
-      font-size: 10px;
-    }
-
-    .news-card__text {
-      font-size: 10px;
-      padding: 16px;
+      max-height: clamp(140px, 35vh, 245px);
     }
   }
 }
 
 @media (max-width: 768px) {
   .news-card {
-    min-width: 300px;
     max-width: 90%;
 
-    .news-card__title {
-      font-size: 16px;
+    .news-card__content {
+      flex-direction: row;
     }
 
     .news-card__images {
-      max-height: 300px;
-      width: auto;
-    }
-
-    .news-card__description {
-      font-size: 12px;
+      max-width: 35%;
+      min-width: 80px;
     }
 
     .news-card__text {
-      width: 100%;
-      padding-inline: 16px;
-    }
-
-    .news-card__tactic-count {
-      bottom: 10px;
-      right: 20px;
+      flex: 1;
     }
   }
 
   .news-card__modal {
-    min-width: 300px;
-    padding: 12px;
+    padding: clamp(8px, 1.5vw, 12px);
 
     .news-card__content {
-      width: 363px;
-      height: 193px;
+      width: clamp(240px, 85%, 363px);
+      height: clamp(130px, 30vh, 193px);
+      flex-direction: row;
     }
 
     .news-card__images {
-      max-height: 193px;
-    }
-
-    .news-card__title {
-      font-size: 14px;
-    }
-
-    .news-card__description {
-      font-size: 9px;
+      max-width: 32%;
+      min-width: 70px;
+      max-height: clamp(130px, 30vh, 193px);
     }
 
     .news-card__text {
-      font-size: 9px;
-      padding: 12px;
+      flex: 1;
     }
   }
 }
 
 @media (max-width: 480px) {
   .news-card {
-    min-width: initial;
     max-width: 90%;
 
-    .news-card__title {
-      font-size: 14px;
+    .news-card__content {
+      flex-direction: row;
     }
 
     .news-card__images {
-      max-height: 250px;
-      width: auto;
-    }
-
-    .news-card__description {
-      font-size: 10px;
+      max-width: 30%;
+      min-width: 60px;
     }
 
     .news-card__text {
-      width: 100%;
-      padding-inline: 12px;
-    }
-
-    .news-card__tactic-count {
-      bottom: 5px;
-      right: 10px;
+      flex: 1;
     }
   }
 
   .news-card__modal {
-    min-width: 220px;
-    padding: 8px;
+    padding: clamp(6px, 1.5vw, 8px);
 
     .news-card__content {
-      width: 264px;
-      height: 140px;
+      width: clamp(200px, 85%, 264px);
+      height: clamp(110px, 25vh, 140px);
+      flex-direction: row;
     }
 
     .news-card__images {
-      max-height: 140px;
-    }
-
-    .news-card__title {
-      font-size: 11px;
-    }
-
-    .news-card__description {
-      font-size: 7px;
+      max-width: 28%;
+      min-width: 50px;
+      max-height: clamp(110px, 25vh, 140px);
     }
 
     .news-card__text {
-      font-size: 7px;
-      padding: 8px;
+      flex: 1;
     }
   }
 }
