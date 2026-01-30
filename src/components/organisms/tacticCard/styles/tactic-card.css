@@ -22,3 +22,10 @@
     width: calc((100vw - 32px) / 6);
     aspect-ratio: 921 / 1422;    max-height: 35vh;  }
 }
+
+/* Tablet landscape - reduce card size */
+@media (orientation: landscape) and (min-height: 600px) and (max-height: 1100px) and (max-width: 1366px) {
+  .tactic-card-item {
+    width: 100px;
+  }
+}
