@@ -126,3 +126,17 @@
     transform: translateX(-100vw);
   }
 }
+
+/* Tablet landscape - shift content down */
+@media (orientation: landscape) and (min-height: 600px) and (max-height: 1100px) and (max-width: 1366px) {
+  .container {
+    padding-top: 100px;
+  }
+}
+
+/* Mobile landscape - shift content down */
+@media (orientation: landscape) and (max-height: 500px) {
+  .container {
+    padding-top: 30px;
+  }
+}
