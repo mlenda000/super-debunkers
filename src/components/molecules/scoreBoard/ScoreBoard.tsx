@@ -70,7 +70,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
 
   return (
     <div className="scoreboard">
-      <audio ref={audioRef} src="/images/music/music.mp3" loop />
+      <audio ref={audioRef} src="/audio/music.mp3" loop />
       <button
         className="scoreboard__home-button"
         onClick={() => handleReturnToLobby()}

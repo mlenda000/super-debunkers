@@ -33,9 +33,9 @@
 @import "./components/organisms/modals/infoModal/styles/info-modal.css";
 @import "./components/organisms/modals/responseModal/styles/response-modal.css";
 @import "./components/organisms/modals/resultModal/styles/result-modal.css";
-@import "./components/organisms/modals/roundModal/styles/round-modal.css";
-@import "./components/organisms/modals/scoreModal/styles/score-modal.css";
-@import "./components/organisms/modals/endGameModal/styles/end-game-modal.css";
+/* @import "./components/organisms/modals/roundModal/styles/round-modal.css"; */
+/* @import "./components/organisms/modals/scoreModal/styles/score-modal.css"; */
+/* @import "./components/organisms/modals/endGameModal/styles/end-game-modal.css"; */
 @import "./components/templates/createRoomPage/styles/create-room-page.css";
 @import "./components/templates/gamePage/styles/game-page.css";
 @import "./components/templates/homePage/styles/home-page.css";

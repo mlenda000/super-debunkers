@@ -41,6 +41,7 @@
   @media (orientation: landscape) and (max-width: 1024px) {
     top: 35px;
     width: calc(60% + 60px);
+    max-height: 50vh;
   }
 }
 
@@ -50,8 +51,8 @@
   border-radius: 8px;
   background-color: white;
   color: black;
-  font-size: 22px;
-  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(14px, 3vh, 22px);
+  font-family: "DIN Alternate", sans-serif;
   font-weight: 300;
   text-align: left;
 
@@ -60,23 +61,16 @@
   }
 
   @media (max-width: 1200px) {
-    font-size: 20px;
     padding: 16px;
   }
   @media (max-width: 1024px) {
-    font-size: 18px;
     padding: 14px;
   }
   @media (max-width: 768px) {
-    font-size: 16px;
     padding: 10px;
   }
   @media (max-width: 480px) {
-    font-size: 14px;
     padding: 8px;
-  }
-  @media (orientation: landscape) {
-    font-size: 16px;
   }
 }
 
@@ -99,24 +93,8 @@
 
 .info-modal__title {
   text-align: center;
-  font-size: 40px;
+  font-size: clamp(22px, 3vw, 40px);
   font-family: "Alfa Slab One", serif;
+  -webkit-text-stroke: black var(--title-stroke-size);
   margin-bottom: 4px;
-
-  @media (max-width: 1200px) {
-    font-size: 32px;
-    -webkit-text-stroke: black 0.8px;
-  }
-  @media (max-width: 1024px) {
-    font-size: 28px;
-    -webkit-text-stroke: black 0.7px;
-  }
-  @media (max-width: 768px) {
-    font-size: 26px;
-    -webkit-text-stroke: black 0.6px;
-  }
-  @media (max-width: 480px) {
-    font-size: 22px;
-    -webkit-text-stroke: black 0.5px;
-  }
 }

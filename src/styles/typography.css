@@ -23,4 +23,7 @@
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-bold: 700;
+
+  /* Stroke sizes */
+  --title-stroke-size: clamp(0.5px, 10vh, 1px);
 }
