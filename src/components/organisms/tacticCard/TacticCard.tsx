@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import TacticCardBack from "@/components/molecules/tacticCardBack/TacticCardBack";
 import TacticCardFront from "@/components/molecules/tacticCardFront/TacticCardFront";
 import type { TacticCardProps } from "@/types/types";
@@ -21,6 +22,10 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
   setHoveredCardId,
   onMoveToTable,
 }) => {
+  const tapCountRef = useRef(0);
+  const tapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const touchStartTimeRef = useRef<number>(0);
+
   const handleMouseEnter = () => {
     setHoveredCardId(id);
   };
@@ -37,6 +42,37 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
     }
   };
 
+  const handleTouchStart = () => {
+    touchStartTimeRef.current = Date.now();
+  };
+
+  const handleTouchEnd = () => {
+    const touchDuration = Date.now() - touchStartTimeRef.current;
+    // Only count as tap if touch was quick (< 500ms)
+    if (touchDuration < 500) {
+      tapCountRef.current += 1;
+
+      // Clear previous timeout
+      if (tapTimeoutRef.current) {
+        clearTimeout(tapTimeoutRef.current);
+      }
+
+      if (tapCountRef.current === 1) {
+        // Single tap - show the back of the card
+        setHoveredCardId(id);
+        tapTimeoutRef.current = setTimeout(() => {
+          tapCountRef.current = 0;
+        }, 300);
+      } else if (tapCountRef.current === 2) {
+        // Double tap - move card to table
+        tapCountRef.current = 0;
+        if (onMoveToTable) {
+          onMoveToTable(id);
+        }
+      }
+    }
+  };
+
   return (
     <div
       key={category}
@@ -46,9 +82,11 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
       onFocus={handleFocus}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       tabIndex={0}
       role="button"
-      aria-label={`Tactic card: ${category}. Press Enter or Space to move to table`}
+      aria-label={`Tactic card: ${category}. Press Enter or Space to move to table. Tap once to preview, double-tap to select.`}
     >
       {hoveredCardId === id ? (
         <TacticCardBack

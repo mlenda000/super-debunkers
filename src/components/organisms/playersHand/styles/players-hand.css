@@ -1,39 +1,48 @@
 .players-area {
   display: flex;
   flex-direction: column;
-  padding-top: 40px;
+  padding-top: 1rem;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
 
   @media (max-width: 1200px) {
-    padding-top: 35px;
+    padding-top: 1rem;
     align-items: center;
   }
 
   @media (max-width: 1028px) {
-    padding-top: 45px;
+    padding-top: 1rem;
   }
 
   @media (max-width: 768px) {
-    padding-top: 80px;
+    padding-top: 1rem;
   }
 
   @media (max-width: 480px) {
-    padding-top: 90px;
+    padding-top: 1rem;
+  }
+
+  @media (max-height: 600px) {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 }
 
 .players-hand {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding-inline: 16px;
   gap: 16px;
-  bottom: 40px;
+  width: 100%;
+  flex-wrap: nowrap;
 
   @media (max-width: 1200px) {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-auto-rows: auto;
     gap: 16px;
-    bottom: 35px;
   }
 
   @media (max-width: 1028px) {
@@ -41,7 +50,6 @@
     grid-template-columns: repeat(6, 1fr);
     grid-auto-rows: auto;
     gap: 14px;
-    bottom: 30px;
   }
 
   @media (max-width: 768px) {
@@ -49,7 +57,6 @@
     grid-template-columns: repeat(4, 1fr);
     grid-auto-rows: auto;
     gap: 12px;
-    bottom: 30px;
   }
 
   @media (max-width: 480px) {
@@ -57,6 +64,17 @@
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: auto;
     gap: 8px;
-    bottom: 20px;
+  }
+
+  @media (max-height: 600px) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding-inline: 4px;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    align-content: flex-start;
   }
 }

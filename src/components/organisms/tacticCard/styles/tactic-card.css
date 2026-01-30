@@ -16,3 +16,9 @@
   outline: 2px solid white;
   outline-offset: 2px;
 }
+
+@media (max-height: 600px) {
+  .tactic-card-item {
+    width: calc((100vw - 32px) / 6);
+    aspect-ratio: 921 / 1422;    max-height: 35vh;  }
+}

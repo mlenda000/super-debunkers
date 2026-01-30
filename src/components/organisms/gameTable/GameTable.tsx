@@ -11,7 +11,6 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { sendEndOfRound } from "@/utils/gameMessageUtils";
 import { subscribeToMessages } from "@/services/webSocketService";
 import MainTable from "../mainTable/MainTable";
@@ -75,10 +74,10 @@ const GameTable: React.FC<GameTableProps> = ({
       if (!activeCard) return;
 
       setPlayersHandItems((items) =>
-        items.filter((item) => item.id !== active.id)
+        items.filter((item) => item.id !== active.id),
       );
       const removeStartingText = mainTableItems.filter(
-        (card) => String(card.id) !== "1"
+        (card) => String(card.id) !== "1",
       );
       setMainTableItems([...removeStartingText, activeCard]);
     }
@@ -91,16 +90,16 @@ const GameTable: React.FC<GameTableProps> = ({
 
       // Remove from hand
       setPlayersHandItems((items) =>
-        items.filter((item) => item.id !== cardId)
+        items.filter((item) => item.id !== cardId),
       );
 
       // Add to table (remove placeholder first)
       const removeStartingText = mainTableItems.filter(
-        (card) => String(card.id) !== "1"
+        (card) => String(card.id) !== "1",
       );
       setMainTableItems([...removeStartingText, cardToMove]);
     },
-    [playersHandItems, mainTableItems]
+    [playersHandItems, mainTableItems],
   );
 
   useEffect(() => {
@@ -127,33 +126,33 @@ const GameTable: React.FC<GameTableProps> = ({
   }, [gameRoom?.room, gameRoom?.roomData?.name, setRoundEnd]);
 
   const scrollToSection = useCallback((section: "table" | "hand") => {
-    if (!scrollContainerRef.current) return;
-
-    const container = scrollContainerRef.current;
-    if (section === "hand") {
-      container.scrollTo({ left: container.scrollWidth, behavior: "smooth" });
-      setShowingHand(true);
-    } else {
-      container.scrollTo({ left: 0, behavior: "smooth" });
-      setShowingHand(false);
-    }
+    setShowingHand(section === "hand");
   }, []);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
-      if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      // Arrow keys to navigate between views
+      if (event.key === "ArrowRight") {
         event.preventDefault();
-        scrollToSection(event.key === "ArrowRight" ? "hand" : "table");
+        scrollToSection("hand");
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        scrollToSection("table");
+      }
+      // Tab key for standard accessibility navigation
+      else if (event.key === "Tab") {
+        // Allow natural tab flow through all focusable elements
+        return;
       }
     },
-    [scrollToSection]
+    [scrollToSection],
   );
 
   // All players in the room are ready and have played at least one tactic
   const allPlayersReady = Array.isArray(gameRoom?.roomData?.players)
     ? gameRoom.roomData.players.length > 0 &&
       gameRoom.roomData.players.every(
-        (player) => player?.isReady === true && player?.tacticUsed?.length > 0
+        (player) => player?.isReady === true && player?.tacticUsed?.length > 0,
       )
     : false;
 
@@ -179,46 +178,26 @@ const GameTable: React.FC<GameTableProps> = ({
 
   return (
     <DndContext onDragEnd={handleDrop} sensors={sensors}>
-      <div
-        style={{ zIndex: 2 }}
-        className="active-game-page"
-        onKeyDown={handleKeyDown}
-      >
-        <div className="scoreboard-section">
-          <Scoreboard />
-        </div>
-
-        {/* Mobile navigation button */}
-        <button
-          className="scroll-nav-button"
-          onClick={() => scrollToSection(showingHand ? "table" : "hand")}
-          onTouchEnd={() => scrollToSection(showingHand ? "table" : "hand")}
-          aria-label={showingHand ? "View game table" : "View your cards"}
-          tabIndex={0}
-        >
-          {showingHand ? "← Table" : "Cards →"}
-        </button>
-
-        <div
-          className="game-content-scroll"
-          ref={scrollContainerRef}
-          role="region"
-          aria-label="Game content area - use arrow keys or swipe to navigate"
-          tabIndex={0}
-        >
+      <>
+        <div className="game-wrapper">
           <div
-            className="main-table-and-hand-row"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              width: "100%",
-            }}
+            className={`container ${showingHand ? "show-hand" : ""}`}
+            ref={scrollContainerRef}
+            role="region"
+            aria-label="Game content area - use arrow keys or swipe to navigate"
+            tabIndex={0}
+            onKeyDown={handleKeyDown}
           >
+            {/* Grid Row Top - Scoreboard */}
+            <div className="score" inert={showingHand}>
+              <Scoreboard />
+            </div>
+
+            {/* Grid Row Middle - Main Table */}
             <div
-              className="top-section"
+              className="maintable"
               aria-label="Game table"
-              style={{ width: "100%" }}
+              inert={showingHand}
             >
               <Droppable className="main-table-droppable">
                 <MainTable
@@ -234,7 +213,7 @@ const GameTable: React.FC<GameTableProps> = ({
                   roundEnd={roundEnd}
                   setPlayersHandItems={
                     setPlayersHandItems as unknown as (
-                      items: TacticCardProps[]
+                      items: TacticCardProps[],
                     ) => void
                   }
                   mainTableItems={
@@ -242,7 +221,7 @@ const GameTable: React.FC<GameTableProps> = ({
                   }
                   setMainTableItems={
                     setMainTableItems as unknown as (
-                      items: TacticCardProps[]
+                      items: TacticCardProps[],
                     ) => void
                   }
                   originalItems={playersHand}
@@ -252,11 +231,13 @@ const GameTable: React.FC<GameTableProps> = ({
                 />
               </Droppable>
             </div>
+
+            {/* Grid Row Bottom - Player's Hand */}
             <div
-              className="bottom-section"
+              className="playershand"
               ref={playersHandRef}
               aria-label="Your cards"
-              style={{ width: "100%" }}
+              inert={!showingHand}
             >
               <PlayersHand
                 items={playersHandItems}
@@ -265,7 +246,17 @@ const GameTable: React.FC<GameTableProps> = ({
             </div>
           </div>
         </div>
-      </div>
+
+        {/* Mobile navigation button */}
+        <button
+          className={`toggle-button ${showingHand ? "on-left" : ""}`}
+          onClick={() => setShowingHand(!showingHand)}
+          aria-label={showingHand ? "View game table" : "View your cards"}
+          tabIndex={0}
+        >
+          {showingHand ? "← Table" : "Cards →"}
+        </button>
+      </>
     </DndContext>
   );
 };
