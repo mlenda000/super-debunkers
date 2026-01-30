@@ -1,7 +1,7 @@
 :root {
   /* Spacing Scale - Based on 1rem (16px) with responsive scaling */
   /* Minimum 2px for all non-zero spacing */
-  
+
   /* Gap & Padding */
   --spacing-xs: clamp(2px, 0.375rem, 6px); /* 6px */
   --spacing-sm: clamp(2px, 0.75rem, 12px); /* 12px */
@@ -11,20 +11,19 @@
   --spacing-xxl: clamp(16px, 1.5rem, 32px);
   --spacing-2xl: clamp(4px, 2rem, 32px); /* 32px */
   --spacing-3xl: clamp(6px, 2.5rem, 40px); /* 40px */
- 
-  
+
   /* Specific Margins */
   --spacing-4xl: clamp(8px, 3.75rem, 60px); /* 60px */
   --spacing-5xl: clamp(10px, 7.5rem, 120px); /* 120px */
   --spacing-6xl: clamp(12px, 10rem, 160px); /* 160px */
-  
+
   /* Widths & Heights - Content Sizes */
   --width-full: 100%;
   --height-full: 100%;
   --width-auto: auto;
   --height-auto: auto;
   --width-fit: fit-content;
-  
+
   /* Percentage Widths */
   --width-80: 80%;
   --width-50: 50%;
@@ -32,58 +31,62 @@
   --width-30: 30%;
   --width-25: 25%;
   --width-5: 5%;
-  
+
   /* Responsive Viewport Widths */
   --width-responsive-sm: clamp(40%, 50vw, 60%); /* 50vw responsive */
-  
+
   /* Heights - Specific */
   --height-input: clamp(60px, 10vh, 80px); /* 80px responsive */
-  
+
   /* Border Radius */
   --radius-sm: clamp(8px, 1rem, 16px); /* 16px */
   --radius-md: clamp(10px, 1.25rem, 20px); /* 20px */
   --radius-lg: clamp(12px, 1.5rem, 24px); /* 24px */
-  
+
   /* Large Margins - Top spacing */
   --spacing-7xl: clamp(16px, 13.75rem, 220px); /* 220px */
-  
+
   /* Max Widths */
   --max-width-xs: clamp(200px, 20rem, 320px); /* 320px */
   --max-width-sm: clamp(300px, 43.75rem, 700px); /* 700px */
   --max-width-md: clamp(400px, 50rem, 800px); /* 800px */
   --max-width-lg: clamp(500px, 80rem, 1280px); /* 1280px */
-  
+
   /* Max Heights */
   --max-height-sm: clamp(250px, 25rem, 400px); /* 400px */
   --max-height-md: clamp(300px, 31.25rem, 500px); /* 500px */
   --max-height-lg: clamp(350px, 37.5rem, 600px); /* 600px */
-  
+
   /* Min Widths */
   --min-width-xs: clamp(200px, 20rem, 320px); /* 320px */
-  
+
   /* Viewport Heights */
   --min-height-screen: 100vh;
   --min-height-screen-dynamic: 100dvh;
-  
+
   /* Viewport Widths */
   --width-screen: 100vw;
   --height-screen: 100vh;
-  
+
   /* Icon/Button Specific Sizes */
   --size-icon-sm: clamp(2px, 0.625rem, 10px); /* 10px */
   --size-icon-md: clamp(4px, 1rem, 16px); /* 16px */
   --size-icon-lg: clamp(6px, 3rem, 48px); /* 48px */
   --size-button: clamp(8px, 7.5rem, 120px); /* 120px */
-  
+
   /* Avatar/Image Sizes */
   --size-avatar-sm: clamp(40px, 10vw, 80px); /* Responsive avatar small */
   --size-avatar-md: clamp(75px, 15vw, 200px); /* Responsive avatar medium */
-  --size-avatar-mini: clamp(40px, 8vw, 60px); /* Mini avatar */
-  
+  --size-avatar-mini: clamp(24px, 10vh, 60px); /* Mini avatar */
+
   /* Grid Gaps - Responsive */
   --gap-grid-xs: clamp(2px, 0.25rem, 4px); /* 4px - Extra small gap */
   --gap-grid-sm: clamp(4px, 0.75rem, 12px); /* 12px - Small gap */
   --gap-grid-md: clamp(6px, 1rem, 16px); /* 16px - Medium gap */
   --gap-grid-lg: clamp(8px, 2rem, 32px); /* 32px - Large gap */
-  --gap-grid-xl: clamp(20px, 3rem, 48px); /* 48px - Extra large gap for avatar grids */
+  --gap-grid-xl: clamp(
+    20px,
+    3rem,
+    48px
+  ); /* 48px - Extra large gap for avatar grids */
 }
