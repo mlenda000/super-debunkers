@@ -18,6 +18,7 @@ import NewsCard from "@/components/molecules/newsCard/NewsCard";
 type MainTablePropsWithHand = MainTableProps & {
   playersHandItems: TacticCardProps[];
   setPlayersHandItems: (items: TacticCardProps[]) => void;
+  onOpenCardsModal?: (slotIndex: number) => void;
 };
 
 const MainTable: React.FC<
@@ -42,6 +43,7 @@ const MainTable: React.FC<
   setSubmitForScoring,
   resetKey,
   syncCardIndex,
+  onOpenCardsModal,
 }) => {
   const { setThemeStyle, playerName } = useGlobalContext();
   const {
@@ -268,45 +270,108 @@ const MainTable: React.FC<
         >
           <p className="main-table__place-cards">Place Cards</p>
         </div>
-        {items.map((card) => (
-          <PlayedCard
-            name={card?.title}
-            category={card?.category}
-            image={card?.image}
-            alt={card?.alt}
-            id={card?.id}
-            key={card?.id}
-            onUndo={() => handleReturnCard(card?.id)}
-          />
-        ))}
-        {
-          <button
-            type="button"
-            onClick={handlePlayerReady}
-            className="main-table__finish-round"
-            aria-label={
-              playerReady
-                ? "Ready"
-                : finishRound
-                  ? "Mark ready"
-                  : "Place a card to get ready"
-            }
-          >
-            <img
-              src={
-                !playerReady && finishRound
-                  ? `/images/buttons/ready-button.webp`
-                  : playerReady && finishRound
-                    ? `/images/buttons/checked-button.webp`
-                    : `/images/buttons/not-ready-button.webp`
-              }
-              alt="Ready"
-              width={"180%"}
-              height={"auto"}
-              style={{ cursor: "pointer", maxWidth: "100px" }}
+        {/* Card slots for mobile landscape */}
+        <div className="main-table__card-slots">
+          {/* Slot 0 */}
+          {items[0] ? (
+            <PlayedCard
+              name={items[0]?.title}
+              category={items[0]?.category}
+              image={items[0]?.image}
+              alt={items[0]?.alt}
+              id={items[0]?.id}
+              key={items[0]?.id}
+              onUndo={() => handleReturnCard(items[0]?.id)}
             />
-          </button>
-        }
+          ) : (
+            <button
+              className="main-table__card-slot"
+              onClick={() => onOpenCardsModal?.(0)}
+              aria-label="Select a card for slot 1"
+            >
+              <span className="main-table__card-slot-text">Select<br />Card</span>
+            </button>
+          )}
+          {/* Slot 1 */}
+          {items[1] ? (
+            <PlayedCard
+              name={items[1]?.title}
+              category={items[1]?.category}
+              image={items[1]?.image}
+              alt={items[1]?.alt}
+              id={items[1]?.id}
+              key={items[1]?.id}
+              onUndo={() => handleReturnCard(items[1]?.id)}
+            />
+          ) : (
+            <button
+              className="main-table__card-slot"
+              onClick={() => onOpenCardsModal?.(1)}
+              aria-label="Select a card for slot 2"
+            >
+              <span className="main-table__card-slot-text">Select<br />Card</span>
+            </button>
+          )}
+          {/* Ready button inside slots for mobile landscape */}
+          {finishRound && (
+            <button
+              type="button"
+              onClick={handlePlayerReady}
+              className="main-table__finish-round main-table__finish-round--mobile"
+              aria-label={playerReady ? "Ready" : "Mark ready"}
+            >
+              <img
+                src={
+                  playerReady
+                    ? `/images/buttons/checked-button.webp`
+                    : `/images/buttons/ready-button.webp`
+                }
+                alt="Ready"
+                style={{ cursor: "pointer", height: "30px", width: "auto" }}
+              />
+            </button>
+          )}
+        </div>
+        {/* Original cards rendering for desktop */}
+        <div className="main-table__desktop-cards">
+          {items.map((card) => (
+            <PlayedCard
+              name={card?.title}
+              category={card?.category}
+              image={card?.image}
+              alt={card?.alt}
+              id={card?.id}
+              key={card?.id}
+              onUndo={() => handleReturnCard(card?.id)}
+            />
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={handlePlayerReady}
+          className="main-table__finish-round"
+          aria-label={
+            playerReady
+              ? "Ready"
+              : finishRound
+                ? "Mark ready"
+                : "Place a card to get ready"
+          }
+        >
+          <img
+            src={
+              !playerReady && finishRound
+                ? `/images/buttons/ready-button.webp`
+                : playerReady && finishRound
+                  ? `/images/buttons/checked-button.webp`
+                  : `/images/buttons/not-ready-button.webp`
+            }
+            alt="Ready"
+            width={"180%"}
+            height={"auto"}
+            style={{ cursor: "pointer", maxWidth: "100px" }}
+          />
+        </button>
       </div>
     </div>
   );
