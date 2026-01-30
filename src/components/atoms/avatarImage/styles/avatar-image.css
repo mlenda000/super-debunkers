@@ -14,22 +14,6 @@
   max-width: clamp(60px, 12vw, 150px);
   transition: transform 0.3s ease;
   stroke: 2px transparent;
-
-  @media (max-width: 1024px) {
-    max-width: clamp(50px, 11vw, 100px);
-  }
-
-  @media (max-width: 768px) {
-    max-width: clamp(40px, 15vw, 80px);
-  }
-
-  @media (max-width: 480px) {
-    max-width: clamp(30px, 16vw, 60px);
-  }
-
-  @media (max-height: 600px) {
-    max-width: clamp(24px, 5vh, 60px);
-  }
 }
 
 .avatar-image-container:hover,
@@ -50,6 +34,7 @@
   width: var(--size-avatar-mini);
   height: var(--size-avatar-mini);
   border-radius: 50%;
+  border: 0.5px white solid;
   overflow: hidden;
   aspect-ratio: 1;
 }
