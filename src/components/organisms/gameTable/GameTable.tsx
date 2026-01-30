@@ -56,6 +56,8 @@ const GameTable: React.FC<GameTableProps> = ({
     useState<typeof playersHand>(playersHand);
   const [showingHand, setShowingHand] = useState(false);
   const [resetKey, setResetKey] = useState(0); // increments to signal table reset
+  const [showCardsModal, setShowCardsModal] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<number>(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const playersHandRef = useRef<HTMLDivElement>(null);
 
@@ -100,6 +102,25 @@ const GameTable: React.FC<GameTableProps> = ({
       setMainTableItems([...removeStartingText, cardToMove]);
     },
     [playersHandItems, mainTableItems],
+  );
+
+  // Slot-specific card placement for mobile landscape modal
+  const handleSlotCardSelect = useCallback(
+    (cardId: string) => {
+      const cardToMove = playersHandItems.find((item) => item.id === cardId);
+      if (!cardToMove) return;
+
+      setPlayersHandItems((items) =>
+        items.filter((item) => item.id !== cardId),
+      );
+
+      // Place card at the specific slot index
+      const newItems = [...mainTableItems];
+      newItems[selectedSlot] = cardToMove;
+      setMainTableItems(newItems);
+      setShowCardsModal(false);
+    },
+    [playersHandItems, mainTableItems, selectedSlot],
   );
 
   useEffect(() => {
@@ -228,6 +249,10 @@ const GameTable: React.FC<GameTableProps> = ({
                   setSubmitForScoring={setSubmitForScoring}
                   resetKey={resetKey}
                   syncCardIndex={gameRoom?.cardIndex}
+                  onOpenCardsModal={(slotIndex) => {
+                    setSelectedSlot(slotIndex);
+                    setShowCardsModal(true);
+                  }}
                 />
               </Droppable>
             </div>
@@ -256,6 +281,34 @@ const GameTable: React.FC<GameTableProps> = ({
         >
           {showingHand ? "← Table" : "Cards →"}
         </button>
+
+        {/* Cards selection modal for mobile landscape */}
+        {showCardsModal && (
+          <div className="cards-modal-overlay" onClick={() => setShowCardsModal(false)}>
+            <div className="cards-modal" onClick={(e) => e.stopPropagation()}>
+              <button
+                className="cards-modal__close"
+                onClick={() => setShowCardsModal(false)}
+                aria-label="Close card selection"
+              >
+                <img src="/images/buttons/close.webp" alt="Close" />
+              </button>
+              <h2 className="cards-modal__title">Your Cards</h2>
+              <div className="cards-modal__grid">
+                {playersHandItems.map((card) => (
+                  <button
+                    key={card.id}
+                    className="cards-modal__card"
+                    onClick={() => handleSlotCardSelect(card.id)}
+                    aria-label={`Select ${card.title}`}
+                  >
+                    <img src={card.image} alt={card.alt || card.title} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </>
     </DndContext>
   );
