@@ -50,6 +50,15 @@ const ScoreModal = ({
     setShowScoreCard,
   ]);
 
+  // Auto-advance to next round after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleDeal();
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [handleDeal]);
+
   const sourcePlayers: Player[] =
     lastScoreUpdatePlayers && lastScoreUpdatePlayers.length > 0
       ? (lastScoreUpdatePlayers as Player[])
@@ -75,8 +84,6 @@ const ScoreModal = ({
                   <img
                     src={`/images/avatars/${player?.avatar}`}
                     alt={player?.name ?? "Player"}
-                    width="50px"
-                    height="50px"
                   />
                   <div>{player?.name}</div>
                 </div>

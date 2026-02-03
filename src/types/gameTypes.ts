@@ -27,6 +27,7 @@ export interface NewsCardProps {
   image: string;
   tacticUsed?: string[];
   display?: "default" | "modal";
+  inTool?: boolean;
 }
 // Player type
 export interface Player {
