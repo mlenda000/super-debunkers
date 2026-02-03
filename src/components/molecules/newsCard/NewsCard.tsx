@@ -7,11 +7,18 @@ const NewsCard = ({
   image,
   tacticUsed,
   display,
+  inTool = false,
 }: NewsCardProps) => {
   //ratio 2.5 : 3.5
 
+  const getClassName = () => {
+    if (inTool) return "news-card__in-tool";
+    if (display === "modal") return "news-card__modal";
+    return "news-card";
+  };
+
   return (
-    <div className={display === "modal" ? "news-card__modal" : "news-card"}>
+    <div className={getClassName()}>
       <div className="news-card__content">
         {image && (
           <img src={image} alt={category[0]} className="news-card__images" />

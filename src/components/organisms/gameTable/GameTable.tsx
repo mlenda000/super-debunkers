@@ -140,11 +140,13 @@ const GameTable: React.FC<GameTableProps> = ({
   // Listen for server score/end-of-round messages to reset UI for all players
   useEffect(() => {
     const unsubscribe = subscribeToMessages((message) => {
+      const currentRoom = gameRoom?.room || gameRoom?.roomData?.name;
+
       if (
         (message.type === "scoreUpdate" || message.type === "endOfRound") &&
-        message.room === (gameRoom?.room || gameRoom?.roomData?.name)
+        message.room === currentRoom
       ) {
-        // Show end-of-round modal and schedule reset
+        // Show result modal (which will display the influencer info and scoring details)
         setRoundEnd(true);
         // Prevent re-triggering endOfRound loop
         setSubmitForScoring(true);
@@ -153,7 +155,9 @@ const GameTable: React.FC<GameTableProps> = ({
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, [gameRoom?.room, gameRoom?.roomData?.name, setRoundEnd]);
 
   const scrollToSection = useCallback((section: "table" | "hand") => {

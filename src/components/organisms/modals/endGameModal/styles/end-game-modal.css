@@ -1,0 +1,213 @@
+/* EndGame Modal - Responsive Styles */
+.endgame-modal__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: clamp(8px, 2vh, 16px);
+  gap: clamp(8px, 1.5vh, 16px);
+}
+
+.endgame-modal__winner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(4px, 1vh, 12px);
+}
+
+.endgame-modal__winner-avatar {
+  width: clamp(80px, 20vw, 150px);
+  height: auto;
+}
+
+.endgame-modal__winner-text {
+  font-family: "Subway Berlin", sans-serif;
+  font-size: clamp(24px, 6vw, 48px);
+  margin: 0;
+  text-align: center;
+}
+
+.endgame-modal__scores {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: clamp(4px, 1vh, 8px);
+}
+
+.endgame-modal__scoreboard-img {
+  width: clamp(120px, 32vw, 250px);
+  height: auto;
+}
+
+.endgame-modal__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: clamp(16px, 4vw, 32px);
+  font-weight: bold;
+  font-family: "Subway Berlin", sans-serif;
+  width: clamp(280px, 80vw, 600px);
+  margin: 0;
+}
+
+.endgame-modal__player {
+  font-family: "Subway Berlin", sans-serif;
+  font-size: clamp(18px, 5vw, 40px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: clamp(280px, 80vw, 600px);
+  padding: clamp(6px, 1.5vw, 14px);
+  border-radius: clamp(8px, 2vw, 16px);
+}
+
+.endgame-modal__player-left {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 2vw, 20px);
+}
+
+.endgame-modal__player-rank {
+  min-width: clamp(20px, 5vw, 40px);
+}
+
+.endgame-modal__player-avatar {
+  width: clamp(28px, 7vw, 50px);
+  height: clamp(28px, 7vw, 50px);
+}
+
+.endgame-modal__player-name {
+  max-width: clamp(100px, 30vw, 250px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.endgame-modal__player-score {
+  font-weight: bold;
+}
+
+.endgame-modal__button {
+  margin-top: clamp(8px, 2vh, 20px);
+}
+
+.endgame-modal__home-btn {
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.endgame-modal__home-btn--regular {
+  display: block;
+  width: clamp(120px, 40vw, 250px);
+}
+
+.endgame-modal__home-btn--small {
+  display: none;
+  width: 60px;
+  height: auto;
+}
+
+.endgame-modal__home-btn:hover {
+  transform: scale(1.05);
+}
+
+/* ========================================
+   RESPONSIVE: Mobile (height <= 600px)
+   ======================================== */
+@media (max-height: 600px) {
+  .endgame-modal__content {
+    max-height: 85vh;
+    gap: clamp(4px, 1vh, 10px);
+    padding: clamp(4px, 1vh, 10px);
+  }
+
+  .endgame-modal__winner-avatar {
+    width: clamp(50px, 12vh, 100px);
+  }
+
+  .endgame-modal__winner-text {
+    font-size: clamp(18px, 5vh, 36px);
+    -webkit-text-stroke: none;
+  }
+
+  .endgame-modal__scoreboard-img {
+    width: clamp(80px, 20vh, 180px);
+  }
+
+  .endgame-modal__title {
+    font-size: clamp(18px, 3vh, 24px);
+    width: clamp(250px, 70vw, 500px);
+  }
+
+  .endgame-modal__player {
+    font-size: clamp(18px, 3.5vh, 28px);
+    width: clamp(250px, 70vw, 500px);
+    padding: clamp(4px, 1vh, 10px);
+  }
+
+  .endgame-modal__player-avatar {
+    width: clamp(22px, 5vh, 40px);
+    height: clamp(22px, 5vh, 40px);
+  }
+
+  .endgame-modal__home-btn--regular {
+    display: none;
+  }
+
+  .endgame-modal__home-btn--small {
+    display: block;
+  }
+}
+
+@media (max-height: 500px) {
+  .endgame-modal__content {
+    max-height: 80vh;
+    gap: 4px;
+  }
+
+  .endgame-modal__winner-avatar {
+    width: clamp(40px, 10vh, 80px);
+  }
+
+  .endgame-modal__winner-text {
+    font-size: clamp(18px, 4vh, 28px);
+    -webkit-text-stroke: none;
+  }
+
+  .endgame-modal__player {
+    font-size: clamp(18px, 3vh, 22px);
+    padding: clamp(3px, 0.8vh, 8px);
+  }
+
+  .endgame-modal__player-avatar {
+    width: clamp(18px, 4vh, 32px);
+    height: clamp(18px, 4vh, 32px);
+  }
+}
+
+@media (max-height: 400px) {
+  .endgame-modal__winner-avatar {
+    width: clamp(35px, 8vh, 60px);
+  }
+
+  .endgame-modal__winner-text {
+    font-size: clamp(18px, 3.5vh, 24px);
+    -webkit-text-stroke: none;
+  }
+
+  .endgame-modal__player {
+    font-size: clamp(18px, 2.5vh, 18px);
+    padding: clamp(2px, 0.6vh, 6px);
+  }
+
+  .endgame-modal__player-avatar {
+    width: clamp(16px, 3.5vh, 26px);
+    height: clamp(16px, 3.5vh, 26px);
+  }
+}

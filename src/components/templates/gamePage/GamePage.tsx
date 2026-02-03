@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import {
   subscribeToMessages,
   getWebSocketInstance,
 } from "@/services/webSocketService";
 import { useGameContext } from "@/hooks/useGameContext";
+import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { sendPlayerLeaves } from "@/utils/gameMessageUtils";
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
 import GameTable from "@/components/organisms/gameTable/GameTable";
@@ -25,7 +26,10 @@ const GamePage = () => {
     setPlayers,
     setIsDeckShuffled,
     setLastScoreUpdatePlayers,
+    setGameRound,
+    setActiveNewsCard,
   } = useGameContext();
+  const { setThemeStyle } = useGlobalContext();
   const hasJoinedRef = useRef(false);
   const setupTimeRef = useRef<number>(0);
 
@@ -37,14 +41,27 @@ const GamePage = () => {
   const [showResponseModal, setShowResponseModal] = useState<boolean>(false);
   const [showScoreCard, setShowScoreCard] = useState<boolean>(false);
 
+  // Memoized callback setters to prevent unnecessary re-subscriptions
+  const setShowRoundModalWithLog = useCallback((val: boolean) => {
+    setShowRoundModal(val);
+  }, []);
+
+  const setRoundEndWithLog = useCallback((val: boolean) => {
+    setRoundEnd(val);
+  }, []);
+
+  const setShowResponseModalWithLog = useCallback((val: boolean) => {
+    setShowResponseModal(val);
+  }, []);
+
+  const setShowScoreCardWithLog = useCallback((val: boolean) => {
+    setShowScoreCard(val);
+  }, []);
+
   // Initialize with navigation state if available
   useEffect(() => {
     const state = location.state as { gameRoom?: any };
     if (state?.gameRoom) {
-      console.log(
-        "[GamePage] Initializing with navigation state:",
-        state.gameRoom,
-      );
       setGameRoom?.(state.gameRoom);
 
       if (state.gameRoom.roomData?.players) {
@@ -73,7 +90,7 @@ const GamePage = () => {
     }
   }, []);
 
-  // Hide round modal after 2 seconds when shown between rounds
+  // Hide round modal after 2 seconds when shown between rounds (but only if we're showing it)
   useEffect(() => {
     if (showRoundModal && roundStartRef.current) {
       const timer = setTimeout(() => {
@@ -85,21 +102,11 @@ const GamePage = () => {
 
   // Subscribe to room updates
   useEffect(() => {
-    console.log(
-      "[GamePage] Setting up message subscription for roomId:",
-      roomId,
-    );
-
     // Mark when subscription was set up (to guard against StrictMode cleanup)
     setupTimeRef.current = Date.now();
 
     const unsubscribe = subscribeToMessages((message) => {
       if (message.type === "roomUpdate" && message.room === roomId) {
-        console.log(
-          "[GamePage] ✅ Processing roomUpdate - updating context with players:",
-          message.players,
-        );
-
         setGameRoom?.({
           count: message.count || 0,
           room: message.room || "",
@@ -113,18 +120,39 @@ const GamePage = () => {
         });
 
         if (message.players) {
-          console.log("[GamePage] Setting players to:", message.players);
           setPlayers?.(message.players);
         }
 
         if (message.deck) {
           setIsDeckShuffled?.(message.deck.isShuffled || false);
         }
-      } else if (message.type === "roomUpdate") {
-        console.log("[GamePage] ❌ Ignoring roomUpdate for different room", {
-          messageRoom: message.room,
-          currentRoom: roomId,
-        });
+
+        // Sync round from server if provided (for joining mid-game)
+        if (
+          typeof message.currentRound === "number" &&
+          message.currentRound > 0
+        ) {
+          setGameRound?.(message.currentRound);
+        }
+
+        // Sync theme/background from server if provided
+        if (message.themeStyle) {
+          setThemeStyle?.(message.themeStyle);
+        }
+
+        // Sync newsCard from server if provided (for mid-game join)
+        if (message.newsCard) {
+          // Set the active news card so MainTable displays it
+          setActiveNewsCard?.(message.newsCard);
+          // Store it in gameRoom for access
+          setGameRoom?.((prev) => ({
+            ...prev,
+            roomData: {
+              ...prev.roomData,
+              newsCard: message.newsCard,
+            },
+          }));
+        }
       }
 
       if (message.type === "playerReady") {
@@ -167,7 +195,6 @@ const GamePage = () => {
       if (hasJoinedRef.current && timeInRoom > 500) {
         const socket = getWebSocketInstance();
         if (socket && roomId) {
-          console.log("[GamePage] Sending playerLeaves for room:", roomId);
           sendPlayerLeaves(socket, roomId);
         }
       }
@@ -181,10 +208,6 @@ const GamePage = () => {
       if (hasJoinedRef.current) {
         const socket = getWebSocketInstance();
         if (socket && roomId) {
-          console.log(
-            "[GamePage] Window closing, sending playerLeaves for room:",
-            roomId,
-          );
           sendPlayerLeaves(socket, roomId);
         }
       }
@@ -197,9 +220,7 @@ const GamePage = () => {
     <div className="game-page">
       <RotateScreen />
       <GameTable
-        setRoundEnd={(value: boolean | ((prevState: boolean) => boolean)) =>
-          setRoundEnd(value)
-        }
+        setRoundEnd={setRoundEndWithLog}
         roundEnd={roundEnd}
         roundHasEnded={roundHasEnded}
         setRoundHasEnded={setRoundHasEnded}
@@ -210,21 +231,21 @@ const GamePage = () => {
       {showRoundModal && <RoundModal />}
       {roundEnd && (
         <ResultModal
-          setRoundEnd={setRoundEnd}
-          setShowResponseModal={setShowResponseModal}
+          setRoundEnd={setRoundEndWithLog}
+          setShowResponseModal={setShowResponseModalWithLog}
         />
       )}
       {showResponseModal && (
         <ResponseModal
-          setShowScoreCard={setShowScoreCard}
-          setShowResponseModal={setShowResponseModal}
+          setShowScoreCard={setShowScoreCardWithLog}
+          setShowResponseModal={setShowResponseModalWithLog}
         />
       )}
       {showScoreCard && (
         <ScoreModal
           setIsEndGame={setIsEndGame}
-          setShowRoundModal={setShowRoundModal}
-          setShowScoreCard={setShowScoreCard}
+          setShowRoundModal={setShowRoundModalWithLog}
+          setShowScoreCard={setShowScoreCardWithLog}
         />
       )}
       {isEndGame && <EndGameModal setIsEndGame={setIsEndGame} />}

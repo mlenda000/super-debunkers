@@ -12,7 +12,7 @@ export const sendMessage = (
   type: MessageType,
   payload: any,
   userId?: string,
-  roomId?: string
+  roomId?: string,
 ): void => {
   if (!socket || socket.readyState !== PartySocket.OPEN) {
     console.error("Socket not ready");
@@ -45,7 +45,7 @@ export const sendEnteredLobby = (
   socket: PartySocket | null | undefined,
   room: string,
   avatar?: string,
-  name?: string
+  name?: string,
 ): void => {
   const sock = socket || getWebSocketInstance();
   if (!sock || sock.readyState !== PartySocket.OPEN) {
@@ -58,7 +58,7 @@ export const sendEnteredLobby = (
 export const sendPlayerEnters = (
   socket: PartySocket | null,
   player: Partial<Player> & { avatar?: string },
-  room: string
+  room: string,
 ): void => {
   if (!socket || socket.readyState !== PartySocket.OPEN) {
     console.error("Socket not ready");
@@ -69,14 +69,14 @@ export const sendPlayerEnters = (
       type: "playerEnters",
       player,
       room,
-    })
+    }),
   );
 };
 
 export const sendInfluencer = (
   socket: PartySocket | null,
   influencerData: any,
-  villain: any
+  villain: any,
 ): void => {
   if (!socket || socket.readyState !== PartySocket.OPEN) {
     console.error("Socket not ready");
@@ -87,14 +87,14 @@ export const sendInfluencer = (
       type: "influencer",
       villain,
       ...influencerData,
-    })
+    }),
   );
 };
 
 export const sendInfluencerReady = (
   newsCard: any,
   villain?: string,
-  tactic?: string[]
+  tactic?: string[],
 ): void => {
   const socket = getWebSocketInstance();
 
@@ -108,14 +108,14 @@ export const sendInfluencerReady = (
       newsCard,
       villain: villain || newsCard?.villain,
       tactic: tactic || newsCard?.tacticUsed,
-    })
+    }),
   );
 };
 
 export const sendPlayerReady = (
   socket: PartySocket | null,
   players: Player[],
-  room?: string
+  room?: string,
 ): void => {
   if (!socket || socket.readyState !== PartySocket.OPEN) {
     console.error("Socket not ready");
@@ -126,13 +126,13 @@ export const sendPlayerReady = (
       type: "playerReady",
       players,
       room,
-    })
+    }),
   );
 };
 
 export const sendPlayerNotReady = (
   socket: PartySocket | null,
-  players: Player[]
+  players: Player[],
 ): void => {
   if (!socket || socket.readyState !== PartySocket.OPEN) {
     console.error("Socket not ready");
@@ -142,13 +142,13 @@ export const sendPlayerNotReady = (
     JSON.stringify({
       type: "playerNotReady",
       players,
-    })
+    }),
   );
 };
 
 export const sendPlayerLeaves = (
   socket: PartySocket | null,
-  room?: string
+  room?: string,
 ): void => {
   if (!socket || socket.readyState !== PartySocket.OPEN) {
     console.error("Socket not ready");
@@ -158,7 +158,7 @@ export const sendPlayerLeaves = (
     JSON.stringify({
       type: "playerLeaves",
       room,
-    })
+    }),
   );
 };
 
@@ -173,7 +173,7 @@ export const sendCheckAllReady = (socket: PartySocket | null): void => {
 export const sendStartingDeck = (
   socket: PartySocket | null,
   deckData: any[],
-  room: string
+  room: string,
 ): void => {
   if (!socket || socket.readyState !== PartySocket.OPEN) {
     console.error("Socket not ready");
@@ -184,7 +184,7 @@ export const sendStartingDeck = (
       type: "startingDeck",
       data: deckData,
       room,
-    })
+    }),
   );
 };
 
@@ -192,11 +192,10 @@ export const sendEndOfRound = (
   players: Player[],
   round?: number,
   room?: string,
-  socket?: PartySocket | null
+  socket?: PartySocket | null,
 ): void => {
   const sock = socket || getWebSocketInstance();
   if (!sock || sock.readyState !== PartySocket.OPEN) {
-    console.warn("Socket not ready - endOfRound will retry on connection");
     return;
   }
 
@@ -214,7 +213,7 @@ export const sendEndOfRound = (
       players: playersForScoring,
       round,
       room,
-    })
+    }),
   );
 };
 
@@ -222,7 +221,7 @@ export const sendEndOfRound = (
 export const sendJoinRoom = (
   socket: PartySocket | null,
   roomId: string,
-  userId: string
+  userId: string,
 ): void => {
   sendMessage(socket, "JOIN_ROOM", { roomId }, userId);
 };
@@ -230,14 +229,14 @@ export const sendJoinRoom = (
 export const sendLeaveRoom = (
   socket: PartySocket | null,
   roomId: string,
-  userId: string
+  userId: string,
 ): void => {
   sendMessage(socket, "LEAVE_ROOM", { roomId }, userId, roomId);
 };
 
 export const sendRequestRoomList = (
   socket: PartySocket | null,
-  userId: string
+  userId: string,
 ): void => {
   sendMessage(socket, "ROOM_LIST_UPDATE", {}, userId);
 };
@@ -246,7 +245,7 @@ export const sendGameAction = (
   socket: PartySocket | null,
   action: any,
   userId: string,
-  roomId: string
+  roomId: string,
 ): void => {
   sendMessage(socket, "GAME_STATE_UPDATE", action, userId, roomId);
 };

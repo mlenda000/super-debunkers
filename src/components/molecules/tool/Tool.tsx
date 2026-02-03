@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import NewsCard from "../newsCard/NewsCard";
+import { useState, useEffect, useCallback } from "react";
 import type { ThemeStyle } from "@/types/types";
+import NewsCard from "@/components/molecules/newsCard/NewsCard";
 
 interface ToolProps {
   showResults: boolean;
@@ -13,7 +13,7 @@ interface ToolProps {
   } | null;
 }
 
-// Mock data for testing/styling - using realistic content from influencerCards.json
+// Mock data for testing/styling
 const mockInfluencer = {
   caption:
     "🚨 ALERT: Your school water fountain is FILLED with deadly chemicals! ☠️🚰",
@@ -24,145 +24,174 @@ const mockInfluencer = {
   newsImage: "scientist.webp",
 };
 
-const Tool = ({
+// Preload images and return a promise that resolves when all are loaded
+const preloadImages = (imageSrcs: string[]): Promise<void[]> => {
+  return Promise.all(
+    imageSrcs.map(
+      (src) =>
+        new Promise<void>((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve();
+          img.onerror = () => resolve(); // Resolve even on error to prevent blocking
+          img.src = src;
+        }),
+    ),
+  );
+};
+
+const TestTool = ({
   showResults,
   currentInfluencer: propInfluencer,
 }: ToolProps) => {
   const currentInfluencer = propInfluencer ?? mockInfluencer;
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
+  const [animationsStarted, setAnimationsStarted] = useState(false);
+
+  // Collect all image sources to preload
+  const getImagesToPreload = useCallback(() => {
+    const images = [
+      "/images/tool/tool-wrapper.webp",
+      "/images/tool/tool-swiper.webp",
+      "/images/tool/answers/reading.webp",
+      "/images/tool/answers/facts.webp",
+      "/images/tool/answers/Fake-detected.webp",
+      currentInfluencer?.newsImage
+        ? `/images/news/${currentInfluencer.newsImage}`
+        : "/images/news/scientist.webp",
+    ];
+
+    // Add tactic images if available
+    if (currentInfluencer?.tacticUsed) {
+      currentInfluencer.tacticUsed.forEach((tactic) => {
+        if (tactic !== "true") {
+          images.push(`/images/tool/answers/${tactic.toLowerCase()}.webp`);
+        }
+      });
+    }
+
+    return images;
+  }, [currentInfluencer]);
+
+  useEffect(() => {
+    const loadAssets = async () => {
+      await preloadImages(getImagesToPreload());
+      setAssetsLoaded(true);
+      // Small delay to ensure DOM is painted before starting animations
+      requestAnimationFrame(() => {
+        setAnimationsStarted(true);
+      });
+    };
+
+    loadAssets();
+  }, [getImagesToPreload]);
 
   return (
-    <div className="tool__container">
-      <div className="tool-image">
-        <img
-          src={`/images/tool/tool-wrapper.webp`}
-          alt="tool"
-          style={{
-            display: "grid",
-            placeItems: "center",
-            position: "relative",
-            width: "100%",
-            height: "auto",
-            zIndex: 5,
-          }}
-        />
-      </div>
-      <div className="tool-newscard">
-        <div className="sliding-background">
-          <NewsCard
-            name={currentInfluencer?.caption ?? ""}
-            description={currentInfluencer?.bodyCopy ?? ""}
-            example="Influencer Example"
-            category={currentInfluencer?.tacticUsed ?? []}
-            villain={currentInfluencer?.villain as ThemeStyle}
-            image={
-              currentInfluencer?.newsImage
-                ? `/images/news/${currentInfluencer.newsImage}`
-                : `/images/news/scientist.webp`
-            }
-            display="modal"
-          />
+    <div
+      className={`tool ${assetsLoaded ? "tool--loaded" : "tool--loading"} ${animationsStarted ? "tool--animate" : ""}`}
+    >
+      {/* Layer 1 (Bottom): NewsCard - sits inside the tool window */}
+      <div className="tool__layer tool__layer--newscard">
+        <div className="tool__newscard-wrapper">
+          <div className="tool__sliding-background">
+            <NewsCard
+              name={currentInfluencer?.caption ?? ""}
+              description={currentInfluencer?.bodyCopy ?? ""}
+              example="Influencer Example"
+              category={currentInfluencer?.tacticUsed ?? []}
+              villain={currentInfluencer?.villain as ThemeStyle}
+              image={
+                currentInfluencer?.newsImage
+                  ? `/images/news/${currentInfluencer.newsImage}`
+                  : `/images/news/scientist.webp`
+              }
+              display="modal"
+              inTool={true}
+            />
+          </div>
         </div>
       </div>
 
-      <img
-        src={`/images/tool/tool-swiper.webp`}
-        className="tool-swiper"
-        style={{}}
-        alt="tool swiper"
-      />
-
-      <div className="tool-result">
-        {!showResults ? (
-          <img
-            src={"/images/tool/answers/reading.webp"}
-            alt="reading"
-            style={{
-              width: "100%",
-              animation: "fadeInOut 0.8s infinite alternate",
-              top: "160px",
-            }}
-          />
-        ) : currentInfluencer?.tacticUsed &&
-          currentInfluencer.tacticUsed[0] === "true" ? (
-          <img
-            src={"/images/tool/answers/facts.webp"}
-            alt="reading"
-            style={{
-              width: "100%",
-              animation: "fadeIn .5s ",
-            }}
-          />
-        ) : (
-          <ImageCarousel images={currentInfluencer?.tacticUsed ?? []} />
-        )}
+      {/* Layer 2: Tool window/background area (transparent window region) */}
+      <div className="tool__layer tool__layer--window">
+        {/* Swiper animation element */}
+        <img
+          src="/images/tool/tool-swiper.webp"
+          className="tool__swiper"
+          alt="tool swiper"
+        />
       </div>
-      <style>
-        {`
-                    @keyframes fadeInOut {
-                        from {
-                            opacity: 1;
-                        }
-                        to {
-                            opacity: 0;
-                        }
-                    }
 
-                    @keyframes slideBackground {
-                        0% {
-                            transform: translateX(0);
-                        }
-                        100% {
-                            transform: translateX(705px);
-                        }
-                    }
+      {/* Layer 3: Tool-wrapper frame image */}
+      <div className="tool__layer tool__layer--frame">
+        <img
+          src="/images/tool/tool-wrapper.webp"
+          alt="tool frame"
+          className="tool__frame-image"
+        />
+      </div>
 
-                   
-                `}
-      </style>
+      {/* Layer 4 (Top): Results - Image carousel / reading / facts */}
+      <div className="tool__layer tool__layer--results">
+        <div className="tool__results-content">
+          {!showResults ? (
+            <img
+              src="/images/tool/answers/reading.webp"
+              alt="reading"
+              className="tool__result-image tool__result-image--reading"
+            />
+          ) : currentInfluencer?.tacticUsed &&
+            currentInfluencer.tacticUsed[0] === "true" ? (
+            <img
+              src="/images/tool/answers/facts.webp"
+              alt="facts"
+              className="tool__result-image tool__result-image--facts"
+            />
+          ) : (
+            <TestImageCarousel images={currentInfluencer?.tacticUsed ?? []} />
+          )}
+        </div>
+      </div>
     </div>
   );
 };
 
-export const ImageCarousel = ({ images }: { images: string[] }) => {
+// Image carousel component for cycling through tactic images
+const TestImageCarousel = ({ images }: { images: string[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [detected, setDetected] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
+    const detectedTimeout = setTimeout(() => {
       setDetected(false);
     }, 2000);
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 2000); // Change image every 3 second
-    return () => clearInterval(interval);
+    }, 2000);
+
+    return () => {
+      clearTimeout(detectedTimeout);
+      clearInterval(interval);
+    };
   }, [images]);
+
   return (
     <>
       {detected ? (
         <img
-          src={"/images/tool/answers/Fake-detected.webp"}
-          alt="reading"
-          style={{
-            width: "100%",
-            top: "260px",
-          }}
+          src="/images/tool/answers/Fake-detected.webp"
+          alt="fake detected"
+          className="tool__result-image tool__result-image--detected"
         />
       ) : (
         <img
-          src={
-            "/images/tool/answers/" +
-            images[currentIndex].toLowerCase() +
-            ".webp"
-          }
+          src={`/images/tool/answers/${images[currentIndex].toLowerCase()}.webp`}
           alt={images[currentIndex]}
-          style={{
-            width: "100%",
-          }}
+          className="tool__result-image tool__result-image--tactic"
         />
       )}
     </>
   );
 };
 
-export default Tool;
+export default TestTool;

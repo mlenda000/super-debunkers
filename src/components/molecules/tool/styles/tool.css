@@ -1,170 +1,199 @@
-.tool-swiper {
+/* ===========================================
+   TEST TOOL - 4 Layer Structure
+   Layer 1 (z-index: 1): NewsCard - bottom layer inside tool window
+   Layer 2 (z-index: 2): Tool window area with swiper animation
+   Layer 3 (z-index: 3): Tool-wrapper frame image
+   Layer 4 (z-index: 4): Results - carousel/reading/facts on top
+   =========================================== */
+
+.tool {
+  position: relative;
+  width: clamp(400px, 80vw, 1000px);
+  aspect-ratio: 1000 / 400;
+  /* Match tool-wrapper image aspect ratio */
+  margin: 0 auto;
+}
+
+/* Loading state - hide content until assets are ready */
+.tool--loading {
+  opacity: 0;
+}
+
+.tool--loaded {
+  opacity: 1;
+  transition: opacity 0.3s ease-in;
+}
+
+/* Pause animations until assets are loaded */
+.tool:not(.tool--animate) .tool__sliding-background::before,
+.tool:not(.tool--animate) .tool__swiper {
+  animation-play-state: paused;
+}
+
+.tool--animate .tool__sliding-background::before,
+.tool--animate .tool__swiper {
+  animation-play-state: running;
+}
+
+/* Base layer styles - all layers are absolutely positioned */
+.tool__layer {
   position: absolute;
-  top: 7px;
+  top: 0;
   left: 0;
-  width: 30px;
-  height: 400px;
-  animation: slide-in 4.5s ease-out forwards;
-  z-index: 3;
+  width: 100%;
+  height: 100%;
 }
 
-.tool__container {
-  position: relative;
+/* ========================================
+   LAYER 1: NewsCard (Bottom Layer)
+   ======================================== */
+.tool__layer--newscard {
+  z-index: 1;
+  /* Position newscard in the "window" area of the tool */
+  top: 12%;
+  left: 6%;
+  width: 65%;
+  height: 80%;
   display: flex;
-  justify-content: center;
-  align-items: center;
-
-  @media (max-width: 1028px) {
-    margin: 0 auto;
-  }
-  @media (max-width: 480px) {
-    margin: 0 auto;
-    max-width: 100%;
-  }
-  .influencer-card {
-    @media (max-width: 768px) {
-      min-width: 300px;
-    }
-  }
-
-  .influencer-card__content {
-    @media (max-width: 768px) {
-      margin-top: -18px;
-      margin-left: -180px;
-      max-width: 80%;
-      max-height: 210px;
-    }
-    @media (max-width: 480px) {
-      margin-top: -18px;
-      margin-left: -180px;
-      max-width: 80%;
-      max-height: 210px;
-    }
-  }
-  .influencer-card__images {
-    @media (max-width: 768px) {
-      height: 210px;
-      max-width: 90%;
-    }
-    @media (max-width: 480px) {
-      margin-top: -18px;
-      margin-left: -180px;
-      max-width: 80%;
-      max-height: 210px;
-    }
-  }
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
-.sliding-background {
-  position: relative;
+.tool__newscard-wrapper {
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
-.sliding-background::before {
+.tool__sliding-background {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.tool__sliding-background::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 0, 0, 0.5); /* Red background with transparency */
+  background: rgba(255, 0, 0, 0.5);
   animation: slideBackground 4.5s ease-out forwards;
-  z-index: 4;
+  z-index: 2;
 }
 
-.sliding-background > * {
+.tool__sliding-background > * {
   position: relative;
+  z-index: 1;
+}
+
+/* ========================================
+   LAYER 2: Tool Window Area with Swiper
+   ======================================== */
+.tool__layer--window {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.tool__swiper {
+  position: absolute;
+  top: 12%;
+  left: 6%;
+  width: 3%;
+  height: 80%;
+  animation: slide-in 4.5s ease-out forwards;
+  z-index: 2;
+}
+
+/* ========================================
+   LAYER 3: Tool Frame Image
+   ======================================== */
+.tool__layer--frame {
   z-index: 3;
-
-  @media (max-width: 1028px) {
-    margin-top: -5px;
-    margin-left: 10px;
-  }
-}
-.tool-newscard {
-  position: absolute;
-  top: 30px;
-  left: 3%;
-
-  @media (max-width: 1200px) {
-    top: 26px;
-    left: 3%;
-  }
-
-  @media (max-width: 1028px) {
-    top: 21px;
-    left: 1%;
-  }
-
-  @media (max-width: 768px) {
-    top: 16px;
-    left: 0%;
-  }
-
-  @media (max-width: 480px) {
-    top: 12px;
-    left: -1%;
-  }
+  pointer-events: none;
 }
 
-.tool-result {
-  position: absolute;
-  width: 150px;
-  top: 102px;
-  right: 48px;
-  z-index: 5;
-
-  @media (max-width: 1200px) {
-    width: 128px;
-    top: 87px;
-    right: 41px;
-  }
-
-  @media (max-width: 1028px) {
-    width: 105px;
-    top: 71px;
-    right: 34px;
-  }
-
-  @media (max-width: 768px) {
-    width: 83px;
-    top: 56px;
-    right: 26px;
-  }
-
-  @media (max-width: 480px) {
-    width: 60px;
-    top: 41px;
-    right: 19px;
-  }
+.tool__frame-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-.tool-image {
-  width: 1000px;
+/* ========================================
+   LAYER 4: Results (Top Layer)
+   ======================================== */
+.tool__layer--results {
+  z-index: 4;
+  /* Position results in the right "dial" area of the tool */
+  top: 10%;
+  left: auto;
+  right: 8%;
+  width: 15%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool__results-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool__result-image {
+  width: 100%;
   height: auto;
-
-  @media (max-width: 1200px) {
-    width: 850px;
-  }
-  @media (max-width: 1028px) {
-    width: 700px;
-  }
-  @media (max-width: 768px) {
-    width: 550px;
-  }
-  @media (max-width: 480px) {
-    width: 400px;
-  }
+  object-fit: contain;
 }
 
-@keyframes slide-in-after {
+.tool__result-image--reading {
+  animation: fadeInOut 0.8s infinite alternate;
+}
+
+.tool__result-image--facts {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.tool__result-image--detected,
+.tool__result-image--tactic {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+@keyframes fadeInOut {
   from {
-    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
     opacity: 0;
   }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
   to {
-    transform: translateX(450px);
     opacity: 1;
+  }
+}
+
+@keyframes slideBackground {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(100%);
   }
 }
 
@@ -172,103 +201,67 @@
   from {
     transform: translateX(0);
   }
+
   to {
-    transform: translateX(705px);
+    transform: translateX(2100%);
   }
 }
 
-@media (max-width: 1200px) {
-  .tool-swiper {
-    width: 26px;
-    height: 340px;
-  }
-
-  .sliding-background::before {
-    left: 0;
-    width: 100%;
-  }
-
-  @keyframes slide-in {
-    to {
-      transform: translateX(600px);
-    }
-  }
-
-  @keyframes slide-in-after {
-    to {
-      transform: translateX(600px);
-    }
+/* ========================================
+   RESPONSIVE: Desktop (height > 600px)
+   ======================================== */
+@media (max-width: 1200px) and (min-height: 601px) {
+  .tool {
+    width: clamp(350px, 75vw, 850px);
   }
 }
 
-@media (max-width: 1028px) {
-  .tool-swiper {
-    width: 22px;
-    height: 280px;
-  }
-
-  .sliding-background::before {
-    left: 0;
-    width: 100%;
-  }
-
-  @keyframes slide-in {
-    to {
-      transform: translateX(494px);
-    }
-  }
-
-  @keyframes slide-in-after {
-    to {
-      transform: translateX(494px);
-    }
+@media (max-width: 1028px) and (min-height: 601px) {
+  .tool {
+    width: clamp(300px, 70vw, 700px);
   }
 }
 
-@media (max-width: 768px) {
-  .tool-swiper {
-    width: 17px;
-    height: 220px;
-  }
-
-  .sliding-background::before {
-    left: 0;
-    width: 100%;
-  }
-
-  @keyframes slide-in {
-    to {
-      transform: translateX(388px);
-    }
-  }
-
-  @keyframes slide-in-after {
-    to {
-      transform: translateX(388px);
-    }
+@media (max-width: 768px) and (min-height: 601px) {
+  .tool {
+    width: clamp(250px, 90vw, 550px);
   }
 }
 
-@media (max-width: 480px) {
-  .tool-swiper {
-    width: 12px;
-    height: 160px;
+/* ========================================
+   RESPONSIVE: Mobile (height <= 600px)
+   ======================================== */
+@media (max-height: 600px) {
+  .tool {
+    width: 70vw;
+    aspect-ratio: 1000 / 400;
   }
+}
 
-  .sliding-background::before {
-    left: 0;
-    width: 100%;
+@media (max-height: 500px) {
+  .tool {
+    width: 70vw;
+    aspect-ratio: 1000 / 400;
   }
+}
 
-  @keyframes slide-in {
-    to {
-      transform: translateX(282px);
-    }
+@media (max-height: 450px) {
+  .tool {
+    width: 70vw;
+    aspect-ratio: 1000 / 400;
   }
+}
 
-  @keyframes slide-in-after {
-    to {
-      transform: translateX(282px);
-    }
+@media (max-height: 400px) {
+  .tool {
+    width: 70vw;
+    aspect-ratio: 1000 / 400;
+  }
+}
+
+@media (max-height: 350px) {
+  .tool {
+    width: 70vw;
+    aspect-ratio: 1000 / 400;
   }
 }

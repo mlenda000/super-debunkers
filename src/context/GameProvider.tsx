@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import type { ReactNode } from "react";
 import { GameContext } from "@/context/GameContext";
 import type {
@@ -37,6 +37,32 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [endGame, setEndGame] = useState<boolean>(false);
   const [isDeckShuffled, setIsDeckShuffled] = useState<boolean>(false);
   const [finalRound, setFinalRound] = useState<boolean>(false);
+
+  // Reset all game state to initial values
+  const resetGameState = useCallback(() => {
+    setCurrentPlayer("");
+    setCustomState(null);
+    setGameRoom({
+      count: 0,
+      room: "",
+      type: "",
+      roomData: {
+        count: 0,
+        players: [],
+        name: "",
+      },
+    });
+    setMessages([]);
+    setPlayers([]);
+    setLastScoreUpdatePlayers(undefined);
+    setTacticCards(undefined);
+    setNewsCards([]);
+    setActiveNewsCard(null);
+    setGameRound(1);
+    setEndGame(false);
+    setIsDeckShuffled(false);
+    setFinalRound(false);
+  }, []);
 
   // --- Memoized values ---
   const memoCurrentPlayer = useMemo(() => currentPlayer, [currentPlayer]);
@@ -81,6 +107,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         setIsDeckShuffled,
         finalRound: memoFinalRound,
         setFinalRound,
+        resetGameState,
       }}
     >
       {children}

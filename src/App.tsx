@@ -9,6 +9,7 @@ import LobbyPage from "@/components/templates/lobbyPage/LobbyPage";
 import CharacterCreationPage from "@/components/templates/characterCreationPage/CharacterCreationPage";
 import NamePage from "@/components/templates/namePage/NamePage";
 import CreateRoomPage from "@/components/templates/createRoomPage/CreateRoomPage";
+import TestPage from "./components/templates/test/TestPage";
 
 import "./App.css";
 
@@ -22,6 +23,7 @@ function App() {
       <BrowserRouter>
         <Background />
         <Routes>
+          <Route path="/test" element={<TestPage />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/villains" element={<VillainsPage />} />
           <Route path="/directions" element={<DirectionsPage />} />

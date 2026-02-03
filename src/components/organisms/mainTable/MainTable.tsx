@@ -43,7 +43,7 @@ const MainTable: React.FC<
   resetKey,
   syncCardIndex,
 }) => {
-  const { setThemeStyle, playerName } = useGlobalContext();
+  const { setThemeStyle, playerName, playerId } = useGlobalContext();
   const {
     gameRoom,
     gameRound,
@@ -61,11 +61,11 @@ const MainTable: React.FC<
       Array.isArray(gameRoom.roomData.deck?.data)
         ? [...gameRoom.roomData.deck.data]
         : [],
-    [gameRoom.roomData.deck]
+    [gameRoom.roomData.deck],
   );
   const isDeckShuffled = React.useMemo(
     () => gameRoom.roomData.deck?.isShuffled,
-    [gameRoom.roomData.deck]
+    [gameRoom.roomData.deck],
   );
 
   // Reset table when resetKey bumps (end-of-round). Keep deps minimal to avoid loops.
@@ -116,7 +116,6 @@ const MainTable: React.FC<
   // Sync card index from server if provided (ensures all players see same card)
   React.useEffect(() => {
     if (syncCardIndex !== undefined && syncCardIndex !== indexRef.current) {
-      console.log("[MainTable] Syncing card index to:", syncCardIndex);
       indexRef.current = syncCardIndex;
       if (gameCards.length > 0) {
         const card = gameCards[syncCardIndex];
@@ -137,13 +136,6 @@ const MainTable: React.FC<
         indexRef.current = cardIndex + 1;
         newPlayerRef.current = false; // Mark the player as no longer new
       }
-    } else {
-      console.log(
-        "Conditions not met - gameCards.length:",
-        gameCards.length,
-        "isDeckShuffled:",
-        isDeckShuffled
-      );
     }
     if (gameRound === 5) {
       setFinalRound?.(true);
@@ -171,7 +163,7 @@ const MainTable: React.FC<
     sendInfluencerReady(
       currentInfluencer,
       currentInfluencer?.villain as ThemeStyle,
-      tactic as string[]
+      tactic as string[],
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentInfluencer]);
@@ -183,6 +175,7 @@ const MainTable: React.FC<
     }
     const name =
       playerName || localStorage.getItem("playerName") || currentPlayer || "";
+    const currentPlayerId = playerId || localStorage.getItem("playerId") || "";
 
     // Get the tactics that were placed on the table (excluding the placeholder)
     const tacticIds = mainTableItems
@@ -191,19 +184,18 @@ const MainTable: React.FC<
 
     const expectedTactics = currentInfluencer?.tacticUsed || [];
     const matches = tacticIds.filter((tactic) =>
-      expectedTactics.includes(tactic)
+      expectedTactics.includes(tactic),
     );
     const mismatches = tacticIds.filter(
-      (tactic) => !expectedTactics.includes(tactic)
+      (tactic) => !expectedTactics.includes(tactic),
     );
 
-    console.log(`🃏 [MainTable] Player ${name} is ready with tactics:`, {
-      matches,
-      mismatches,
-    });
-
+    // Match player by ID (unique), fall back to name if no ID
     const updatedPlayers = (gameRoom?.roomData?.players || []).map((p) =>
-      p?.name === name ? { ...p, isReady: true, tacticUsed: tacticIds } : p
+      (currentPlayerId && p?.id === currentPlayerId) ||
+      (!currentPlayerId && p?.name === name)
+        ? { ...p, isReady: true, tacticUsed: tacticIds }
+        : p,
     );
 
     // Send a single, well-formed playerReady message expected by server
@@ -226,16 +218,12 @@ const MainTable: React.FC<
   };
 
   const handleReturnCard = (cardId: string) => {
-    console.log("Card ID to return:", cardId);
     const cardToReturn = mainTableItems.find((item) => item.id === cardId);
     if (cardToReturn) {
-      console.log("Card to return:", cardToReturn);
       const updatedItems = mainTableItems.filter((item) => item.id !== cardId);
       setMainTableItems(updatedItems);
-      console.log("this is in the handleReturnCard function", items);
       setPlayersHandItems([...playersHandItems, cardToReturn]);
       if (updatedItems?.length === 0) {
-        console.log("No cards left on the table");
         setPlayerReady(false);
         setFinishRound(false);
         const socket = getWebSocketInstance();

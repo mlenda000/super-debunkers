@@ -39,7 +39,7 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
 
   const [themeStyle, setThemeStyle] = useState<ThemeStyle>("all");
 
-  // Initialize state from localStorage if available
+  // Initialize playerId from localStorage if valid, otherwise empty (will be fetched from server)
   const [playerId, setPlayerId] = useState<string>(() => {
     if (isPlayerIdValid()) {
       return localStorage.getItem("playerId") || "";
@@ -58,7 +58,6 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
   // Fetch playerId from server if not valid in localStorage
   useEffect(() => {
     if (isPlayerIdValid()) {
-      // playerId is already set from useState initializer
       return;
     }
 
@@ -66,11 +65,7 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
 
     const fetchPlayerId = async () => {
       try {
-        const userId = await initializeWebSocket("lobby");
-        console.log(
-          "[GlobalProvider] WebSocket initialized with userId:",
-          userId
-        );
+        await initializeWebSocket("lobby");
 
         unsubscribe = subscribeToMessages((message) => {
           if (
@@ -79,22 +74,18 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
             typeof message.id === "string"
           ) {
             const newPlayerId = message.id;
-            console.log(
-              "[GlobalProvider] Received playerId from server:",
-              newPlayerId
-            );
             localStorage.setItem("playerId", newPlayerId);
             localStorage.setItem("playerIdTimestamp", Date.now().toString());
             setPlayerId(newPlayerId);
           }
         });
 
-        // Send getPlayerId after socket is ready
+        // Request a new playerId from server
         sendGetPlayerId();
       } catch (error) {
         console.error(
           "[GlobalProvider] Failed to initialize WebSocket:",
-          error
+          error,
         );
       }
     };
@@ -107,6 +98,29 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
       }
     };
   }, []);
+
+  // Listen for playerId updates from server (e.g., when server detects duplicate ID)
+  useEffect(() => {
+    const unsubscribe = subscribeToMessages((message) => {
+      if (
+        message.type === "playerId" &&
+        message.id &&
+        typeof message.id === "string"
+      ) {
+        const newPlayerId = message.id;
+        // Only update if it's different from current
+        if (newPlayerId !== playerId) {
+          localStorage.setItem("playerId", newPlayerId);
+          localStorage.setItem("playerIdTimestamp", Date.now().toString());
+          setPlayerId(newPlayerId);
+        }
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [playerId]);
 
   const login = (user: User, token: string) => {
     setAuth({

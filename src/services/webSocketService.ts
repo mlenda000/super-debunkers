@@ -40,7 +40,7 @@ class WebSocketService {
 
   // Initialize connection
   connect(
-    options: { room?: string; token?: string; roomData?: RoomData } = {}
+    options: { room?: string; token?: string; roomData?: RoomData } = {},
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       try {
@@ -53,14 +53,13 @@ class WebSocketService {
         const room = options.room ?? "lobby";
 
         this.socket = new PartySocket(
-          this.buildSocketOptions(room, options.token)
+          this.buildSocketOptions(room, options.token),
         );
 
         this.currentRoom = room;
 
         this.socket.addEventListener("open", () => {
           this.isConnected = true;
-          console.log("✅ Connected to PartyKit WebSocket");
           resolve(this.userId!);
         });
 
@@ -70,7 +69,6 @@ class WebSocketService {
 
         this.socket.addEventListener("close", () => {
           this.isConnected = false;
-          console.log("Disconnected from WebSocket");
         });
 
         this.socket.addEventListener("error", (error) => {
@@ -118,7 +116,7 @@ class WebSocketService {
 
   // Subscribe to all raw messages (used by UI to react to server updates)
   subscribeToMessages(
-    handler: (message: WebSocketMessage) => void
+    handler: (message: WebSocketMessage) => void,
   ): () => void {
     const socket = this.socket;
 
@@ -162,13 +160,22 @@ class WebSocketService {
 
     const query = token ? { token } : undefined;
 
-    this.socket.updateProperties({
-      room: roomId,
-      party: this.partyName,
-      query,
+    return new Promise((resolve) => {
+      const handleOpen = () => {
+        this.socket?.removeEventListener("open", handleOpen);
+        resolve();
+      };
+
+      this.socket.updateProperties({
+        room: roomId,
+        party: this.partyName,
+        query,
+      });
+
+      this.socket.addEventListener("open", handleOpen);
+      this.socket.reconnect();
+      this.currentRoom = roomId;
     });
-    this.socket.reconnect();
-    this.currentRoom = roomId;
   }
 
   // Return to lobby
@@ -216,7 +223,7 @@ const defaultService = new WebSocketService(PARTYKIT_HOST, "main");
 export const initializeWebSocket = (
   roomOrOptions:
     | string
-    | { room?: string; token?: string; roomData?: RoomData } = "lobby"
+    | { room?: string; token?: string; roomData?: RoomData } = "lobby",
 ): Promise<string> => {
   const opts =
     typeof roomOrOptions === "string" ? { room: roomOrOptions } : roomOrOptions;
@@ -224,7 +231,7 @@ export const initializeWebSocket = (
 };
 
 export const subscribeToMessages = (
-  handler: (message: WebSocketMessage) => void
+  handler: (message: WebSocketMessage) => void,
 ): (() => void) => {
   return defaultService.subscribeToMessages(handler);
 };

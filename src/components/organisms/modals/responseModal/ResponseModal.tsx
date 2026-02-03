@@ -18,11 +18,12 @@ const ResponseModal = ({
   setShowResponseModal,
 }: ResponseModalProps) => {
   const { gameRoom, players, lastScoreUpdatePlayers } = useGameContext();
-  const { playerName } = useGlobalContext();
+  const { playerName, playerId } = useGlobalContext();
 
-  // Find the current player's result from the players array
+  // Find the current player's result from the players array using ID (unique)
   const currentPlayerName =
     playerName || localStorage.getItem("playerName") || "";
+  const currentPlayerId = playerId || localStorage.getItem("playerId") || "";
   const sourcePlayers =
     lastScoreUpdatePlayers && lastScoreUpdatePlayers.length > 0
       ? lastScoreUpdatePlayers
@@ -30,16 +31,20 @@ const ResponseModal = ({
         ? gameRoom.roomData.players
         : players;
 
+  // Match by ID (unique), fall back to name if no ID available
   const currentPlayer = sourcePlayers?.find(
-    (p) => p.name === currentPlayerName,
+    (p) =>
+      (currentPlayerId && p.id === currentPlayerId) ||
+      (!currentPlayerId && p.name === currentPlayerName),
   );
 
-  console.log("[ResponseModal] Debug:", {
-    currentPlayerName,
-    currentPlayer,
-    hasWasCorrect: typeof currentPlayer?.wasCorrect !== "undefined",
-    sourcePlayers,
-  });
+  // Determine which source we're using for debugging
+  const sourceType =
+    lastScoreUpdatePlayers && lastScoreUpdatePlayers.length > 0
+      ? "lastScoreUpdatePlayers"
+      : gameRoom?.roomData?.players && gameRoom.roomData.players.length > 0
+        ? "gameRoom.roomData.players"
+        : "players";
 
   const responseMsg: ResponseMessage = {
     wasCorrect: currentPlayer?.wasCorrect ?? false,
@@ -51,27 +56,17 @@ const ResponseModal = ({
   const hasScoring = typeof currentPlayer?.wasCorrect !== "undefined";
 
   useEffect(() => {
-    // If we have scoring data, show it for 3 seconds then advance
-    if (hasScoring) {
-      const timer = setTimeout(() => {
+    // Always set a timeout to advance - either when data arrives or after max wait
+    const advanceTimer = setTimeout(
+      () => {
         setShowScoreCard(true);
         setShowResponseModal(false);
-      }, 3000);
+      },
+      hasScoring ? 3000 : 10000,
+    ); // Wait 3s if we have data, 10s max if waiting
 
-      return () => clearTimeout(timer);
-    }
-
-    // Fallback: If no scoring data arrives within 5 seconds, advance anyway
-    const fallbackTimer = setTimeout(() => {
-      console.warn(
-        "[ResponseModal] No scoring data received, advancing to score modal",
-      );
-      setShowScoreCard(true);
-      setShowResponseModal(false);
-    }, 5000);
-
-    return () => clearTimeout(fallbackTimer);
-  }, [hasScoring, setShowScoreCard, setShowResponseModal]);
+    return () => clearTimeout(advanceTimer);
+  }, [hasScoring, currentPlayer, setShowScoreCard, setShowResponseModal]);
 
   return (
     <div className="round-modal__overlay" style={{ zIndex: 100 }}>
@@ -94,6 +89,12 @@ const ResponseModal = ({
                 : "YOU'LL GET THEM NEXT TIME"
             : "PLEASE WAIT WHILE WE UPDATE YOUR SCORE"}
         </h3>
+        {!hasScoring && (
+          <p style={{ fontSize: "12px", color: "#666", marginTop: "20px" }}>
+            (Waiting for scoring data... Player: {currentPlayerName}, Has
+            players: {sourcePlayers?.length || 0})
+          </p>
+        )}
       </div>
     </div>
   );
