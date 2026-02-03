@@ -33,7 +33,7 @@
   }
 
   .news-card__title {
-    font-family: "DIN", sans-serif;
+    font-family: "Alfa Slab One", serif;
     font-size: clamp(12px, 2.2vw, 22px);
     font-weight: 400;
     margin-block: 4px;
@@ -44,7 +44,7 @@
     font-weight: 400;
     margin-bottom: 0;
     padding-bottom: 0;
-    font-family: "Plus Jakarta Sans", sans-serif;
+    font-family: "DIN Alternate", sans-serif;
     text-wrap: balance;
   }
 

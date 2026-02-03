@@ -50,14 +50,6 @@ const ScoreModal = ({
     setShowScoreCard,
   ]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      handleDeal();
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [handleDeal]);
-
   const sourcePlayers: Player[] =
     lastScoreUpdatePlayers && lastScoreUpdatePlayers.length > 0
       ? (lastScoreUpdatePlayers as Player[])

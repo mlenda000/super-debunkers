@@ -85,6 +85,7 @@ export interface RoomData {
   players: Player[];
   name: string;
   deck?: GameDeck;
+  newsCard?: NewsCard;
 }
 
 export interface GameRoom {
@@ -109,7 +110,7 @@ export type GameContextType = {
   setCustomState: (customState: CustomState) => void;
   tacticCards?: import("./types").TacticCardProps[];
   setTacticCards?: (
-    cards: import("./types").TacticCardProps[] | undefined
+    cards: import("./types").TacticCardProps[] | undefined,
   ) => void;
   newsCards?: NewsCard[];
   setNewsCards?: (cards: NewsCard[]) => void;
@@ -123,4 +124,5 @@ export type GameContextType = {
   setIsDeckShuffled?: (shuffled: boolean) => void;
   finalRound?: boolean;
   setFinalRound?: (final: boolean) => void;
+  resetGameState?: () => void;
 };

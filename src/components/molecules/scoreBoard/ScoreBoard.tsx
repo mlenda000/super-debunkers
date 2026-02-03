@@ -1,10 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AvatarImage from "@/components/atoms/avatarImage/AvatarImage";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { useGameContext } from "@/hooks/useGameContext";
 import type { GameRoom, Player } from "@/types/gameTypes";
-import { returnToLobby } from "@/services/webSocketService";
+import {
+  returnToLobby,
+  getWebSocketInstance,
+} from "@/services/webSocketService";
+import { sendPlayerLeaves } from "@/utils/gameMessageUtils";
 
 interface ScoreboardProps {
   roundHasEnded?: boolean;
@@ -24,10 +28,16 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   gameRound: propGameRound,
 }) => {
   const { setThemeStyle } = useGlobalContext();
-  const { gameRoom: ctxGameRoom, gameRound: ctxGameRound } = useGameContext();
+  const {
+    gameRoom: ctxGameRoom,
+    gameRound: ctxGameRound,
+    resetGameState,
+  } = useGameContext();
   const navigate = useNavigate();
   const [isSoundPlaying, setIsSoundPlaying] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  const { room: roomId } = useParams<{ room: string }>();
 
   // Prefer context values, fallback to props
   const gameRoom = ctxGameRoom || propGameRoom;
@@ -36,11 +46,26 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   const handleReturnToLobby = async () => {
     try {
       setThemeStyle("all");
+
+      // Send playerLeaves message BEFORE switching rooms to notify other players
+      const socket = getWebSocketInstance();
+      if (socket && roomId) {
+        sendPlayerLeaves(socket, roomId);
+      }
+
+      // Reset all game state so next game starts fresh
+      resetGameState?.();
+
+      // Small delay to ensure message is sent before switching
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       await returnToLobby();
-      navigate(-1);
+      // Use replace: true to remove game page from history
+      // This way back button won't return to the game
+      navigate("/game/lobby", { replace: true });
     } catch (error) {
       console.error("[Scoreboard] Failed to return to lobby:", error);
-      navigate(-1);
+      navigate("/game/lobby", { replace: true });
     }
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -92,7 +117,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
               <React.Fragment key={player?.id}>
                 {player?.isReady ? (
                   <img
-                    src={`/icons/player-ready.webp`}
+                    src={`/icons/player-ready.png`}
                     alt="Player ready"
                     width="60px"
                     style={{ zIndex: 2 }}

@@ -1,21 +1,15 @@
 import React from "react";
 import type { RoomTabProps } from "@/types/types";
+import type { Player } from "@/types/gameTypes";
+import AvatarImage from "@/components/atoms/avatarImage/AvatarImage";
 
-interface Player {
-  id: string;
-  name: string;
-  avatar: string;
-  status?: boolean;
-}
-
-interface GameRoomData {
-  room?: string;
-  count?: number;
-  roomData?: Player[];
-}
-
-const RoomTab = ({ room, onClick, avatar }: RoomTabProps) => {
-  const gameRoom = { room, count: 0, roomData: [] } as GameRoomData;
+const RoomTab = ({
+  room,
+  onClick,
+  avatar,
+  roomPlayers,
+}: RoomTabProps & { roomPlayers?: Player[] }) => {
+  const playerCount = roomPlayers?.length || 0;
   const gameRound = 0;
   const playerName = localStorage.getItem("playerName") || "";
 
@@ -36,36 +30,30 @@ const RoomTab = ({ room, onClick, avatar }: RoomTabProps) => {
       onClick={handleInteraction}
       onKeyDown={handleKeyDown}
       style={{ zIndex: 2 }}
-      disabled={(gameRoom?.count ?? 0) >= 5 || gameRound > 1}
+      disabled={(playerCount ?? 0) >= 5 || gameRound > 1}
       aria-label={`Join room ${room}`}
-      aria-disabled={(gameRoom?.count ?? 0) >= 5 || gameRound > 1}
+      aria-disabled={(playerCount ?? 0) >= 5 || gameRound > 1}
       tabIndex={0}
       role="button"
     >
       <h2 className="room-tab__title">{room}</h2>
-      {/* {gameRoom?.roomData &&
-        gameRoom.roomData.length > 0 &&
-        room === gameRoom?.room && (
-          <div className="player-avatars">
-            {gameRoom.roomData.map((player: Player, index: number) => {
-              return (
-                <img
-                  src={`/images/avatars/${player.avatar}`}
-                  alt="players"
-                  key={player.id || index}
-                  style={{
-                    width: "55px",
-                    height: "55px",
-                    zIndex: 1,
-                    border: "1px solid #FFF",
-                    borderRadius: "50%",
-                    marginLeft: index > 0 ? "-10px" : "0",
-                  }}
-                />
-              );
-            })}
-          </div>
-        )} */}
+      {roomPlayers && roomPlayers.length > 0 && (
+        <div
+          className="player-avatars"
+          style={{ display: "flex", gap: "4px", padding: "8px 0" }}
+        >
+          {roomPlayers.map((player: Player, index: number) => {
+            return (
+              <AvatarImage
+                key={player.id || index}
+                src={`/images/avatars/${player.avatar}`}
+                display="mini"
+                playerReady={player.status || false}
+              />
+            );
+          })}
+        </div>
+      )}
     </button>
   );
 };
