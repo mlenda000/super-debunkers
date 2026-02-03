@@ -109,8 +109,8 @@
 
 .endgame-modal__home-btn--small {
   display: none;
-  width: 24px;
-  height: 24px;
+  width: 60px;
+  height: auto;
 }
 
 .endgame-modal__home-btn:hover {
