@@ -1,9 +1,9 @@
 .carousel-container {
   position: relative;
-  width: 100vw;
-  height: 100vh;
-  max-width: 100vw;
-  max-height: 100vh;
+  width: clamp(100svw, 100dvw, 100lvw);
+  height: clamp(100svh, 100dvh, 100lvh);
+  max-width: clamp(100svw, 100dvw, 100lvw);
+  max-height: clamp(100svh, 100dvh, 100lvh);
   margin: 0;
   overflow: hidden;
 }
@@ -11,8 +11,8 @@
 .carousel-swiper {
   width: 100%;
   height: 100%;
-  max-width: 100vw;
-  max-height: 100vh;
+  max-width: clamp(100svw, 100dvw, 100lvw);
+  max-height: clamp(100svh, 100dvh, 100lvh);
   overflow: hidden;
 }
 

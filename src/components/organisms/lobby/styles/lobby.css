@@ -9,9 +9,9 @@
   padding: var(--spacing-3xl) var(--spacing-md);
   overflow-y: auto !important;
   overflow-x: hidden;
-  margin-top: 10vh;
+  margin-top: 10dvh;
   box-sizing: border-box;
-  max-height: 100vh;
+  max-height: clamp(100svh, 100dvh, 100lvh);
   margin-bottom: 60px;
 
   @media (max-width: 768px) {

@@ -1,7 +1,7 @@
 .game-page {
   width: 100%;
-  max-width: 100vw;
-  height: 100vh;
+  max-width: clamp(100svw, 100dvw, 100lvw);
+  height: clamp(100svh, 100dvh, 100lvh);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -9,9 +9,9 @@
 
   .main-table,
   .players-hand {
-    width: 100vw;
-    min-width: 100vw;
-    max-width: 100vw;
+    width: clamp(100svw, 100dvw, 100lvw);
+    min-width: clamp(100svw, 100dvw, 100lvw);
+    max-width: clamp(100svw, 100dvw, 100lvw);
     scroll-snap-align: start;
   }
 

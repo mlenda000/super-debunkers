@@ -3,8 +3,8 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: clamp(100svw, 100dvw, 100lvw);
+  height: clamp(100svh, 100dvh, 100lvh);
   background-color: rgba(0, 0, 0, 0.95);
   z-index: 9999;
   justify-content: center;

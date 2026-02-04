@@ -61,12 +61,12 @@
   --min-width-xs: clamp(200px, 20rem, 320px); /* 320px */
 
   /* Viewport Heights */
-  --min-height-screen: 100vh;
-  --min-height-screen-dynamic: 100dvh;
+  --min-height-screen: clamp(100svh, 100dvh, 100lvh);
+  --min-height-screen-dynamic: clamp(100svh, 100dvh, 100lvh);
 
   /* Viewport Widths */
-  --width-screen: 100vw;
-  --height-screen: 100vh;
+  --width-screen: clamp(100svw, 100dvw, 100lvw);
+  --height-screen: clamp(100svh, 100dvh, 100lvh);
 
   /* Icon/Button Specific Sizes */
   --size-icon-sm: clamp(2px, 0.625rem, 10px); /* 10px */
