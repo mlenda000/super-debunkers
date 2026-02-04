@@ -40,7 +40,7 @@
   }
 
   .news-card__description {
-    font-size: clamp(10px, 1.6vw, 16px);
+    font-size: clamp(14px, 1.6vw, 18px);
     font-weight: 400;
     margin-bottom: 0;
     padding-bottom: 0;
@@ -53,7 +53,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    padding-inline: clamp(12px, 2vw, 24px);
+    padding-inline: clamp(14px, 2vw, 24px);
     width: clamp(150px, 100%, 400px);
     text-wrap: balance;
   }
@@ -99,7 +99,7 @@
   }
 
   .news-card__description {
-    font-size: clamp(7px, 1.4vw, 14px);
+    font-size: clamp(14px, 1.4vw, 18px);
     font-weight: 400;
     margin-bottom: 0.5rem;
     font-family: "Plus Jakarta Sans", sans-serif;
@@ -110,9 +110,9 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    font-size: clamp(7px, 1vw, 14px);
+    font-size: clamp(14px, 1vw, 18px);
     font-weight: 400;
-    padding: clamp(8px, 2vw, 24px);
+    padding: clamp(12px, 2vw, 24px);
     overflow: hidden;
     max-height: 100%;
   }
@@ -155,15 +155,15 @@
   }
 
   .news-card__title {
-    font-family: "Alfa Slab", serif;
-    font-size: clamp(6px, 1.2vw, 18px);
+    font-family: "Alfa Slab One", serif;
+    font-size: clamp(14px, 1.2vw, 24px);
     font-weight: 400;
     margin-bottom: 0.3rem;
     line-height: 1.2;
   }
 
   .news-card__description {
-    font-size: clamp(5px, 0.9vw, 12px);
+    font-size: clamp(12px, 0.9vw, 18px);
     font-weight: 400;
     margin-bottom: 0;
     font-family: "Plus Jakarta Sans", sans-serif;
@@ -179,7 +179,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    padding: clamp(4px, 1vw, 16px);
+    padding: clamp(12px, 1vw, 20px);
     overflow: hidden;
     flex: 1;
   }
@@ -248,18 +248,18 @@
     }
 
     .news-card__title {
-      font-size: clamp(9px, 1.6vw, 14px);
+      font-size: clamp(18px, 1.6vw, 24px);
       margin-bottom: 2px;
     }
 
     .news-card__description {
-      font-size: clamp(6px, 1vw, 10px);
+      font-size: clamp(14px, 1vw, 20px);
       margin-bottom: 0;
       line-height: 1.1;
     }
 
     .news-card__text {
-      padding: clamp(6px, 1vw, 12px);
+      padding: clamp(12px, 1vw, 20px);
     }
   }
 }

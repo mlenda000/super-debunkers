@@ -127,9 +127,9 @@
 .tool__layer--results {
   z-index: 4;
   /* Position results in the right "dial" area of the tool */
-  top: 10%;
+  top: 9.5%;
   left: auto;
-  right: 8%;
+  right: 8.5%;
   width: 15%;
   height: 50%;
   display: flex;

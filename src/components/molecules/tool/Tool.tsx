@@ -147,7 +147,7 @@ const TestTool = ({
               className="tool__result-image tool__result-image--facts"
             />
           ) : (
-            <TestImageCarousel images={currentInfluencer?.tacticUsed ?? []} />
+            <ImageCarousel images={currentInfluencer?.tacticUsed ?? []} />
           )}
         </div>
       </div>
@@ -156,7 +156,7 @@ const TestTool = ({
 };
 
 // Image carousel component for cycling through tactic images
-const TestImageCarousel = ({ images }: { images: string[] }) => {
+const ImageCarousel = ({ images }: { images: string[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [detected, setDetected] = useState(true);
 
