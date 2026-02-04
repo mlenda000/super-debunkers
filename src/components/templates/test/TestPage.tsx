@@ -7,7 +7,19 @@ import EndGameModal from "@/components/organisms/modals/endGameModal/EndGameModa
 const mockInfluencer = {
   caption: "this is a mock caption",
   bodyCopy: "this is a mock body copy",
-  tacticUsed: ["true"],
+  tacticUsed: [
+    // "emotional-manipulation",
+    // "conspiracy-theory",
+    // "gaslighting",
+    // "impersonation",
+    // "cherry-picking",
+    // "tricky-jokes",
+    // "fear-mongering",
+    // "deepfakes",
+    // "sock-puppetry",
+    // "clickbait",
+    "true",
+  ],
   villain: "all" as ThemeStyle,
   newsImage: "scientist.webp",
 };
@@ -20,11 +32,12 @@ const TestPage = () => {
           throw new Error("Function not implemented.");
         }}
       /> */}
-      <EndGameModal
+      {/* <EndGameModal
         setIsEndGame={function (value: boolean): void {
           throw new Error("Function not implemented.");
         }}
-      />
+      /> */}
+      <Tool currentInfluencer={mockInfluencer} showResults />
     </div>
   );
 };
