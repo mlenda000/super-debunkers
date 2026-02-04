@@ -12,7 +12,11 @@
     padding: var(--spacing-xs);
     gap: var(--spacing-sm);
   }
-
+  @media (max-height: 600px) {
+    .next-button {
+      display: none;
+    }
+  }
 }
 .player-selection__header {
   font-family: "Subway Berlin", sans-serif;
