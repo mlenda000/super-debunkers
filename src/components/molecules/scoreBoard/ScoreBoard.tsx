@@ -117,7 +117,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
               <React.Fragment key={player?.id}>
                 {player?.isReady ? (
                   <img
-                    src={`/icons/player-ready.png`}
+                    src={`/icons/player-ready.webp`}
                     alt="Player ready"
                     width="60px"
                     style={{ zIndex: 2 }}
