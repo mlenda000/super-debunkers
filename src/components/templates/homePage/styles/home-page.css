@@ -13,7 +13,7 @@
   color: white;
   -webkit-text-stroke: 30px black;
   paint-order: stroke fill;
-  max-width: 40vw;
+  max-width: 70vw;
   text-align: center;
 
   @media (max-height: 600px) and (orientation: landscape) {
