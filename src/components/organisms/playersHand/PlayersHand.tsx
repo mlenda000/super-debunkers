@@ -14,7 +14,16 @@ const PlayersHand: React.FC<PlayersHandProps> = ({
       role="region"
       aria-label="Player's hand of cards"
     >
-      <div className="players-hand">
+      {/* Screen reader instructions for drag and drop */}
+      <p id="dnd-instructions" className="visually-hidden">
+        Use Enter or Space to select a card and move it to the table. On touch
+        devices, tap once to preview the card, double-tap to select it.
+      </p>
+      <div
+        className="players-hand"
+        role="list"
+        aria-label="Available tactic cards"
+      >
         {items.map((card) => (
           <SortableCard key={card?.id} id={card?.id}>
             <TacticCard

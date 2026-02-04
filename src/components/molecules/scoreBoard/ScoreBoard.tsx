@@ -86,23 +86,30 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   }, [isSoundPlaying]);
 
   return (
-    <div className="scoreboard">
-      <audio ref={audioRef} src="/audio/music.mp3" loop />
+    <div className="scoreboard" role="region" aria-label="Game scoreboard">
+      <audio ref={audioRef} src="/audio/music.mp3" loop aria-hidden="true" />
       <button
         className="scoreboard__home-button"
         onClick={() => handleReturnToLobby()}
-        title="Return to Lobby"
+        aria-label="Return to lobby"
       >
         <img
           src={`/images/buttons/home.webp`}
-          alt="Return to lobby"
+          alt=""
           style={{ cursor: "pointer", zIndex: 2 }}
           className="scoreboard__home-image"
+          aria-hidden="true"
         />
-        <p className="scoreboard__home-button-small">Lobby</p>
+        <p className="scoreboard__home-button-small" aria-hidden="true">
+          Lobby
+        </p>
       </button>
 
-      <div className="scoreboard__avatar">
+      <div
+        className="scoreboard__avatar"
+        role="list"
+        aria-label="Players in game"
+      >
         {gameRoom?.roomData?.players.length > 0 &&
           gameRoom?.roomData?.players.map((player: Player) => {
             return (
@@ -132,7 +139,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
           })}
       </div>
       <div style={{ zIndex: 2 }} className="scoreboard-right__container ">
-        <div className="scoreboard-timer">
+        <div className="scoreboard-timer" aria-live="polite">
           <h1>
             <span className="scoreboard__score-numeric" style={{ zIndex: 2 }}>
               Round {gameRound}
@@ -147,26 +154,36 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
               setIsInfoModalOpen(!isInfoModalOpen);
             }
           }}
+          aria-label="Open how to play instructions"
+          aria-expanded={isInfoModalOpen}
         >
           <img
             src={`/images/buttons/info-button.webp`}
-            alt="Scoreboard"
+            alt=""
             width={"100%"}
             style={{ zIndex: 2 }}
+            aria-hidden="true"
           />
         </button>
-        <button className="scoreboard-audio__button">
+        <button
+          className="scoreboard-audio__button"
+          onClick={() => setIsSoundPlaying(!isSoundPlaying)}
+          aria-label={
+            isSoundPlaying ? "Mute background music" : "Unmute background music"
+          }
+          aria-pressed={isSoundPlaying}
+        >
           <img
             src={
               isSoundPlaying
                 ? "/images/buttons/audio.webp"
                 : "/images/buttons/mute.webp"
             }
-            alt="Sound Toggle"
+            alt=""
             width={"100%"}
             style={{ zIndex: 2 }}
-            onClick={() => setIsSoundPlaying(!isSoundPlaying)}
             className="scoreboard-audio__image"
+            aria-hidden="true"
           />
         </button>
       </div>

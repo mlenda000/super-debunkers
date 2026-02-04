@@ -1,6 +1,11 @@
 const RotateScreen = () => {
   return (
-    <div className="rotate-screen-overlay">
+    <div
+      className="rotate-screen-overlay"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+    >
       <div className="rotate-screen-content">
         <svg
           className="rotate-screen-icon"
@@ -10,6 +15,7 @@ const RotateScreen = () => {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
+          aria-hidden="true"
         >
           <rect x="2" y="3" width="20" height="14" rx="2" />
           <path d="M8 21h8" />

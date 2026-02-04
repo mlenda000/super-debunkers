@@ -52,36 +52,51 @@ const Header = ({ showPlayButton = false }: HeaderProps) => {
         : false;
 
   return (
-    <header className="app-header">
-      <button className="header-button" onClick={handleBack}>
-        <img
-          src="/images/buttons/back-arrow.webp"
-          alt="Back button"
-          className="header-button-image"
-        />
-        Back
-      </button>
-
-      {path === "/character-creation" || path === "/character-creation/name" ? (
-        <NextButton
-          onClick={handleNext}
-          className="next-button next-button-header"
-          disabled={isDisabled}
-        />
-      ) : null}
-      {showPlayButton && (
+    <header className="app-header" role="banner">
+      <nav aria-label="Page navigation">
         <button
-          className="header-button header-button-play"
-          onClick={handlePlayGame}
+          className="header-button"
+          onClick={handleBack}
+          aria-label="Go back to previous page"
         >
-          Play Game
           <img
-            src="/images/buttons/play-game.webp"
-            alt="Play Game"
-            className="header-button-image header-button-image-right"
+            src="/images/buttons/back-arrow.webp"
+            alt=""
+            className="header-button-image"
+            aria-hidden="true"
           />
+          Back
         </button>
-      )}
+
+        {path === "/character-creation" ||
+        path === "/character-creation/name" ? (
+          <NextButton
+            onClick={handleNext}
+            className="next-button next-button-header"
+            disabled={isDisabled}
+            aria-label={
+              path === "/character-creation"
+                ? "Continue to name selection"
+                : "Continue to lobby"
+            }
+          />
+        ) : null}
+        {showPlayButton && (
+          <button
+            className="header-button header-button-play"
+            onClick={handlePlayGame}
+            aria-label="Start playing the game"
+          >
+            Play Game
+            <img
+              src="/images/buttons/play-game.webp"
+              alt=""
+              className="header-button-image header-button-image-right"
+              aria-hidden="true"
+            />
+          </button>
+        )}
+      </nav>
     </header>
   );
 };

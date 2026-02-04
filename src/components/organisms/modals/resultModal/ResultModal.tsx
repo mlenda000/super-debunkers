@@ -60,7 +60,13 @@ const ResultModal = ({
   }, [hasValidScoringData, setRoundEnd, setShowResponseModal]);
 
   return (
-    <div className="result-modal__overlay" style={{ zIndex: 100 }}>
+    <div
+      className="result-modal__overlay"
+      style={{ zIndex: 100 }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Round results showing detected misinformation tactics"
+    >
       <div className="result-modal__content ">
         <Tool showResults={showComponents} currentInfluencer={activeNewsCard} />
       </div>

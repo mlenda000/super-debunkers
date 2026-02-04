@@ -40,16 +40,27 @@ const PlayerSelection = () => {
 
   return (
     <>
-      <div className="player-selection">
-        <h2 className="player-selection__header">Select your Debunker</h2>
+      <div
+        className="player-selection"
+        role="region"
+        aria-labelledby="avatar-selection-heading"
+      >
+        <h2 id="avatar-selection-heading" className="player-selection__header">
+          Select your Debunker
+        </h2>
 
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
           }}
+          aria-label="Avatar selection form"
         >
-          <div className="player-selection__avatar-container">
+          <div
+            className="player-selection__avatar-container"
+            role="radiogroup"
+            aria-label="Available avatars"
+          >
             {avatars.map((img, index) => (
               <div className="player-selection__avatar" key={index}>
                 <AvatarImage
@@ -63,7 +74,15 @@ const PlayerSelection = () => {
             ))}
           </div>
         </form>
-        <NextButton onClick={handleSubmit} disabled={!avatar} />
+        <NextButton
+          onClick={handleSubmit}
+          disabled={!avatar}
+          aria-label={
+            avatar
+              ? "Continue to name selection"
+              : "Select an avatar to continue"
+          }
+        />
       </div>
     </>
   );

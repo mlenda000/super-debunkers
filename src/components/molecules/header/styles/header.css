@@ -3,10 +3,6 @@
   top: 0;
   left: 0;
   width: var(--width-full);
-  padding: var(--spacing-2xl);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   z-index: 2;
 
   .next-button {
@@ -16,6 +12,12 @@
       display: flex;
       margin-top: 0;
     }
+  }
+  nav {
+    padding: var(--spacing-2xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 

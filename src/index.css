@@ -24,16 +24,14 @@ html {
   position: fixed;
 }
 
-
-
 body {
-margin: 0;
-padding: 0;
-min-width: 320px;
-width: 100vw;
-height: 100vh;
-overflow: hidden;
-position: fixed;
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
 }
 
 :focus-visible {
@@ -41,3 +39,26 @@ position: fixed;
   outline-offset: var(--spacing-xs);
 }
 
+/* Visually hidden content - visible to screen readers only */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Played card undo button visibility states */
+.played-card__undo-icon--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.played-card__undo-icon--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
