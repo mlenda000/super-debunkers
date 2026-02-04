@@ -176,9 +176,15 @@ const Lobby = ({ rooms }: { rooms: string[] }) => {
   return (
     <>
       <>
-        <div className="lobby">
-          <h1 className="lobby-title">Join Game</h1>
-          <div className="lobby__rooms">
+        <div className="lobby" role="region" aria-labelledby="lobby-title">
+          <h1 id="lobby-title" className="lobby-title">
+            Join Game
+          </h1>
+          <div
+            className="lobby__rooms"
+            role="list"
+            aria-label="Available game rooms"
+          >
             {rooms &&
               rooms.map((room: string) => (
                 <RoomTab

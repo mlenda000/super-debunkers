@@ -7,11 +7,6 @@
   box-sizing: border-box;
   overflow: hidden;
 
-  * {
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
   .main-table,
   .players-hand {
     width: 100vw;

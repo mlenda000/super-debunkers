@@ -59,9 +59,16 @@ const ResponseModal = ({
   }, [hasScoring, currentPlayer, setShowScoreCard, setShowResponseModal]);
 
   return (
-    <div className="round-modal__overlay" style={{ zIndex: 100 }}>
+    <div
+      className="round-modal__overlay"
+      style={{ zIndex: 100 }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="response-modal-title"
+      aria-describedby="response-modal-subtitle"
+    >
       <div className="response-modal__content ">
-        <h1 className="response-modal__title">
+        <h1 id="response-modal-title" className="response-modal__title">
           {hasScoring
             ? responseMsg?.hasStreak
               ? "WIN STREAK!"
@@ -70,7 +77,7 @@ const ResponseModal = ({
                 : "OOPS!"
             : "Processing results…"}
         </h1>
-        <h3 className="response-modal__subtitle">
+        <h3 id="response-modal-subtitle" className="response-modal__subtitle">
           {hasScoring
             ? responseMsg?.hasStreak
               ? `YOU DEBUNKED ${responseMsg?.streak} IN A ROW`
@@ -80,7 +87,10 @@ const ResponseModal = ({
             : "PLEASE WAIT WHILE WE UPDATE YOUR SCORE"}
         </h3>
         {!hasScoring && (
-          <p style={{ fontSize: "12px", color: "#666", marginTop: "20px" }}>
+          <p
+            style={{ fontSize: "12px", color: "#666", marginTop: "20px" }}
+            aria-live="polite"
+          >
             (Waiting for scoring data... Player: {currentPlayerName}, Has
             players: {sourcePlayers?.length || 0})
           </p>

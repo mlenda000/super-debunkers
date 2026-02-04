@@ -56,27 +56,38 @@ const HomePage = () => {
           The more fake news you debunk, the more followers you gain, bringing
           you one step closer to becoming a Super Debunker!
         </p>
-        <div className="home-button-group">
+        <div
+          className="home-button-group"
+          role="navigation"
+          aria-label="Main menu"
+        >
           <button
             className="home-button"
             onClick={() => navigate("/character-creation")}
+            aria-label="Start playing Super Debunkers"
           >
             <h3 className="home-button-title">Super Debunkers</h3>
             <span className="home-play-button">
               <p className="home-button-description">Play Game</p>
               <img
                 src="/images/buttons/next.webp"
-                alt="Play game"
+                alt=""
                 width="48px"
                 height="48px"
+                aria-hidden="true"
               />
             </span>
           </button>
-          <button className="home-button" onClick={() => navigate("/villains")}>
+          <button
+            className="home-button"
+            onClick={() => navigate("/villains")}
+            aria-label="Meet the villains"
+          >
             <img
               src="/images/home/villain.webp"
-              alt="Meet the villains"
+              alt=""
               className="home-button-image"
+              aria-hidden="true"
             />
             <p className="home-play-button home-button-description">
               Meet the villains
@@ -85,11 +96,13 @@ const HomePage = () => {
           <button
             className="home-button"
             onClick={() => navigate("/directions")}
+            aria-label="View game instructions"
           >
             <img
               src="/images/home/directions.webp"
-              alt="Learn how to play"
+              alt=""
               className="home-button-image"
+              aria-hidden="true"
             />
             <p className="home-play-button home-button-description">
               Instructions

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Background from "@/components/atoms/background/Background";
+import SkipLink from "@/components/atoms/skipLink/SkipLink";
 import HomePage from "@/components/templates/homePage/HomePage";
 import VillainsPage from "@/components/templates/villainsPage/VillainsPage";
 import DirectionsPage from "@/components/templates/directionsPage/DirectionsPage";
@@ -11,6 +12,7 @@ import NamePage from "@/components/templates/namePage/NamePage";
 import CreateRoomPage from "@/components/templates/createRoomPage/CreateRoomPage";
 import TestPage from "./components/templates/test/TestPage";
 
+import "@/components/atoms/skipLink/styles/skip-link.css";
 import "./App.css";
 
 function App() {
@@ -21,24 +23,27 @@ function App() {
   return (
     <React.Fragment>
       <BrowserRouter>
+        <SkipLink />
         <Background />
-        <Routes>
-          <Route path="/test" element={<TestPage />} />
-          <Route path="/" element={<HomePage />} />
-          <Route path="/villains" element={<VillainsPage />} />
-          <Route path="/directions" element={<DirectionsPage />} />
-          <Route
-            path="/character-creation"
-            element={<CharacterCreationPage />}
-          />
-          <Route path="/character-creation/name" element={<NamePage />} />
-          <Route path="/game/lobby" element={<LobbyPage rooms={rooms} />} />
-          <Route
-            path="/game/create-room"
-            element={<CreateRoomPage rooms={rooms} setRooms={setRooms} />}
-          />
-          <Route path="/game/:room" element={<GamePage />} />
-        </Routes>
+        <main id="main-content">
+          <Routes>
+            <Route path="/test" element={<TestPage />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/villains" element={<VillainsPage />} />
+            <Route path="/directions" element={<DirectionsPage />} />
+            <Route
+              path="/character-creation"
+              element={<CharacterCreationPage />}
+            />
+            <Route path="/character-creation/name" element={<NamePage />} />
+            <Route path="/game/lobby" element={<LobbyPage rooms={rooms} />} />
+            <Route
+              path="/game/create-room"
+              element={<CreateRoomPage rooms={rooms} setRooms={setRooms} />}
+            />
+            <Route path="/game/:room" element={<GamePage />} />
+          </Routes>
+        </main>
       </BrowserRouter>
     </React.Fragment>
   );

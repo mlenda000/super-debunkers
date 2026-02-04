@@ -62,29 +62,47 @@ const ScoreModal = ({
         : (players as Player[]);
 
   return (
-    <div className="round-modal__overlay" style={{ zIndex: 100 }}>
+    <div
+      className="round-modal__overlay"
+      style={{ zIndex: 100 }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="score-modal-title"
+    >
       <div className="score-modal__content">
         <div className="score-modal__scores">
-          <h1 className="score-modal__header">Scoreboard</h1>
-          <h2 className="score-modal__title">
+          <h1 id="score-modal-title" className="score-modal__header">
+            Scoreboard
+          </h1>
+          <h2 className="score-modal__title" aria-hidden="true">
             <div>Rank</div>
             <div>Followers</div>
           </h2>
-          {sourcePlayers
-            .sort((a: Player, b: Player) => (b?.score ?? 0) - (a?.score ?? 0))
-            .map((player: Player, index: number) => (
-              <div className="score-modal__players" key={player?.name ?? index}>
-                <div className="score-modal__player-left">
-                  <div style={{ marginRight: "12px" }}>{index + 1}.</div>
-                  <img
-                    src={`/images/avatars/${player?.avatar}`}
-                    alt={player?.name ?? "Player"}
-                  />
-                  <div>{player?.name}</div>
+          <div role="list" aria-label="Player rankings">
+            {sourcePlayers
+              .sort((a: Player, b: Player) => (b?.score ?? 0) - (a?.score ?? 0))
+              .map((player: Player, index: number) => (
+                <div
+                  className="score-modal__players"
+                  key={player?.name ?? index}
+                  role="listitem"
+                  aria-label={`Rank ${index + 1}: ${player?.name ?? "Player"} with ${player?.score ?? 0} followers`}
+                >
+                  <div className="score-modal__player-left">
+                    <div style={{ marginRight: "12px" }} aria-hidden="true">
+                      {index + 1}.
+                    </div>
+                    <img
+                      src={`/images/avatars/${player?.avatar}`}
+                      alt=""
+                      aria-hidden="true"
+                    />
+                    <div>{player?.name}</div>
+                  </div>
+                  <div>{player?.score ?? 0}</div>
                 </div>
-                <div>{player?.score ?? 0}</div>
-              </div>
-            ))}
+              ))}
+          </div>
         </div>
       </div>
     </div>

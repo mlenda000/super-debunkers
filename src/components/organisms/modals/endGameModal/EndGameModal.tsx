@@ -31,15 +31,21 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
   };
 
   return (
-    <div className="round-modal__overlay" style={{ zIndex: 100 }}>
+    <div
+      className="round-modal__overlay"
+      style={{ zIndex: 100 }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="endgame-modal-title"
+    >
       <div className="endgame-modal__content">
         <div className="endgame-modal__winner">
           <img
             src={`/images/avatars/winning/${topPlayer?.avatar}`}
-            alt={topPlayer?.name}
+            alt={`Winner: ${topPlayer?.name}`}
             className="endgame-modal__winner-avatar"
           />
-          <h1 className="endgame-modal__winner-text">
+          <h1 id="endgame-modal-title" className="endgame-modal__winner-text">
             {topPlayer?.name} Wins!!!
           </h1>
         </div>
@@ -75,18 +81,30 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
             ))}
         </div>
         <div className="endgame-modal__button">
-          <img
-            src="/images/buttons/home-button.webp"
-            alt="Go Home"
-            className="endgame-modal__home-btn endgame-modal__home-btn--regular"
+          <button
+            className="endgame-modal__home-btn-wrapper endgame-modal__home-btn-wrapper--regular"
             onClick={handleClick}
-          />
-          <img
-            src="/images/buttons/home-button-small.webp"
-            alt="Go Home"
-            className="endgame-modal__home-btn endgame-modal__home-btn--small"
+            aria-label="Return to home page"
+          >
+            <img
+              src="/images/buttons/home-button.webp"
+              alt=""
+              className="endgame-modal__home-btn"
+              aria-hidden="true"
+            />
+          </button>
+          <button
+            className="endgame-modal__home-btn-wrapper endgame-modal__home-btn-wrapper--small"
             onClick={handleClick}
-          />
+            aria-label="Return to home page"
+          >
+            <img
+              src="/images/buttons/home-button-small.webp"
+              alt=""
+              className="endgame-modal__home-btn"
+              aria-hidden="true"
+            />
+          </button>
         </div>
       </div>
     </div>

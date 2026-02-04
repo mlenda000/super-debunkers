@@ -89,6 +89,13 @@ export interface InputProps {
   placeholder?: string;
   themeStyle?: ThemeStyle;
   style?: React.CSSProperties;
+  id?: string;
+  name?: string;
+  label?: string;
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+  required?: boolean;
+  autoComplete?: string;
 }
 
 // Button Types
@@ -97,6 +104,7 @@ export interface NextButtonProps {
   disabled?: boolean;
   className?: string;
   children?: string;
+  "aria-label"?: string;
 }
 
 // Room Tab Types

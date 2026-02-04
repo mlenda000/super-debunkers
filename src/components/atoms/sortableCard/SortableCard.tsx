@@ -4,7 +4,8 @@ import type { SortableCardProps } from "@/types/types";
 
 const SortableCard = ({ id, children }: SortableCardProps) => {
   const draggable = useDraggable({ id });
-  const { attributes, listeners, setNodeRef, transform } = draggable;
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    draggable;
   // Some versions of dnd-kit do not provide 'transition' from useDraggable
   const transition = (draggable as any).transition || undefined;
 
@@ -36,6 +37,8 @@ const SortableCard = ({ id, children }: SortableCardProps) => {
       {...attributes}
       tabIndex={-1}
       className="sortable-item"
+      aria-grabbed={isDragging}
+      aria-describedby="dnd-instructions"
     >
       {children}
     </div>

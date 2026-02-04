@@ -13,9 +13,11 @@ const CustomStyle = {
 export function Droppable({
   children,
   className,
+  "aria-label": ariaLabel = "Drop zone for tactic cards",
 }: {
   children: React.ReactNode;
   className?: string;
+  "aria-label"?: string;
 }) {
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
@@ -29,6 +31,9 @@ export function Droppable({
       ref={setNodeRef}
       className={className}
       style={{ ...style, ...CustomStyle }}
+      role="region"
+      aria-label={ariaLabel}
+      aria-dropeffect="move"
     >
       {children}
     </div>

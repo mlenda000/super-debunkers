@@ -25,7 +25,11 @@ const NameSelection = () => {
   };
   return (
     <>
-      <div className="name-selection">
+      <div
+        className="name-selection"
+        role="region"
+        aria-labelledby="name-selection-heading"
+      >
         <div className="name-selection__content">
           {avatar && (
             <div className="name-selection__avatar" style={{ zIndex: 2 }}>
@@ -40,11 +44,20 @@ const NameSelection = () => {
                 handleSubmit();
               }}
               style={{ zIndex: 2 }}
+              aria-label="Name entry form"
             >
+              <label id="name-selection-heading" className="visually-hidden">
+                Enter your player name
+              </label>
               <Input
                 value={playerName}
                 onChange={(e) => handleNameChange(e.target.value)}
                 placeholder="Enter your name"
+                id="player-name"
+                name="playerName"
+                aria-label="Enter your player name"
+                required
+                autoComplete="nickname"
               />
             </form>
             <div className="name-selection-next-button">
@@ -52,6 +65,9 @@ const NameSelection = () => {
                 onClick={handleSubmit}
                 disabled={!playerName}
                 className="next-button"
+                aria-label={
+                  playerName ? "Continue to lobby" : "Enter a name to continue"
+                }
               />
             </div>
           </div>

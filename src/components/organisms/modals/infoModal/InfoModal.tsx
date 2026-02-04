@@ -1,8 +1,36 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import type { InfoModalProps } from "@/types/types";
 
 const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Focus the close button when modal opens
+  useEffect(() => {
+    if (isOpen && closeButtonRef.current) {
+      closeButtonRef.current.focus();
+    }
+  }, [isOpen]);
+
+  // Handle escape key
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose(false);
+      }
+    },
+    [onClose],
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, handleKeyDown]);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as HTMLElement;
@@ -29,13 +57,25 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
 
   return (
     <>
-      <div className="info-modal__overlay" />
-      <div className="info-modal">
+      <div className="info-modal__overlay" aria-hidden="true" />
+      <div
+        className="info-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="info-modal-title"
+      >
         <div className="info-modal__content" ref={modalRef}>
-          <button className="info-modal__close" onClick={() => onClose(false)}>
-            <img src="/images/buttons/close.webp" alt="Close" />
+          <button
+            ref={closeButtonRef}
+            className="info-modal__close"
+            onClick={() => onClose(false)}
+            aria-label="Close how to play instructions"
+          >
+            <img src="/images/buttons/close.webp" alt="" aria-hidden="true" />
           </button>
-          <h1 className="info-modal__title">How to play</h1>
+          <h1 id="info-modal-title" className="info-modal__title">
+            How to play
+          </h1>
           <ol>
             <li>
               You’ll see a <span style={{ fontWeight: 900 }}>news card</span>{" "}
