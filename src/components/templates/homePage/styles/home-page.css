@@ -6,6 +6,31 @@
   padding-inline: var(--spacing-md);
   position: relative;
 }
+.home-title {
+  font-size: var(--font-size-5xl);
+  line-height: var(--line-height-5xl);
+  margin-bottom: var(--spacing-5xl);
+  color: white;
+  -webkit-text-stroke: 30px black;
+  paint-order: stroke fill;
+  max-width: 40vw;
+  text-align: center;
+
+  @media (max-height: 600px) and (orientation: landscape) {
+    margin-top: 0;
+    margin-bottom: var(--spacing-4xl);
+    max-width: 80vw;
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    margin-top: calc(20vh - 150px);
+    margin-bottom: var(--spacing-4xl);
+  }
+
+  @media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+    margin-top: calc(20vh - 100px);
+  }
+}
 
 .scroll-indicator {
   position: fixed;
@@ -54,6 +79,7 @@
   paint-order: stroke fill;
 
   @media (max-height: 600px) and (orientation: landscape) {
+    margin-top: 15vh;
     margin-bottom: var(--spacing-5xl);
   }
 

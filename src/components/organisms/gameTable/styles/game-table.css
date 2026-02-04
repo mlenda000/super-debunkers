@@ -59,7 +59,7 @@
   .container {
     display: grid;
     grid-template-columns: 100vw 100vw;
-    grid-template-rows: 15vh 70vh;
+    grid-template-rows: 15vh 80vh;
     width: 200vw;
     height: 100vh;
     gap: 0;
@@ -87,12 +87,13 @@
   .playershand {
     position: absolute;
     left: 100vw;
-    top: 5vh;
+    top: 3vh;
     width: 100vw;
-    height: 90vh;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-block: 4px;
   }
 
   .toggle-button {

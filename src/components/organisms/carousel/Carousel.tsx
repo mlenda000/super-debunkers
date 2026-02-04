@@ -3,14 +3,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import CarouselSlide from "@/components/molecules/carouselSlide/CarouselSlide";
-import type { CarouselProps } from "@/types/types";
+import type { ExtendedCarouselProps } from "@/types/types";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-
-interface ExtendedCarouselProps extends CarouselProps {
-  onSlideChange?: (isEnd: boolean) => void;
-}
 
 const Carousel = ({ slides, onSlideChange }: ExtendedCarouselProps) => {
   const [swiper, setSwiper] = useState<SwiperType | null>(null);

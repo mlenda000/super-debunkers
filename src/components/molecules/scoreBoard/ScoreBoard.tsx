@@ -4,20 +4,12 @@ import AvatarImage from "@/components/atoms/avatarImage/AvatarImage";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { useGameContext } from "@/hooks/useGameContext";
 import type { GameRoom, Player } from "@/types/gameTypes";
+import type { ScoreboardProps } from "@/types/types";
 import {
   returnToLobby,
   getWebSocketInstance,
 } from "@/services/webSocketService";
 import { sendPlayerLeaves } from "@/utils/gameMessageUtils";
-
-interface ScoreboardProps {
-  roundHasEnded?: boolean;
-  setRoundHasEnded?: (val: boolean) => void;
-  isInfoModalOpen?: boolean;
-  setIsInfoModalOpen?: (val: boolean) => void;
-  gameRoom?: GameRoom;
-  gameRound?: number;
-}
 
 const Scoreboard: React.FC<ScoreboardProps> = ({
   //   roundHasEnded,

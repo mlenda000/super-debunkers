@@ -1,17 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import type { ThemeStyle } from "@/types/types";
+import type { ThemeStyle } from "@/types/gameTypes";
+import type { ToolProps } from "@/types/types";
 import NewsCard from "@/components/molecules/newsCard/NewsCard";
-
-interface ToolProps {
-  showResults: boolean;
-  currentInfluencer?: {
-    caption?: string;
-    bodyCopy?: string;
-    tacticUsed?: string[];
-    villain?: ThemeStyle;
-    newsImage?: string;
-  } | null;
-}
 
 // Mock data for testing/styling
 const mockInfluencer = {

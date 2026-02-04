@@ -7,8 +7,8 @@ import type {
   CustomState,
   GameRoom,
   NewsCard,
+  TacticCardProps,
 } from "@/types/gameTypes";
-import type { TacticCardProps } from "@/types/types";
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   // --- State declarations ---
   const [currentPlayer, setCurrentPlayer] = useState<string>("");
