@@ -2,7 +2,7 @@
   font-family: "Subway Berlin", sans-serif;
   text-align: center;
   overflow-y: auto;
-  height: 100vh;
+  height: clamp(100svh, 100dvh, 100lvh);
   padding-inline: var(--spacing-md);
   position: relative;
 }

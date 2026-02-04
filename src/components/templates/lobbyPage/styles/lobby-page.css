@@ -1,4 +1,4 @@
 .lobby-page {
-  height: 100vh;
+  height: clamp(100svh, 100dvh, 100lvh);
   overflow-y: auto;
 }

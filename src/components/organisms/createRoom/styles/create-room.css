@@ -33,6 +33,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    height: 100vh;
+    min-height: clamp(100svh, 100dvh, 100lvh);
+    height: clamp(100svh, 100dvh, 100lvh);
 }
