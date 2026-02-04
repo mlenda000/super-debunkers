@@ -1,8 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-
-interface HeaderProps {
-  showPlayButton?: boolean;
-}
+import type { HeaderProps } from "@/types/types";
 
 const Header = ({ showPlayButton = false }: HeaderProps) => {
   const navigate = useNavigate();

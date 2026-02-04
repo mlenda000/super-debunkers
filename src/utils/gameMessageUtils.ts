@@ -1,8 +1,5 @@
-import type {
-  WebSocketMessage,
-  MessageType,
-  Player,
-} from "@/types/serverTypes";
+import type { WebSocketMessage, MessageType } from "@/types/serverTypes";
+import type { Player } from "@/types/gameTypes";
 import PartySocket from "partysocket";
 import { getWebSocketInstance } from "@/services/webSocketService";
 

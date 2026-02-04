@@ -27,7 +27,7 @@ const HomePage = () => {
     <>
       <RotateScreen />
       <div className="homepage" ref={homepageRef}>
-        <h1>Super Debunkers</h1>
+        <h1 className="home-title">Super Debunkers</h1>
         {!hasScrolled && (
           <img
             src="/images/buttons/down.webp"

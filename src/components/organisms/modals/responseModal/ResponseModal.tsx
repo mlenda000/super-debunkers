@@ -1,17 +1,7 @@
 import { useGameContext } from "@/hooks/useGameContext";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { useEffect } from "react";
-
-interface ResponseModalProps {
-  setShowScoreCard: (value: boolean) => void;
-  setShowResponseModal: (value: boolean) => void;
-}
-
-interface ResponseMessage {
-  wasCorrect?: boolean;
-  streak?: number;
-  hasStreak?: boolean;
-}
+import type { ResponseModalProps, ResponseMessage } from "@/types/types";
 
 const ResponseModal = ({
   setShowScoreCard,

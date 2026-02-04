@@ -10,7 +10,7 @@ import type {
   MainTableProps,
   ThemeStyle,
   TacticCardProps,
-} from "@/types/types";
+} from "@/types/gameTypes";
 import { useGameContext } from "@/hooks/useGameContext";
 import PlayedCard from "@/components/molecules/playedCard/PlayedCard";
 import NewsCard from "@/components/molecules/newsCard/NewsCard";

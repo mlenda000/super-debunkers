@@ -2,12 +2,7 @@ import { useEffect, useCallback } from "react";
 import { useGameContext } from "@/hooks/useGameContext";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import type { Player } from "@/types/gameTypes";
-
-interface ScoreModalProps {
-  setIsEndGame: (value: boolean) => void;
-  setShowRoundModal?: (value: boolean) => void;
-  setShowScoreCard?: (value: boolean) => void;
-}
+import type { ScoreModalProps } from "@/types/types";
 
 const ScoreModal = ({
   setIsEndGame,

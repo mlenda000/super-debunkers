@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useGameContext } from "@/hooks/useGameContext";
-import type { NewsCard } from "@/types/gameTypes";
-import type { TacticCardProps } from "@/types/types";
+import type { NewsCard, TacticCardProps } from "@/types/gameTypes";
 import { Droppable } from "@/components/atoms/droppable/Droppable";
 import {
   DndContext,
@@ -20,15 +19,7 @@ import TacticCard from "@/components/organisms/tacticCard/TacticCard";
 import categoryCards from "@/data/tacticsCards.json";
 import Scoreboard from "@/components/molecules/scoreBoard/ScoreBoard";
 
-interface GameTableProps {
-  setRoundEnd: (val: boolean) => void;
-  roundEnd: boolean;
-  roundHasEnded: boolean;
-  setRoundHasEnded: (val: boolean) => void;
-  gameRoom?: any;
-  isInfoModalOpen: boolean;
-  setIsInfoModalOpen: (val: boolean) => void;
-}
+import type { GameTableProps } from "@/types/types";
 
 const GameTable: React.FC<GameTableProps> = ({
   setRoundEnd,

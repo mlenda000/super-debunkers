@@ -1,4 +1,19 @@
-import type { TacticCardProps, ThemeStyle } from "./types";
+// Theme style for UI
+export type ThemeStyle = "all" | "oligs" | "bots" | "celebs" | "biosts";
+
+// Tactic Card component props
+export interface TacticCardProps {
+  category: string;
+  image: string;
+  imageBack: string;
+  title: string;
+  description?: string;
+  example: string;
+  alt: string;
+  className?: string;
+  id: string;
+  onUndo?: (id: string) => void;
+}
 
 export interface NewsCard {
   id: string;
@@ -109,10 +124,8 @@ export type GameContextType = {
   setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void;
   customState: CustomState;
   setCustomState: (customState: CustomState) => void;
-  tacticCards?: import("./types").TacticCardProps[];
-  setTacticCards?: (
-    cards: import("./types").TacticCardProps[] | undefined,
-  ) => void;
+  tacticCards?: TacticCardProps[];
+  setTacticCards?: (cards: TacticCardProps[] | undefined) => void;
   newsCards?: NewsCard[];
   setNewsCards?: (cards: NewsCard[]) => void;
   activeNewsCard?: NewsCard | null;
@@ -127,3 +140,18 @@ export type GameContextType = {
   setFinalRound?: (final: boolean) => void;
   resetGameState?: () => void;
 };
+
+// Game component prop types
+export interface MainTableProps {
+  items: TacticCardProps[];
+  currentInfluencer: NewsCard | null;
+  setCurrentInfluencer: (influencer: NewsCard | null) => void;
+  finishRound: boolean;
+  setFinishRound: (val: boolean) => void;
+  setRoundEnd: (val: boolean) => void;
+  setPlayersHandItems: (items: TacticCardProps[]) => void;
+  originalItems: TacticCardProps[];
+  mainTableItems: TacticCardProps[];
+  setMainTableItems: (items: TacticCardProps[]) => void;
+  setSubmitForScoring: (val: boolean) => void;
+}

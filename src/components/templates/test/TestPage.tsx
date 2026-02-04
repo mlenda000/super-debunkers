@@ -1,5 +1,5 @@
 import "./styles/test.css";
-import type { ThemeStyle } from "@/types/types";
+import type { ThemeStyle } from "@/types/gameTypes";
 import Tool from "@/components/molecules/tool/Tool";
 import ScoreModal from "@/components/organisms/modals/scoreModal/ScoreModal";
 import EndGameModal from "@/components/organisms/modals/endGameModal/EndGameModal";

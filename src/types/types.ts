@@ -1,4 +1,7 @@
-import type { NewsCard } from "./gameTypes";
+import type { ReactNode } from "react";
+import type { NewsCard, ThemeStyle } from "./gameTypes";
+
+// Played Card component props
 export interface PlayedCardProps {
   name: string;
   image: string;
@@ -7,10 +10,8 @@ export interface PlayedCardProps {
   category?: string;
   onUndo: (id: string | number) => void;
 }
-import type { ReactNode } from "react";
 
 // Global Context Types
-export type ThemeStyle = "all" | "oligs" | "bots" | "celebs" | "biosts";
 
 export interface User {
   id: string;
@@ -105,19 +106,6 @@ export interface RoomTabProps {
   onClick: (playerName: string, room: string, avatar: string) => void;
 }
 
-export interface TacticCardProps {
-  category: string;
-  image: string;
-  imageBack: string;
-  title: string;
-  description?: string;
-  example: string;
-  alt: string;
-  className?: string;
-  id: string;
-  onUndo?: (id: string) => void;
-}
-
 export interface TacticCardFrontProps {
   category: string;
   image: string;
@@ -134,16 +122,101 @@ export interface NewsCardType {
   newsImage?: string;
 }
 
-export interface MainTableProps {
-  items: TacticCardProps[];
-  currentInfluencer: NewsCard | null;
-  setCurrentInfluencer: (influencer: NewsCard | null) => void;
-  finishRound: boolean;
-  setFinishRound: (val: boolean) => void;
+// Component-specific Prop Types
+
+// Header Component
+export interface HeaderProps {
+  showPlayButton?: boolean;
+}
+
+// Tool Component
+export interface ToolProps {
+  showResults: boolean;
+  currentInfluencer?: {
+    caption?: string;
+    bodyCopy?: string;
+    tacticUsed?: string[];
+    villain?: ThemeStyle;
+    newsImage?: string;
+  } | null;
+}
+
+// SortableCard Component
+export interface SortableCardProps {
+  id: string;
+  children: ReactNode;
+}
+
+// TacticCardBack Component
+export interface TacticCardBackProps {
+  imageBack: string;
+  description: string;
+  example?: string;
+  category?: string;
+  className?: string;
+}
+
+// Extended Carousel Component
+export interface ExtendedCarouselProps extends CarouselProps {
+  onSlideChange?: (isEnd: boolean) => void;
+}
+
+// Scoreboard Component
+export interface ScoreboardProps {
+  roundHasEnded?: boolean;
+  setRoundHasEnded?: (val: boolean) => void;
+  isInfoModalOpen?: boolean;
+  setIsInfoModalOpen?: (val: boolean) => void;
+  gameRoom?: any;
+  gameRound?: number;
+}
+
+// Modal Components
+
+// GameTableProps
+export interface GameTableProps {
   setRoundEnd: (val: boolean) => void;
-  setPlayersHandItems: (items: TacticCardProps[]) => void;
-  originalItems: TacticCardProps[];
-  mainTableItems: TacticCardProps[];
-  setMainTableItems: (items: TacticCardProps[]) => void;
-  setSubmitForScoring: (val: boolean) => void;
+  roundEnd: boolean;
+  roundHasEnded: boolean;
+  setRoundHasEnded: (val: boolean) => void;
+  gameRoom?: any;
+  isInfoModalOpen: boolean;
+  setIsInfoModalOpen: (val: boolean) => void;
+}
+
+// ScoreModalProps
+export interface ScoreModalProps {
+  setIsEndGame: (value: boolean) => void;
+  setShowRoundModal?: (value: boolean) => void;
+  setShowScoreCard?: (value: boolean) => void;
+}
+
+// InfoModalProps
+export interface InfoModalProps {
+  isOpen: boolean;
+  onClose: (value: boolean) => void;
+}
+
+// EndGameModalProps
+export interface EndGameModalProps {
+  setIsEndGame: (value: boolean) => void;
+}
+
+// ResultModalProps
+export interface ResultModalProps {
+  setRoundEnd: (value: boolean) => void;
+  setShowResponseModal: (value: boolean) => void;
+}
+
+// ResponseModalProps
+export interface ResponseModalProps {
+  setShowScoreCard: (value: boolean) => void;
+  setShowResponseModal: (value: boolean) => void;
+}
+
+// ResponseMessage Type (used in ResponseModal)
+export interface ResponseMessage {
+  wasCorrect?: boolean;
+  streak?: number;
+  hasStreak?: boolean;
 }

@@ -1,12 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-
-import type { ReactNode } from "react";
-
-interface SortableCardProps {
-  id: string;
-  children: ReactNode;
-}
+import type { SortableCardProps } from "@/types/types";
 
 const SortableCard = ({ id, children }: SortableCardProps) => {
   const draggable = useDraggable({ id });

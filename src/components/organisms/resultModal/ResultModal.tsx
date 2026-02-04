@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
-
+import type { ResultModalProps } from "@/types/types";
 import Tool from "@/components/molecules/tool/Tool"; // Assuming Tool is a component you want to show in the modal
-
-interface ResultModalProps {
-  setRoundEnd?: (value: boolean) => void;
-  setShowResponseModal?: (value: boolean) => void;
-}
 
 const ResultModal = ({
   setRoundEnd,

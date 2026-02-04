@@ -2,11 +2,8 @@ import { useGameContext } from "@/hooks/useGameContext";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { useNavigate } from "react-router-dom";
 import type { Player } from "@/types/gameTypes";
+import type { EndGameModalProps } from "@/types/types";
 import "./styles/end-game-modal.css";
-
-interface EndGameModalProps {
-  setIsEndGame: (value: boolean) => void;
-}
 
 const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
   const navigate = useNavigate();

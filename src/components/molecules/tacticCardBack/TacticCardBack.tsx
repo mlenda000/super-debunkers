@@ -1,10 +1,4 @@
-interface TacticCardBackProps {
-  imageBack: string;
-  description: string;
-  example?: string;
-  category?: string;
-  className?: string;
-}
+import type { TacticCardBackProps } from "@/types/types";
 
 const TacticCardBack = ({
   imageBack,
