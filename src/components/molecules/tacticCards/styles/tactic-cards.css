@@ -38,32 +38,3 @@
   height: 100%;
   object-fit: cover;
 }
-
-/* Responsive */
-/* Tablet landscape */
-/* @media (max-width: 1024px) and (orientation: landscape) {
-  .tactic-cards-wrapper {
-    max-width: 70vw;
-    max-height: 45vh;
-    gap: var(--spacing-xs);
-    grid-template-rows: 1fr;
-  }
-
-  .tactic-card:nth-child(n+6) {
-    display: none;
-  }
-} */
-
-/* Mobile landscape */
-/* @media (max-width: 640px) and (orientation: landscape) {
-  .tactic-cards-wrapper {
-    max-width: 60vw;
-    max-height: 35vh;
-    gap: 4px;
-    grid-template-rows: 1fr;
-  }
-
-  .tactic-card:nth-child(n+6) {
-    display: none;
-  }
-} */

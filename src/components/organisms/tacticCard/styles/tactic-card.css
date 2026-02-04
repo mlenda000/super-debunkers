@@ -5,7 +5,7 @@
   outline: 2px solid transparent;
   outline-offset: 2px;
   position: relative;
-  width: 120px;
+  width: calc((100vw - 196px) / 11);
   aspect-ratio: 921 / 1422;
   z-index: 1;
 }
