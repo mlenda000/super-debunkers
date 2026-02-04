@@ -10,7 +10,7 @@
 .scoreboard__names {
   margin-right: 40px;
   margin-left: 4px;
-  font-size: clamp(28px, 10vh, 56px);
+  font-size: clamp(24px, 1.5rem, 60px);
 }
 
 .scoreboard__avatar {
@@ -25,7 +25,7 @@
   margin-right: 40px;
 }
 .scoreboard__score-numeric {
-  font-size: clamp(28px, 10vh, 56px);
+  font-size: clamp(24px, 1.5rem, 60px);
 }
 
 .scoreboard-info__image {
@@ -61,7 +61,7 @@
   display: block;
   color: white;
   font-family: "Subway Berlin", sans-serif;
-  font-size: clamp(12px, 2 0.5rem, 60px);
+  font-size: clamp(28px, 1.5rem, 60px);
   margin: 0;
   line-height: 1.2;
 
