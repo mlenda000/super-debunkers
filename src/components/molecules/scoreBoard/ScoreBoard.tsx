@@ -3,13 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import AvatarImage from "@/components/atoms/avatarImage/AvatarImage";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { useGameContext } from "@/hooks/useGameContext";
-import type { GameRoom, Player } from "@/types/gameTypes";
+import type { Player } from "@/types/gameTypes";
 import type { ScoreboardProps } from "@/types/types";
 import {
   returnToLobby,
   getWebSocketInstance,
 } from "@/services/webSocketService";
 import { sendPlayerLeaves } from "@/utils/gameMessageUtils";
+import RotatingScore from "@/components/atoms/rotatingScore/RotatingScore";
 
 const Scoreboard: React.FC<ScoreboardProps> = ({
   //   roundHasEnded,
@@ -128,12 +129,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
                     playerReady={player?.isReady || false}
                   />
                 )}
-                <span
-                  className="scoreboard__names"
-                  style={{ marginLeft: "8px", zIndex: 2 }}
-                >
-                  {player?.name}
-                </span>
+                <RotatingScore player={player} />
               </React.Fragment>
             );
           })}
