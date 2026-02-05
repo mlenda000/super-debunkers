@@ -55,7 +55,8 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  border-radius: 50%;  pointer-events: auto;
+  border-radius: 50%;
+  pointer-events: auto;
 }
 
 .carousel-arrow img {
@@ -69,7 +70,8 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.carousel-arrow:active, .carousel-arrow:focus {
+.carousel-arrow:active,
+.carousel-arrow:focus {
   transform: translateY(-50%) scale(0.95);
   outline: none;
 }
@@ -108,10 +110,10 @@
 }
 
 .carousel-pagination-bullet-active {
-    background: rgba(255, 255, 255, 1);
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
+  background: rgba(255, 255, 255, 1);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
 }
 
 /* Tablet landscape */
@@ -179,4 +181,4 @@
 .carousel-pagination-bullet:hover {
   background: rgba(255, 255, 255, 0.8);
   transform: scale(1.2);
-} 
+}

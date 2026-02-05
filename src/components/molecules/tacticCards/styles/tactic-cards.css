@@ -24,6 +24,8 @@
   border-radius: 12px;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .tactic-card:hover,

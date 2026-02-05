@@ -28,7 +28,7 @@
 }
 
 .rotate-screen-text {
-  font-family: 'DIN Alternate', sans-serif;
+  font-family: "DIN Alternate", sans-serif;
   font-size: var(--font-size-base);
   color: #fff;
   margin: 0;
@@ -36,7 +36,8 @@
 }
 
 @keyframes rotate-pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(0deg) scale(1);
   }
   25% {

@@ -126,6 +126,20 @@
   margin-block: 0;
   -webkit-text-stroke: 15px black;
   paint-order: stroke fill;
+
+  @media (max-height: 600px) and (orientation: landscape) {
+    margin-top: 15vh;
+    margin-bottom: var(--spacing-5xl);
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    margin-top: calc(30vh - 200px);
+    margin-bottom: var(--spacing-5xl);
+  }
+
+  @media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+    margin-top: calc(30vh - 120px);
+  }
 }
 .home-secondary-image {
   width: var(--width-80);
@@ -202,6 +216,20 @@
   padding-inline: var(--spacing-sm);
   -webkit-text-stroke: 15px black;
   paint-order: stroke fill;
+
+  @media (max-height: 600px) and (orientation: landscape) {
+    margin-top: 15vh;
+    margin-bottom: var(--spacing-5xl);
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    margin-top: calc(30vh - 200px);
+    margin-bottom: var(--spacing-5xl);
+  }
+
+  @media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+    margin-top: calc(30vh - 120px);
+  }
 }
 
 .home-button-image {
@@ -226,6 +254,51 @@
   margin-block: 0;
   -webkit-text-stroke: 15px black;
   paint-order: stroke fill;
+
+  @media (max-height: 600px) and (orientation: landscape) {
+    margin-top: 15vh;
+    margin-bottom: var(--spacing-5xl);
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    margin-top: calc(30vh - 200px);
+    margin-bottom: var(--spacing-5xl);
+  }
+
+  @media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+    margin-top: calc(30vh - 120px);
+  }
+}
+
+/* Adding -webkit-text-fill-color, -webkit-font-smoothing, and text-rendering properties */
+.home-title {
+  -webkit-text-fill-color: white;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.homepage h1 {
+  -webkit-text-fill-color: white;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.homepage h2 {
+  -webkit-text-fill-color: white;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.home-button-title {
+  -webkit-text-fill-color: white;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.home-button-description {
+  -webkit-text-fill-color: white;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* Tablet breakpoint */

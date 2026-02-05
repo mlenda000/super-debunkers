@@ -82,3 +82,7 @@
   box-sizing: border-box;
   position: relative;
 }
+
+/* Adding -webkit-text-fill-color, -webkit-font-smoothing, and text-rendering properties */
+-webkit-font-smoothing: antialiased;
+text-rendering: optimizeLegibility;

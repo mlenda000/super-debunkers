@@ -1,38 +1,37 @@
 .create-room {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
 }
 .create-room__title {
-    font-family: "Subway Berlin", sans-serif;
-    font-size: clamp(20px, 6vw, 100px);
-    line-height: var(--line-height-snug);
-    color: white;
-    text-align: center;
-    margin: 0;
+  font-family: "Subway Berlin", sans-serif;
+  font-size: clamp(20px, 6vw, 100px);
+  line-height: var(--line-height-snug);
+  color: white;
+  text-align: center;
+  margin: 0;
 
-    @media (max-width: 768px) {
-        font-size: clamp(18px, 5vw, 36px);
-    }
+  @media (max-width: 768px) {
+    font-size: clamp(18px, 5vw, 36px);
+  }
 }
 .create-room__title h1 {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 .create-room__input {
-    margin-top: var(--spacing-xxl);
+  margin-top: var(--spacing-xxl);
 }
 
-
 .create-room__container {
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: clamp(100svh, 100dvh, 100lvh);
-    height: clamp(100svh, 100dvh, 100lvh);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(100svh, 100dvh, 100lvh);
+  height: clamp(100svh, 100dvh, 100lvh);
 }

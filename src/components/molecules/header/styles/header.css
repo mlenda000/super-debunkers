@@ -36,6 +36,9 @@
   padding-block: var(--spacing-xs);
   transition: all 0.3s ease;
   -webkit-text-stroke: 15px black;
+  -webkit-text-fill-color: #fff;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   paint-order: stroke fill;
 }
 .header-button:hover {
