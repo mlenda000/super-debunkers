@@ -58,7 +58,11 @@
 @media (max-height: 600px) {
   .container {
     display: grid;
-    grid-template-columns: clamp(100svw, 100dvw, 100lvw) clamp(100svw, 100dvw, 100lvw);
+    grid-template-columns: clamp(100svw, 100dvw, 100lvw) clamp(
+        100svw,
+        100dvw,
+        100lvw
+      );
     grid-template-rows: 15dvh 80dvh;
     width: 200dvw;
     height: clamp(100svh, 100dvh, 100lvh);

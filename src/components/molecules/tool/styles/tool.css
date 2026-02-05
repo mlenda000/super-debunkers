@@ -12,6 +12,8 @@
   aspect-ratio: 1000 / 400;
   /* Match tool-wrapper image aspect ratio */
   margin: 0 auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* Loading state - hide content until assets are ready */

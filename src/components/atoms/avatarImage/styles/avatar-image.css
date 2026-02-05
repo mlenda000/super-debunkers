@@ -14,6 +14,8 @@
   max-width: clamp(60px, 12vw, 150px);
   transition: transform 0.3s ease;
   stroke: 2px transparent;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .avatar-image-container:hover,
