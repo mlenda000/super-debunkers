@@ -11,10 +11,9 @@ import {
 } from "@/services/webSocketService";
 import { sendPlayerLeaves } from "@/utils/gameMessageUtils";
 import RotatingScore from "@/components/atoms/rotatingScore/RotatingScore";
+import SoundControl from "@/components/atoms/soundControl/SoundControl";
 
 const Scoreboard: React.FC<ScoreboardProps> = ({
-  //   roundHasEnded,
-  //   setRoundHasEnded,
   isInfoModalOpen = false,
   setIsInfoModalOpen = () => {},
   gameRoom: propGameRoom,
@@ -28,6 +27,8 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   } = useGameContext();
   const navigate = useNavigate();
   const [isSoundPlaying, setIsSoundPlaying] = useState(true);
+  const [isVolumeControlOpen, setIsVolumeControlOpen] = useState(false);
+  const [volume, setVolume] = useState(20);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { room: roomId } = useParams<{ room: string }>();
@@ -67,13 +68,13 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   // Auto-play music when component mounts
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = 0.5;
+      audioRef.current.volume = volume / 100;
       audioRef.current.play().catch(() => {
         // Auto-play blocked by browser, user needs to interact first
         setIsSoundPlaying(false);
       });
     }
-  }, []);
+  }, [volume]);
 
   // Control play/pause based on isSoundPlaying state
   useEffect(() => {
@@ -85,6 +86,27 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
       }
     }
   }, [isSoundPlaying]);
+
+  // Handle volume changes from VolumeControl
+  const handleVolumeChange = (newVolume: number) => {
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume / 100; // Convert 0-100 to 0-1
+    }
+
+    // Update play state based on volume
+    if (newVolume === 0) {
+      setIsSoundPlaying(false);
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    } else if (!isSoundPlaying && newVolume > 0) {
+      setIsSoundPlaying(true);
+      if (audioRef.current) {
+        audioRef.current.play().catch(() => {});
+      }
+    }
+  };
 
   return (
     <div className="scoreboard" role="region" aria-label="Game scoreboard">
@@ -163,7 +185,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
         </button>
         <button
           className="scoreboard-audio__button"
-          onClick={() => setIsSoundPlaying(!isSoundPlaying)}
+          onClick={() => setIsVolumeControlOpen(!isVolumeControlOpen)}
           aria-label={
             isSoundPlaying ? "Mute background music" : "Unmute background music"
           }
@@ -183,6 +205,14 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
           />
         </button>
       </div>
+      <SoundControl
+        isOpen={isVolumeControlOpen}
+        onClose={() => setIsVolumeControlOpen(false)}
+        onVolumeChange={handleVolumeChange}
+        initialVolume={volume}
+        isMuted={isSoundPlaying}
+        setIsMuted={setIsSoundPlaying}
+      />
     </div>
   );
 };
