@@ -1,0 +1,21 @@
+.scoring-container {
+  display: inline-grid;
+  grid-template-columns: 1fr;
+}
+
+.scoring-content {
+  grid-column: 1;
+  grid-row: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: none;
+}
+.scoring-content.active.scoring-fade-in {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.scoring-content.active.scoring-fade-out {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}

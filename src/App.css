@@ -11,6 +11,8 @@
 @import "./components/atoms/input/styles/input.css";
 @import "./components/atoms/roomTab/styles/room-tab.css";
 @import "./components/atoms/rotateScreen/styles/rotate-screen.css";
+@import "./components/atoms/rotatingScore/styles/rotating-score.css";
+@import "./components/molecules/bottomNav/styles/bottom-nav.css";
 @import "./components/molecules/carouselSlide/styles/carousel-slide.css";
 @import "./components/molecules/header/styles/header.css";
 @import "./components/molecules/newsCard/styles/news-card.css";
@@ -81,8 +83,5 @@
   overflow: hidden;
   box-sizing: border-box;
   position: relative;
+  color: white;
 }
-
-/* Adding -webkit-text-fill-color, -webkit-font-smoothing, and text-rendering properties */
--webkit-font-smoothing: antialiased;
-text-rendering: optimizeLegibility;
