@@ -10,7 +10,10 @@
   font-size: 64px;
   font-family: "Subway Berlin", sans-serif;
   margin-bottom: var(--spacing-2xl);
+  color: white;
+  -webkit-text-fill-color: white;
   -webkit-text-stroke: black 3px;
+  paint-order: stroke fill;
   box-sizing: border-box;
 
   @media (max-width: 1024px) {
@@ -24,7 +27,7 @@
   @media (max-width: 480px) {
     margin-bottom: clamp(2px, 0.5vh, 4px);
   }
-  
+
   @media (max-height: 600px) {
     margin-bottom: clamp(2px, 0.3vh, 4px);
   }
@@ -48,6 +51,7 @@
       opacity: 1 !important;
       -webkit-text-fill-color: rgba(255, 255, 255, 1);
       -webkit-text-stroke: black 2px;
+      paint-order: stroke fill;
     }
   }
 
@@ -60,30 +64,41 @@
       opacity: 1 !important;
       -webkit-text-fill-color: rgba(255, 255, 255, 1);
       -webkit-text-stroke: black 2px;
+      paint-order: stroke fill;
     }
-  }
 
-  @media (max-width: 480px) {
-    font-size: 32px;
-    padding: var(--spacing-lg) var(--spacing-xl);
-    -webkit-text-stroke: 1px black;
-    &::placeholder {
-      color: rgba(255, 255, 255, 1) !important;
-      opacity: 1 !important;
-      -webkit-text-fill-color: rgba(255, 255, 255, 1);
-      -webkit-text-stroke: black 1px;
+    @media (max-width: 480px) {
+      font-size: 32px;
+      padding: var(--spacing-lg) var(--spacing-xl);
+      -webkit-text-stroke: 1px black;
+      color: white;
+      -webkit-text-fill-color: white;
+      paint-order: stroke fill;
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 1) !important;
+        opacity: 1 !important;
+        -webkit-text-fill-color: rgba(255, 255, 255, 1);
+        -webkit-text-stroke: black 1px;
+        paint-order: stroke fill;
+      }
     }
-  }
-  
-  @media (max-height: 600px) {
-    font-size: 32px;
-    padding: var(--spacing-xs) var(--spacing-lg);
-    -webkit-text-stroke: 1px black;
-    &::placeholder {
-      color: rgba(255, 255, 255, 1) !important;
-      opacity: 1 !important;
-      -webkit-text-fill-color: rgba(255, 255, 255, 1);
-      -webkit-text-stroke: black 1px;
+
+    @media (max-height: 600px) {
+      font-size: 32px;
+      padding: var(--spacing-xs) var(--spacing-lg);
+      color: white;
+      -webkit-text-stroke: 1px black;
+      -webkit-text-fill-color: white;
+      paint-order: stroke fill;
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 1) !important;
+        opacity: 1 !important;
+        -webkit-text-fill-color: rgba(255, 255, 255, 1);
+        -webkit-text-stroke: black 1px;
+        paint-order: stroke fill;
+      }
     }
   }
 }

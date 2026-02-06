@@ -35,10 +35,6 @@
   border-radius: 6px;
   max-width: 90%;
   text-wrap: balance;
-  -webkit-text-stroke: 1px;
-  -webkit-text-fill-color: white;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
 }
 .truth {
   color: white !important;

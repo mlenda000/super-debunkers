@@ -89,6 +89,7 @@
   margin-bottom: var(--spacing-md);
   z-index: 2;
   -webkit-text-stroke: 25px black;
+  -webkit-text-fill-color: white;
   paint-order: stroke fill;
 
   @media (max-width: 1024px) {
@@ -101,7 +102,7 @@
     -webkit-text-stroke: 10px black;
   }
 
-  @media (max-width: 480px || max-height: 600px) {
+  @media (max-width: 480px) or (max-height: 600px) {
     -webkit-text-stroke: 6px black;
   }
 }

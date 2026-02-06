@@ -27,7 +27,9 @@
   z-index: 2;
   text-align: center;
   -webkit-text-stroke: 25px black;
+  -webkit-text-fill-color: white;
   paint-order: stroke fill;
+  color: white;
 
   @media (max-width: 1024px) {
     font-size: clamp(24px, 7vw, 104px);

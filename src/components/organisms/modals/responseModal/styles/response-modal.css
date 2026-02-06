@@ -27,6 +27,7 @@
   margin-bottom: 0;
   padding-bottom: 0;
   -webkit-text-stroke: 25px black;
+  -webkit-text-fill-color: white;
   paint-order: stroke fill;
   color: white;
 }

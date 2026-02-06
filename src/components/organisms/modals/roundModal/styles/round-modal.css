@@ -42,6 +42,7 @@
 .round-modal__title {
   font-size: clamp(72px, 15vw, 180px);
   -webkit-text-stroke: 25px black;
+  -webkit-text-fill-color: white;
   paint-order: stroke fill;
   color: white;
 
