@@ -177,7 +177,6 @@
 
   .endgame-modal__winner-text {
     font-size: clamp(18px, 4vh, 28px);
-    -webkit-text-stroke: none;
   }
 
   .endgame-modal__player {
@@ -198,7 +197,6 @@
 
   .endgame-modal__winner-text {
     font-size: clamp(18px, 3.5vh, 24px);
-    -webkit-text-stroke: none;
   }
 
   .endgame-modal__player {

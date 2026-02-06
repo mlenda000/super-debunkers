@@ -38,6 +38,7 @@
   margin-top: -40px;
   text-align: center;
   -webkit-text-stroke: 15px black;
+  -webkit-text-fill-color: white;
   paint-order: stroke fill;
   color: white;
 }
