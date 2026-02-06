@@ -1,9 +1,8 @@
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
+import BottomNav from "@/components/molecules/bottomNav/BottomNav";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-  const navigate = useNavigate();
   const [hasScrolled, setHasScrolled] = useState(false);
   const homepageRef = useRef<HTMLDivElement>(null);
 
@@ -61,53 +60,7 @@ const HomePage = () => {
           role="navigation"
           aria-label="Main menu"
         >
-          <button
-            className="home-button"
-            onClick={() => navigate("/character-creation")}
-            aria-label="Start playing Super Debunkers"
-          >
-            <h3 className="home-button-title">Super Debunkers</h3>
-            <span className="home-play-button">
-              <p className="home-button-description">Play Game</p>
-              <img
-                src="/images/buttons/next.webp"
-                alt=""
-                width="48px"
-                height="48px"
-                aria-hidden="true"
-              />
-            </span>
-          </button>
-          <button
-            className="home-button"
-            onClick={() => navigate("/villains")}
-            aria-label="Meet the villains"
-          >
-            <img
-              src="/images/home/villain.webp"
-              alt=""
-              className="home-button-image"
-              aria-hidden="true"
-            />
-            <p className="home-play-button home-button-description">
-              Meet the villains
-            </p>
-          </button>
-          <button
-            className="home-button"
-            onClick={() => navigate("/directions")}
-            aria-label="View game instructions"
-          >
-            <img
-              src="/images/home/directions.webp"
-              alt=""
-              className="home-button-image"
-              aria-hidden="true"
-            />
-            <p className="home-play-button home-button-description">
-              Instructions
-            </p>
-          </button>
+          <BottomNav />
         </div>
       </div>
     </>

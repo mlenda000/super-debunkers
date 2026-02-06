@@ -1,0 +1,123 @@
+.bottom-nav {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: clamp(8px, 1.5vw, 16px);
+  max-width: 80%;
+  width: 100%;
+  margin: 0 auto;
+  padding: clamp(8px, 1.5dvh, 16px);
+}
+
+.bottom-nav_button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 5/7;
+  max-height: clamp(30dvh, 40dvh, 50dvh);
+  max-width: calc(clamp(30dvh, 40dvh, 50dvh) * 5 / 7);
+  padding: clamp(16px, 2.5dvh, 24px);
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px dashed rgba(255, 255, 255, 0.4);
+  border-radius: clamp(8px, 1vw, 12px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.bottom-nav_button:hover {
+  transform: scale(1.05);
+  background: rgba(0, 0, 0, 0.75);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.bottom-nav_button:active {
+  transform: scale(0.98);
+}
+
+.bottom-nav_button-image {
+  width: 85%;
+  height: auto;
+  max-width: 100%;
+  flex-grow: 1;
+  object-fit: contain;
+  margin-top: clamp(8px, 1dvh, 12px);
+  margin-bottom: auto;
+}
+
+.bottom-nav_button-label {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  white-space: nowrap;
+  font-size: clamp(1.5rem, 1.5vw, 3rem);
+  font-weight: 500;
+  text-align: center;
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-white);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Mobile landscape - height < 600px */
+@media (max-height: 600px) {
+  .bottom-nav {
+    max-width: 95%;
+    gap: 12px;
+    padding: 12px;
+    height: clamp(80dvh, 90dvh, 95dvh);
+  }
+
+  .bottom-nav_button {
+    max-height: clamp(75dvh, 85dvh, 90dvh);
+    max-width: calc(clamp(75dvh, 85dvh, 90dvh) * 5 / 7);
+    padding: 16px;
+    border-width: 2px;
+  }
+
+  .bottom-nav_button-image {
+    width: 80%;
+    margin-top: 8px;
+  }
+}
+
+/* Extra small height - very constrained mobile */
+@media (max-height: 450px) {
+  .bottom-nav {
+    max-width: 98%;
+    gap: 10px;
+    padding: 10px;
+    height: clamp(85dvh, 95dvh, 100dvh);
+  }
+
+  .bottom-nav_button {
+    max-height: clamp(80dvh, 90dvh, 95dvh);
+    max-width: calc(clamp(80dvh, 90dvh, 95dvh) * 5 / 7);
+    padding: 12px;
+    border-width: 2px;
+    border-radius: 8px;
+  }
+
+  .bottom-nav_button-image {
+    width: 80%;
+    margin-top: 6px;
+  }
+}
+
+/* Very wide screens - prevent buttons from getting too large */
+@media (min-width: 1920px) {
+  .bottom-nav {
+    max-width: 70%;
+  }
+
+  .bottom-nav_button {
+    max-height: 50vh;
+  }
+}
