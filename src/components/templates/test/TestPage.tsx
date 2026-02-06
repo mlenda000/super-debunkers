@@ -3,6 +3,7 @@ import type { ThemeStyle } from "@/types/gameTypes";
 import Tool from "@/components/molecules/tool/Tool";
 import ScoreModal from "@/components/organisms/modals/scoreModal/ScoreModal";
 import EndGameModal from "@/components/organisms/modals/endGameModal/EndGameModal";
+import PlayedCard from "@/components/molecules/playedCard/PlayedCard";
 
 const mockInfluencer = {
   caption: "this is a mock caption",
@@ -26,7 +27,7 @@ const mockInfluencer = {
 
 const TestPage = () => {
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       {/* <ScoreModal
         setIsEndGame={function (value: boolean): void {
           throw new Error("Function not implemented.");
@@ -37,7 +38,15 @@ const TestPage = () => {
           throw new Error("Function not implemented.");
         }}
       /> */}
-      <Tool currentInfluencer={mockInfluencer} showResults />
+      {/* <Tool currentInfluencer={mockInfluencer} showResults /> */}
+      <PlayedCard
+        name={"test"}
+        image={"/images/tactics/cherry-picking.webp"}
+        id={"test"}
+        onUndo={function (id: string | number): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
     </div>
   );
 };
