@@ -187,7 +187,29 @@ const GameTable: React.FC<GameTableProps> = ({
       setRoundHasEnded(true);
       const players = gameRoom.roomData.players;
 
+      console.log('🎯 [END OF ROUND TRIGGERED]:', {
+        gameRound,
+        allPlayersReady,
+        submitForScoring,
+        players: players.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          tacticUsed: p.tacticUsed,
+          isReady: p.isReady,
+        })),
+      });
+
       const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
+      console.log('📤 Sending endOfRound with:', {
+        roomName,
+        round: gameRound,
+        playerCount: players.length,
+        playersData: players.map((p: any) => ({
+          id: p.id,
+          tacticUsed: p.tacticUsed,
+        })),
+      });
+
       sendEndOfRound(players as any, gameRound ?? 0, roomName);
       setRoundEnd(true);
       setSubmitForScoring(true);

@@ -3,10 +3,10 @@ import { GlobalContext } from "./GlobalContext";
 import type {
   GlobalProviderProps,
   AuthState,
-  ThemeStyle,
   GlobalContextType,
   User,
 } from "@/types/types";
+import type { ThemeStyle } from "@/types/gameTypes";
 import {
   initializeWebSocket,
   subscribeToMessages,

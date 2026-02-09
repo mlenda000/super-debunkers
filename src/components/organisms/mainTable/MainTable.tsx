@@ -190,6 +190,25 @@ const MainTable: React.FC<
       (tactic) => !expectedTactics.includes(tactic),
     );
 
+    // Debug logging
+    console.log('📤 [CLIENT READY]:', {
+      playerName: name,
+      playerId: currentPlayerId,
+      selectedTactics: tacticIds,
+      expectedTactics,
+      matches,
+      mismatches,
+      currentInfluencer: {
+        villain: currentInfluencer?.villain,
+        tacticUsed: currentInfluencer?.tacticUsed,
+      },
+      mainTableItems: mainTableItems.map(item => ({
+        id: item.id,
+        category: item.category,
+        title: item.title,
+      })),
+    });
+
     // Match player by ID (unique), fall back to name if no ID
     const updatedPlayers = (gameRoom?.roomData?.players || []).map((p) =>
       (currentPlayerId && p?.id === currentPlayerId) ||
@@ -202,6 +221,11 @@ const MainTable: React.FC<
     // Include `players` so the server can merge states safely
     const socket = getWebSocketInstance();
     const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
+    console.log('📨 Sending playerReady:', {
+      roomName,
+      playersCount: updatedPlayers.length,
+      updatedPlayer: updatedPlayers.find(p => p.id === currentPlayerId || p.name === name),
+    });
     sendPlayerReady(socket, updatedPlayers as any, roomName);
 
     // Optimistically update local context so Scoreboard reflects ready state
