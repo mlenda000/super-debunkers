@@ -32,8 +32,6 @@ const MainTable: React.FC<
   setCurrentInfluencer,
   finishRound,
   setFinishRound,
-  setRoundEnd,
-  roundEnd,
   playersHandItems,
   setPlayersHandItems,
   originalItems,
@@ -195,14 +193,6 @@ const MainTable: React.FC<
       );
       return;
     }
-
-    const expectedTactics = currentInfluencer?.tacticUsed || [];
-    const matches = tacticIds.filter((tactic) =>
-      expectedTactics.includes(tactic),
-    );
-    const mismatches = tacticIds.filter(
-      (tactic) => !expectedTactics.includes(tactic),
-    );
 
     // Match player by ID OR by name (fallback)
     // Changed from exclusive OR to inclusive - either match triggers update
