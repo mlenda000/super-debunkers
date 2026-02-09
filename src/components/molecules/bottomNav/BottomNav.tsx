@@ -1,3 +1,4 @@
+import ButtonStyle from "@/components/atoms/buttonStyle/ButtonStyle";
 import { useNavigate } from "react-router-dom";
 
 const navigationButtons = [
@@ -29,20 +30,22 @@ const BottomNav = () => {
   return (
     <nav className="bottom-nav">
       {navigationButtons.map((button) => (
-        <button
-          key={button.label}
-          className="bottom-nav_button"
-          onClick={() => navigate(button.route)}
-          aria-label={button.ariaLabel}
-        >
-          <img
-            src={button.imageSrc}
-            alt={button.altText}
-            className="bottom-nav_button-image"
-            aria-hidden="true"
-          />
-          <p className="bottom-nav_button-label">{button.label}</p>
-        </button>
+        <ButtonStyle key={button.label} theme="The_Biost">
+          <button
+            key={button.label}
+            className="bottom-nav_button"
+            onClick={() => navigate(button.route)}
+            aria-label={button.ariaLabel}
+          >
+            <img
+              src={button.imageSrc}
+              alt={button.altText}
+              className="bottom-nav_button-image"
+              aria-hidden="true"
+            />
+            <p className="bottom-nav_button-label">{button.label}</p>
+          </button>
+        </ButtonStyle>
       ))}
     </nav>
   );
