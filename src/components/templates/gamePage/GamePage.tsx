@@ -107,17 +107,20 @@ const GamePage = () => {
 
     const unsubscribe = subscribeToMessages((message) => {
       if (message.type === "roomUpdate" && message.room === roomId) {
-        setGameRoom?.({
-          count: message.count || 0,
-          room: message.room || "",
+        setGameRoom?.((prev) => ({
+          count: message.count || prev?.count || 0,
+          room: message.room || prev?.room || "",
           type: "roomUpdate",
           roomData: {
-            count: message.count || 0,
-            players: message.players || [],
-            name: message.room || "",
-            deck: message.deck as GameDeck,
+            count: message.count || prev?.roomData?.count || 0,
+            players: message.players || prev?.roomData?.players || [],
+            name: message.room || prev?.roomData?.name || "",
+            // Preserve existing deck if not provided in message
+            deck: message.deck
+              ? (message.deck as GameDeck)
+              : prev?.roomData?.deck,
           },
-        });
+        }));
 
         if (message.players) {
           setPlayers?.(message.players);

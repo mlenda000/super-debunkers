@@ -1,9 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Player } from "@/types/gameTypes";
 
 const RotatingScore = ({ player }: { player: Player }) => {
   const [showName, setShowName] = useState(true);
   const [fadeClass, setFadeClass] = useState("fade-in");
+  const [displayScore, setDisplayScore] = useState(player?.score ?? 0);
+  const prevScoreRef = useRef(player?.score ?? 0);
+
+  // Update display score when player score changes
+  useEffect(() => {
+    const currentScore = player?.score ?? 0;
+    if (currentScore !== prevScoreRef.current) {
+      // Score changed - update display and briefly show score
+      setDisplayScore(currentScore);
+      prevScoreRef.current = currentScore;
+      // Show the score immediately when it changes
+      setShowName(false);
+      setFadeClass("scoring-fade-in");
+    }
+  }, [player?.score]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -33,7 +48,7 @@ const RotatingScore = ({ player }: { player: Player }) => {
       <span
         className={`scoreboard__names scoring-content ${fadeClass} ${!showName ? "active" : ""}`}
       >
-        {player?.score}
+        {displayScore}
       </span>
     </span>
   );

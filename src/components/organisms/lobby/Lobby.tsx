@@ -11,6 +11,7 @@ import { PARTYKIT_URL } from "@/services/env";
 import { sendEnteredLobby, sendPlayerEnters } from "@/utils/gameMessageUtils";
 import type { Player } from "@/types/gameTypes";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
+import { useGameContext } from "@/hooks/useGameContext";
 
 import RoomTab from "@/components/atoms/roomTab/RoomTab";
 
@@ -31,6 +32,7 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
     playerName: contextPlayerName,
     avatar: contextAvatar,
   } = useGlobalContext();
+  const { resetGameState } = useGameContext();
   const avatar = contextAvatar || localStorage.getItem("avatarImage");
   const playerName = contextPlayerName || localStorage.getItem("playerName");
   const playerId = contextPlayerId || localStorage.getItem("playerId");
@@ -285,6 +287,9 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
   };
 
   useEffect(() => {
+    // Reset all game state when entering lobby to prevent stale data from previous rooms
+    resetGameState?.();
+
     const sendLobbyMessage = async () => {
       const avatarName = avatar
         ? avatar.substring(avatar.lastIndexOf("/") + 1)
@@ -297,7 +302,7 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
       sendEnteredLobby(undefined, "lobby", avatarName, playerName || "");
     };
     sendLobbyMessage();
-  }, [avatar, playerName]);
+  }, [avatar, playerName, resetGameState]);
 
   return (
     <>

@@ -1,6 +1,5 @@
 import { useEffect, useCallback } from "react";
 import { useGameContext } from "@/hooks/useGameContext";
-import { useGlobalContext } from "@/hooks/useGlobalContext";
 import type { Player } from "@/types/gameTypes";
 import type { ScoreModalProps } from "@/types/types";
 
@@ -9,22 +8,16 @@ const ScoreModal = ({
   setShowRoundModal,
   setShowScoreCard,
 }: ScoreModalProps) => {
-  const { gameRoom, setGameRound, gameRound, players, lastScoreUpdatePlayers } =
-    useGameContext();
-  const { setThemeStyle } = useGlobalContext();
+  const { gameRoom, gameRound, lastScoreUpdatePlayers } = useGameContext();
 
   const handleDeal = useCallback(() => {
     if (gameRoom?.roomData?.players) {
-      const currentRound = gameRound ?? 0;
-      const nextRound = currentRound + 1;
-      setGameRound?.(nextRound);
-
-      // Keep the current villain's theme (don't reset to "all")
-      // The theme will change when the next influencer is dealt
-      // setThemeStyle("all");
+      // Note: The server already advances the round and broadcasts via roomUpdate
+      // We just need to check if we should show endgame or round modal
+      const currentRound = gameRound ?? 1;
 
       // Only show endgame modal if we've completed all 5 rounds
-      if (nextRound > 5) {
+      if (currentRound > 5) {
         setIsEndGame(true);
       } else {
         // Show the round modal for the next round (2 seconds)
@@ -35,15 +28,7 @@ const ScoreModal = ({
       setShowScoreCard?.(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    gameRoom,
-    gameRound,
-    setGameRound,
-    setThemeStyle,
-    setIsEndGame,
-    setShowRoundModal,
-    setShowScoreCard,
-  ]);
+  }, [gameRoom, gameRound, setIsEndGame, setShowRoundModal, setShowScoreCard]);
 
   // Auto-advance to next round after 3 seconds
   useEffect(() => {

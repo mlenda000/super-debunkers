@@ -127,6 +127,7 @@ export const sendInfluencerReady = (
   newsCard: any,
   villain?: string,
   tactic?: string[],
+  room?: string,
 ): void => {
   const socket = getWebSocketInstance();
 
@@ -140,6 +141,7 @@ export const sendInfluencerReady = (
       newsCard,
       villain: villain || newsCard?.villain,
       tactic: tactic || newsCard?.tacticUsed,
+      room,
     }),
   );
 };
