@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "@/components/atoms/input/Input";
 import Button from "@/components/atoms/button/Button";
+import { PARTYKIT_URL } from "@/services/env";
+import { getWebSocketInstance } from "@/services/webSocketService";
+import { sendCreateRoom } from "@/utils/gameMessageUtils";
 
 const CreateRoom = ({
   rooms,
@@ -17,11 +20,45 @@ const CreateRoom = ({
     setCurrentInput(value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (currentInput === "") {
       alert("Please enter a room name");
       return;
-    } else {
+    }
+
+    // Check if room name already exists locally
+    if (rooms.includes(currentInput)) {
+      alert("A room with that name already exists");
+      return;
+    }
+
+    try {
+      // Send room creation to server via HTTP POST
+      const response = await fetch(`${PARTYKIT_URL}/parties/main/lobby`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ roomName: currentInput }),
+      });
+
+      if (response.ok) {
+        // Also send via WebSocket to notify other connected clients
+        const socket = getWebSocketInstance();
+        sendCreateRoom(socket, currentInput);
+
+        // Update local state
+        setRooms([...rooms, currentInput]);
+        navigate(`/game/lobby`);
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || "Failed to create room");
+      }
+    } catch (error) {
+      console.error("Error creating room:", error);
+      // Fallback: create room locally and notify via WebSocket
+      const socket = getWebSocketInstance();
+      sendCreateRoom(socket, currentInput);
       setRooms([...rooms, currentInput]);
       navigate(`/game/lobby`);
     }
