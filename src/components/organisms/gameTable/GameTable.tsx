@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useGameContext } from "@/hooks/useGameContext";
 import type { NewsCard, TacticCardProps } from "@/types/gameTypes";
 import { Droppable } from "@/components/atoms/droppable/Droppable";
@@ -57,6 +57,9 @@ const GameTable: React.FC<GameTableProps> = ({
   const [activeId, setActiveId] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const playersHandRef = useRef<HTMLDivElement>(null);
+
+  // Track if endOfRound was already sent for current round to prevent loops
+  const endOfRoundSentRef = useRef(false);
 
   // Configure sensors for mouse and touch
   const mouseSensor = useSensor(MouseSensor);
@@ -175,29 +178,44 @@ const GameTable: React.FC<GameTableProps> = ({
   );
 
   // All players in the room are ready and have played at least one tactic
-  const allPlayersReady = Array.isArray(gameRoom?.roomData?.players)
-    ? gameRoom.roomData.players.length > 0 &&
-      gameRoom.roomData.players.every(
-        (player) => player?.isReady === true && player?.tacticUsed?.length > 0,
-      )
-    : false;
+  const roomPlayers = gameRoom?.roomData?.players;
+  const allPlayersReady = useMemo(() => {
+    if (!Array.isArray(roomPlayers) || roomPlayers.length === 0) return false;
+    return roomPlayers.every(
+      (player) => player?.isReady === true && player?.tacticUsed?.length > 0,
+    );
+  }, [roomPlayers]);
+
+  // Reset the endOfRound sent flag when players are no longer ready (new round started properly)
+  // This ensures we don't reset prematurely based on gameRound changes
+  useEffect(() => {
+    if (!allPlayersReady && submitForScoring === false) {
+      // Safe to reset - players are not ready and we're not in scoring mode
+      endOfRoundSentRef.current = false;
+    }
+  }, [allPlayersReady, submitForScoring]);
 
   useEffect(() => {
-    if (allPlayersReady && !submitForScoring) {
+    // Only send endOfRound once per round
+    if (allPlayersReady && !submitForScoring && !endOfRoundSentRef.current) {
+      endOfRoundSentRef.current = true; // Mark as sent immediately to prevent re-entry
       setRoundHasEnded(true);
-      const players = gameRoom.roomData.players;
-
+      const players = gameRoom?.roomData?.players || [];
       const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
       sendEndOfRound(players as any, gameRound ?? 0, roomName);
       setRoundEnd(true);
       setSubmitForScoring(true);
       setRoundHasEnded(false);
-      setResetKey((prev) => prev + 1);
+      // Don't increment resetKey here - let the scoreUpdate message handler do it
+      // This prevents double-incrementing which cancels the card dealing timeout
     }
   }, [
     allPlayersReady,
     submitForScoring,
     gameRound,
+    gameRoom?.roomData?.players,
+    gameRoom?.room,
+    gameRoom?.roomData?.name,
     setRoundEnd,
     setRoundHasEnded,
   ]);

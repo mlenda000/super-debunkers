@@ -1,18 +1,19 @@
 .volume-slider-popup {
-  position: absolute;
+  position: fixed;
   right: clamp(12px, 5vw, 24px);
-  top: clamp(35px, 10vh, 100px);
+  top: clamp(50px, 10vh, 100px);
   background: black;
   border: 1px solid #bd0262;
   border-radius: 8px;
-  padding: 4px;
-  box-shadow: 0 4px 12px rgba(189, 2, 98, 0.15);
-  z-index: 1000;
+  padding: 8px 12px;
+  box-shadow: 0 4px 12px rgba(189, 2, 98, 0.3);
+  z-index: 9999;
   min-width: 150px;
   /* max-width: fit-content; */
   display: flex;
   flex-direction: row;
   align-items: center;
+  touch-action: manipulation;
 }
 
 .volume-slider {
@@ -23,6 +24,7 @@
   outline: none;
   -webkit-appearance: none;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .volume-slider::-webkit-slider-thumb {
@@ -62,6 +64,7 @@
   margin: 0;
   display: flex;
   align-items: center;
+  touch-action: manipulation;
 }
 .volume-icon {
   width: clamp(6px, 4vh, 12px);

@@ -32,8 +32,6 @@ const MainTable: React.FC<
   setCurrentInfluencer,
   finishRound,
   setFinishRound,
-  setRoundEnd,
-  roundEnd,
   playersHandItems,
   setPlayersHandItems,
   originalItems,
@@ -68,50 +66,54 @@ const MainTable: React.FC<
     [gameRoom.roomData.deck],
   );
 
+  const indexRef = React.useRef(0);
+  const newPlayerRef = React.useRef(true);
+  const gameCardsRef = React.useRef(gameCards);
+  const lastResetKeyRef = React.useRef(0);
+
+  // Keep gameCardsRef in sync with gameCards
+  React.useEffect(() => {
+    gameCardsRef.current = gameCards;
+  }, [gameCards]);
+
   // Reset table when resetKey bumps (end-of-round). Keep deps minimal to avoid loops.
   useEffect(() => {
-    if (resetKey === 0) return; // skip initial mount
-    if (!roundEnd) return; // only run reset when scoring modal shown
+    // Skip initial mount
+    if (resetKey === 0) {
+      return;
+    }
 
-    // Snapshot deck and players at the moment reset is requested
-    const deckData = Array.isArray(gameRoom?.roomData?.deck?.data)
-      ? gameRoom.roomData.deck.data
-      : [];
-    const resetPlayers = (gameRoom?.roomData?.players || []).map((p) => ({
-      ...p,
-      isReady: false,
-      tacticUsed: [],
-    }));
+    // Skip if we've already handled this resetKey
+    if (resetKey === lastResetKeyRef.current) {
+      return;
+    }
+    lastResetKeyRef.current = resetKey;
 
     // Reset hands/table: all cards back to hand, table empty
+    // NOTE: Don't reset players here - the server sends the updated player state
+    // with scores in the scoreUpdate message. Resetting here causes a race condition
+    // where we might overwrite the scores before they're displayed.
     setPlayersHandItems(originalItems);
     setPlayerReady(false);
     setMainTableItems([]);
     setSubmitForScoring(false);
     setFinishRound(false);
-    setPlayers?.(resetPlayers);
-    setGameRoom?.((prev) => ({
-      ...prev,
-      roomData: {
-        ...prev.roomData,
-        players: resetPlayers,
-      },
-    }));
 
+    // Deal the next card after the score modal closes (3 seconds for modal + buffer)
     const timeout = setTimeout(() => {
-      const nextCard = deckData[indexRef.current];
+      const cards = gameCardsRef.current;
+      const nextCard = cards[indexRef.current];
       if (nextCard) {
         setCurrentInfluencer(nextCard);
         indexRef.current++;
       }
     }, 11000);
 
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(timeout);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetKey]);
-
-  const indexRef = React.useRef(0);
-  const newPlayerRef = React.useRef(true);
 
   // Sync card index from server if provided (ensures all players see same card)
   React.useEffect(() => {
@@ -160,10 +162,12 @@ const MainTable: React.FC<
     const tactic = Array.isArray(currentInfluencer?.tacticUsed)
       ? currentInfluencer?.tacticUsed
       : [currentInfluencer?.tacticUsed];
+    const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
     sendInfluencerReady(
       currentInfluencer,
       currentInfluencer?.villain as ThemeStyle,
       tactic as string[],
+      roomName,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentInfluencer]);
@@ -182,21 +186,25 @@ const MainTable: React.FC<
       .filter((card) => String(card.id) !== "1")
       .map((card) => card.category); // Use category (which is now the tactic name like "clickbait")
 
-    const expectedTactics = currentInfluencer?.tacticUsed || [];
-    const matches = tacticIds.filter((tactic) =>
-      expectedTactics.includes(tactic),
-    );
-    const mismatches = tacticIds.filter(
-      (tactic) => !expectedTactics.includes(tactic),
-    );
+    // Double-check we have tactics to send - prevents empty tacticUsed array
+    if (tacticIds.length === 0) {
+      console.warn(
+        "[MainTable] handlePlayerReady called but no tactics on table",
+      );
+      return;
+    }
 
-    // Match player by ID (unique), fall back to name if no ID
-    const updatedPlayers = (gameRoom?.roomData?.players || []).map((p) =>
-      (currentPlayerId && p?.id === currentPlayerId) ||
-      (!currentPlayerId && p?.name === name)
+    // Match player by ID OR by name (fallback)
+    // Changed from exclusive OR to inclusive - either match triggers update
+    const updatedPlayers = (gameRoom?.roomData?.players || []).map((p) => {
+      const idMatch = currentPlayerId && p?.id === currentPlayerId;
+      const nameMatch = p?.name === name;
+      const isCurrentPlayer = idMatch || nameMatch;
+
+      return isCurrentPlayer
         ? { ...p, isReady: true, tacticUsed: tacticIds }
-        : p,
-    );
+        : p;
+    });
 
     // Send a single, well-formed playerReady message expected by server
     // Include `players` so the server can merge states safely
