@@ -5,6 +5,7 @@
   justify-content: space-between;
   font-family: "Subway Berlin", sans-serif;
   white-space: nowrap;
+  position: relative;
 }
 
 .scoreboard__names {
@@ -77,4 +78,6 @@
   cursor: pointer;
   width: clamp(24px, 4vw, 60px);
   height: clamp(24px, 4vw, 60px);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
