@@ -3,6 +3,8 @@ import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { useNavigate } from "react-router-dom";
 import type { Player } from "@/types/gameTypes";
 import type { EndGameModalProps } from "@/types/types";
+import { sendEndGame, sendPlayerLeaves } from "@/utils/gameMessageUtils";
+import { getWebSocketInstance } from "@/services/webSocketService";
 import "./styles/end-game-modal.css";
 
 const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
@@ -25,6 +27,18 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
   );
 
   const handleClick = () => {
+    const socket = getWebSocketInstance();
+    const roomName = gameRoom?.room || gameRoom?.roomData?.name;
+
+    // Notify server that this player is leaving and game has ended
+    if (roomName) {
+      // Send end game signal to server
+      sendEndGame(socket, roomName);
+
+      // Send player leaves message
+      sendPlayerLeaves(socket, roomName);
+    }
+
     setThemeStyle("all");
     navigate("/");
     setIsEndGame(false);

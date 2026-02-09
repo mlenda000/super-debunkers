@@ -36,7 +36,10 @@ function App() {
               element={<CharacterCreationPage />}
             />
             <Route path="/character-creation/name" element={<NamePage />} />
-            <Route path="/game/lobby" element={<LobbyPage rooms={rooms} />} />
+            <Route
+              path="/game/lobby"
+              element={<LobbyPage rooms={rooms} setRooms={setRooms} />}
+            />
             <Route
               path="/game/create-room"
               element={<CreateRoomPage rooms={rooms} setRooms={setRooms} />}

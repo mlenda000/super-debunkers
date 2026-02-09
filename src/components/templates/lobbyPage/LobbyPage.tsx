@@ -2,12 +2,17 @@ import Header from "@/components/molecules/header/Header";
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
 import Lobby from "@/components/organisms/lobby/Lobby";
 
-const LobbyPage = ({ rooms }: { rooms: string[] }) => {
+interface LobbyPageProps {
+  rooms: string[];
+  setRooms?: (rooms: string[]) => void;
+}
+
+const LobbyPage = ({ rooms, setRooms }: LobbyPageProps) => {
   return (
     <>
       <Header />
       <RotateScreen />
-      <Lobby rooms={rooms} />
+      <Lobby rooms={rooms} setRooms={setRooms} />
     </>
   );
 };

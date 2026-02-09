@@ -39,6 +39,9 @@ export type MessageType =
   | "allReady"
   | "startingDeck"
   | "endOfRound"
+  | "createRoom"
+  | "getAvailableRooms"
+  | "endGame"
   // Server -> Client messages
   | "playerId"
   | "lobbyUpdate"
@@ -48,6 +51,10 @@ export type MessageType =
   | "shuffledDeck"
   | "scoreUpdate"
   | "error"
+  | "roomCreated"
+  | "availableRooms"
+  | "roomDeleted"
+  | "gameEnded"
   // Legacy types (if needed)
   | "USER_JOINED"
   | "USER_LEFT"
@@ -77,6 +84,10 @@ export interface WebSocketMessage {
   data?: any;
   isShuffled?: boolean;
   message?: string;
+  // Room creation fields
+  roomName?: string;
+  rooms?: string[];
+  availableRooms?: string[];
 }
 
 export type MessageHandler = (message: WebSocketMessage) => void;

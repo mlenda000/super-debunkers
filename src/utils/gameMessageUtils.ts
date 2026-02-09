@@ -52,6 +52,41 @@ export const sendEnteredLobby = (
   sock.send(JSON.stringify({ type: "enteredLobby", room, avatar, name }));
 };
 
+export const sendCreateRoom = (
+  socket: PartySocket | null | undefined,
+  roomName: string,
+): void => {
+  const sock = socket || getWebSocketInstance();
+  if (!sock || sock.readyState !== PartySocket.OPEN) {
+    console.warn("Socket not ready - createRoom will retry on connection");
+    return;
+  }
+  sock.send(JSON.stringify({ type: "createRoom", roomName }));
+};
+
+export const sendGetAvailableRooms = (socket?: PartySocket | null): void => {
+  const sock = socket || getWebSocketInstance();
+  if (!sock || sock.readyState !== PartySocket.OPEN) {
+    console.warn(
+      "Socket not ready - getAvailableRooms will retry on connection",
+    );
+    return;
+  }
+  sock.send(JSON.stringify({ type: "getAvailableRooms" }));
+};
+
+export const sendEndGame = (
+  socket: PartySocket | null | undefined,
+  room: string,
+): void => {
+  const sock = socket || getWebSocketInstance();
+  if (!sock || sock.readyState !== PartySocket.OPEN) {
+    console.warn("Socket not ready - endGame will retry on connection");
+    return;
+  }
+  sock.send(JSON.stringify({ type: "endGame", room }));
+};
+
 export const sendPlayerEnters = (
   socket: PartySocket | null,
   player: Partial<Player> & { avatar?: string },
