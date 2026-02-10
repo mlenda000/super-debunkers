@@ -100,21 +100,35 @@
   height: auto;
   cursor: pointer;
   transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  border-radius: 12px;
+
+  img {
+    width: clamp(24px, calc(10vw - 10vh), 60px);
+    height: clamp(24px, calc(10vw - 10vh), 60px);
+    aspect-ratio: 1;
+    pointer-events: none;
+  }
+}
+.endgame-modal__home-btn-text {
+  font-family: "Subway Berlin", sans-serif;
+  font-size: clamp(24px, calc(10vw - 10vh), 32px);
+  padding-inline: 8px;
+
+  @media (max-height: 600px) {
+    display: none;
+  }
 }
 
-.endgame-modal__home-btn--regular {
-  display: block;
-  width: clamp(120px, 40vw, 250px);
-}
-
-.endgame-modal__home-btn--small {
-  display: none;
-  width: 60px;
-  height: auto;
-}
-
-.endgame-modal__home-btn:hover {
-  transform: scale(1.05);
+.endgame-modal__home-btn:hover,
+.endgame-modal__home-btn:focus,
+.endgame-modal__home-btn:focus-visible,
+.endgame-modal__home-btn:active {
+  transform: scale(1.1);
+  stroke: 2px solid #fff;
 }
 
 /* ========================================
