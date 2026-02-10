@@ -33,20 +33,20 @@ const TestPage = () => {
           throw new Error("Function not implemented.");
         }}
       /> */}
-      {/* <EndGameModal
+      <EndGameModal
         setIsEndGame={function (value: boolean): void {
           throw new Error("Function not implemented.");
         }}
-      /> */}
+      />
       {/* <Tool currentInfluencer={mockInfluencer} showResults /> */}
-      <PlayedCard
+      {/* <PlayedCard
         name={"test"}
         image={"/images/tactics/cherry-picking.webp"}
         id={"test"}
         onUndo={function (id: string | number): void {
           throw new Error("Function not implemented.");
         }}
-      />
+      /> */}
     </div>
   );
 };

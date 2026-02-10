@@ -96,28 +96,17 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
         </div>
         <div className="endgame-modal__button">
           <button
-            className="endgame-modal__home-btn-wrapper endgame-modal__home-btn-wrapper--regular"
+            className="endgame-modal__home-btn"
             onClick={handleClick}
             aria-label="Return to home page"
           >
             <img
-              src="/images/buttons/home-button.webp"
+              src="/images/buttons/home.webp"
               alt=""
               className="endgame-modal__home-btn"
               aria-hidden="true"
             />
-          </button>
-          <button
-            className="endgame-modal__home-btn-wrapper endgame-modal__home-btn-wrapper--small"
-            onClick={handleClick}
-            aria-label="Return to home page"
-          >
-            <img
-              src="/images/buttons/home-button-small.webp"
-              alt=""
-              className="endgame-modal__home-btn"
-              aria-hidden="true"
-            />
+            <p className="endgame-modal__home-btn-text">Home</p>
           </button>
         </div>
       </div>
