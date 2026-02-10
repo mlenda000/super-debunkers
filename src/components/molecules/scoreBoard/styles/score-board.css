@@ -34,10 +34,24 @@
   width: clamp(24px, 4vw, 60px);
   height: clamp(24px, 4vw, 60px);
   background: transparent;
-  border: transparent;
+  border: none;
   border-radius: 100%;
+  /* Safari accessibility fix */
+  -webkit-appearance: none;
+  -webkit-user-select: none;
+
   &:hover {
-    outline: white 2px;
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+
+  &:focus {
+    outline: 2px solid #f6b139;
+    outline-offset: 2px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #f6b139;
     outline-offset: 2px;
   }
 }
@@ -49,9 +63,22 @@
   padding: 8px 12px;
   gap: 12px;
   background: transparent;
-  border: transparent;
+  border: none;
   border-radius: 12px;
   cursor: pointer;
+  /* Safari accessibility fix */
+  -webkit-appearance: none;
+  -webkit-user-select: none;
+
+  &:focus {
+    outline: 2px solid #f6b139;
+    outline-offset: 2px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #f6b139;
+    outline-offset: 2px;
+  }
 }
 .scoreboard__home-image {
   width: clamp(24px, 4vw, 60px);
@@ -73,11 +100,24 @@
 
 .scoreboard-audio__button {
   background: transparent;
-  border: transparent;
+  border: none;
   border-radius: 100%;
   cursor: pointer;
   width: clamp(24px, 4vw, 60px);
   height: clamp(24px, 4vw, 60px);
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  /* Safari accessibility fix */
+  -webkit-appearance: none;
+  -webkit-user-select: none;
+
+  &:focus {
+    outline: 2px solid #f6b139;
+    outline-offset: 2px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #f6b139;
+    outline-offset: 2px;
+  }
 }

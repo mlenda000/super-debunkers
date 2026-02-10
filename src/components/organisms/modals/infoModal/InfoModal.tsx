@@ -32,7 +32,7 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
   }, [isOpen, handleKeyDown]);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
       const target = event.target as HTMLElement;
       // Ignore clicks on the info button
       if (target.closest(".scoreboard-info__image")) {
@@ -47,13 +47,26 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
     }
 
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
+      // Small delay to prevent immediate close on mobile
+      const timeoutId = setTimeout(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("touchstart", handleClickOutside);
+      }, 10);
+
+      return () => {
+        clearTimeout(timeoutId);
+        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener("touchstart", handleClickOutside);
+      };
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
 
   return (
     <>
@@ -70,6 +83,7 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
             className="info-modal__close"
             onClick={() => onClose(false)}
             aria-label="Close how to play instructions"
+            tabIndex={0}
           >
             <img src="/images/buttons/close.webp" alt="" aria-hidden="true" />
           </button>

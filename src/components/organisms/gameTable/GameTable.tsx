@@ -233,7 +233,7 @@ const GameTable: React.FC<GameTableProps> = ({
             ref={scrollContainerRef}
             role="region"
             aria-label="Game content area - use arrow keys or swipe to navigate"
-            tabIndex={0}
+            tabIndex={-1}
             onKeyDown={handleKeyDown}
           >
             {/* Grid Row Top - Scoreboard */}

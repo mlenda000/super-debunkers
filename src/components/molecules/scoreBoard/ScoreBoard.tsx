@@ -115,6 +115,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
         className="scoreboard__home-button"
         onClick={() => handleReturnToLobby()}
         aria-label="Return to lobby"
+        tabIndex={0}
       >
         <img
           src={`/images/buttons/home.webp`}
@@ -174,6 +175,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
           }}
           aria-label="Open how to play instructions"
           aria-expanded={isInfoModalOpen}
+          tabIndex={0}
         >
           <img
             src={`/images/buttons/info-button.webp`}
@@ -190,6 +192,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
             isSoundPlaying ? "Mute background music" : "Unmute background music"
           }
           aria-pressed={isSoundPlaying}
+          tabIndex={0}
         >
           <img
             src={

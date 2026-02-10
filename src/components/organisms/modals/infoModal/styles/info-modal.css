@@ -84,6 +84,25 @@
   padding: 0;
   width: 32px;
   height: 32px;
+  border-radius: 4px;
+  /* Safari accessibility fix */
+  -webkit-appearance: none;
+  -webkit-user-select: none;
+}
+
+.info-modal__close:hover {
+  transform: scale(1.2);
+}
+
+.info-modal__close:focus,
+.info-modal__close:focus-visible {
+  outline: 2px solid #f6b139;
+  outline-offset: 2px;
+  transform: scale(1.1);
+}
+
+.info-modal__close:active {
+  transform: scale(1.2);
 }
 
 .info-modal__close img {
@@ -95,9 +114,7 @@
   text-align: center;
   font-size: clamp(22px, 3vw, 40px);
   font-family: "Alfa Slab One", serif;
-  color: white;
-  -webkit-text-stroke: black var(--title-stroke-size);
-  -webkit-text-fill-color: white;
+  color: black;
   paint-order: stroke fill;
   margin-bottom: 4px;
 }
