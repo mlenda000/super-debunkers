@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import "./styles/sound-control.css";
 
 interface SoundControlProps {
@@ -22,6 +22,15 @@ const SoundControl = ({
 }: SoundControlProps) => {
   const [volume, setVolume] = useState(initialVolume);
   const controlRef = useRef<HTMLDivElement>(null);
+  const muteButtonRef = useRef<HTMLButtonElement>(null);
+  const sliderRef = useRef<HTMLInputElement>(null);
+
+  // Focus the mute button when the control opens
+  useEffect(() => {
+    if (isOpen && muteButtonRef.current) {
+      muteButtonRef.current.focus();
+    }
+  }, [isOpen]);
 
   // Close when clicking outside
   useEffect(() => {
@@ -55,18 +64,90 @@ const SoundControl = ({
     };
   }, [isOpen, onClose]);
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseInt(e.target.value);
-    setVolume(newVolume);
-    if (onVolumeChange) {
-      onVolumeChange(newVolume);
+  // Handle escape key to close
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
     }
 
-    // Update mute state based on volume
-    if (newVolume === 0) {
-      setIsMuted(false);
-    } else if (!isMuted) {
-      setIsMuted(true);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  const updateVolume = useCallback(
+    (newVolume: number) => {
+      const clampedVolume = Math.max(0, Math.min(100, newVolume));
+      setVolume(clampedVolume);
+      if (onVolumeChange) {
+        onVolumeChange(clampedVolume);
+      }
+
+      // Update mute state based on volume
+      if (clampedVolume === 0) {
+        setIsMuted(false);
+      } else if (!isMuted) {
+        setIsMuted(true);
+      }
+    },
+    [onVolumeChange, isMuted, setIsMuted],
+  );
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseInt(e.target.value);
+    updateVolume(newVolume);
+  };
+
+  // Handle keyboard controls for volume - works on the entire component
+  const handleComponentKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const step = e.shiftKey ? 10 : 5; // Larger step with shift key
+
+      switch (e.key) {
+        case "ArrowUp":
+        case "ArrowRight":
+        case "+":
+        case "=":
+          e.preventDefault();
+          updateVolume(volume + step);
+          break;
+        case "ArrowDown":
+        case "ArrowLeft":
+        case "-":
+        case "_":
+          e.preventDefault();
+          updateVolume(volume - step);
+          break;
+      }
+    },
+    [volume, updateVolume],
+  );
+
+  // Handle keyboard controls for volume slider
+  const handleSliderKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const step = e.shiftKey ? 10 : 5; // Larger step with shift key
+
+    switch (e.key) {
+      case "ArrowUp":
+      case "ArrowRight":
+      case "+":
+      case "=":
+        e.preventDefault();
+        updateVolume(volume + step);
+        break;
+      case "ArrowDown":
+      case "ArrowLeft":
+      case "-":
+      case "_":
+        e.preventDefault();
+        updateVolume(volume - step);
+        break;
     }
   };
 
@@ -89,29 +170,61 @@ const SoundControl = ({
     }
   };
 
+  // Handle keyboard activation of mute button (also supports volume keys)
+  const handleMuteKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleMuteToggle();
+    }
+    // Volume keys are handled by the parent onKeyDown
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="volume-slider-popup" ref={controlRef} style={position}>
-      <button onClick={handleMuteToggle} className="volume-button">
+    <div
+      className="volume-slider-popup"
+      ref={controlRef}
+      style={position}
+      role="group"
+      aria-label="Volume controls"
+      onKeyDown={handleComponentKeyDown}
+    >
+      <button
+        ref={muteButtonRef}
+        onClick={handleMuteToggle}
+        onKeyDown={handleMuteKeyDown}
+        className="volume-button"
+        aria-label={isMuted ? "Mute audio" : "Unmute audio"}
+        aria-pressed={!isMuted}
+        tabIndex={0}
+      >
         <img
           src={
             !isMuted
               ? "/images/buttons/mute.webp"
               : "/images/buttons/audio.webp"
           }
-          alt={isMuted ? "Unmute" : "Mute"}
+          alt=""
           className="volume-icon"
+          aria-hidden="true"
         />
       </button>
       <input
+        ref={sliderRef}
         type="range"
         min="0"
         max="100"
         value={volume}
         onChange={handleVolumeChange}
+        onKeyDown={handleSliderKeyDown}
         className="volume-slider"
-        aria-label="Volume slider"
+        aria-label={`Volume: ${volume}%`}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={volume}
+        aria-valuetext={`${volume} percent`}
+        tabIndex={0}
       />
     </div>
   );

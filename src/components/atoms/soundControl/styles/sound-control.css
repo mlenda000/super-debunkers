@@ -25,6 +25,18 @@
   -webkit-appearance: none;
   cursor: pointer;
   touch-action: manipulation;
+
+  &:focus {
+    outline: 2px solid #f6b139;
+    outline-offset: 4px;
+    border-radius: 3px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #f6b139;
+    outline-offset: 4px;
+    border-radius: 3px;
+  }
 }
 
 .volume-slider::-webkit-slider-thumb {
@@ -65,6 +77,21 @@
   display: flex;
   align-items: center;
   touch-action: manipulation;
+  /* Safari accessibility fix */
+  -webkit-appearance: none;
+  -webkit-user-select: none;
+
+  &:focus {
+    outline: 2px solid #f6b139;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #f6b139;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 .volume-icon {
   width: clamp(6px, 4vh, 12px);
