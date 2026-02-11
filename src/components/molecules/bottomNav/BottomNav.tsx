@@ -30,7 +30,7 @@ const BottomNav = () => {
   return (
     <nav className="bottom-nav">
       {navigationButtons.map((button) => (
-        <ButtonStyle key={button.label} theme="The_Biost">
+        <ButtonStyle key={button.label} theme="all" type="hover">
           <button
             key={button.label}
             className="bottom-nav_button"

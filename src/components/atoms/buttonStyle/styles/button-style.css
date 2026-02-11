@@ -1,3 +1,319 @@
+/* ===================================
+   BASE BUTTON STYLES
+   =================================== */
+
+.button-style {
+  position: relative;
+  display: inline-block;
+  transition:
+    filter 250ms,
+    transform 250ms;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  width: fit-content;
+  height: fit-content;
+}
+
+.button-style-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  overflow: hidden;
+  width: fit-content;
+  height: fit-content;
+  transition: all 250ms cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+.button-style-content > * {
+  position: relative;
+  z-index: 1;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding-inline: var(--spacing-lg);
+  padding-block: var(--spacing-xs);
+  white-space: nowrap;
+}
+
+/* ===================================
+   DEFAULT STYLE - Dark with theme strokes
+   =================================== */
+
+.button-style--default .button-style-content {
+  background: linear-gradient(
+    180deg,
+    rgba(20, 20, 20, 0.95) 0%,
+    rgba(10, 10, 10, 0.98) 100%
+  );
+  border: 2px solid var(--button-theme-color);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(var(--button-theme-rgb), 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.button-style--default:hover {
+  filter: brightness(110%);
+  transform: scale(1.02);
+}
+
+.button-style--default:hover .button-style-content {
+  border-color: var(--button-theme-color);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(var(--button-theme-rgb), 0.5),
+    0 0 20px rgba(var(--button-theme-rgb), 0.2),
+    0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.button-style--default:active .button-style-content {
+  transform: scale(0.98);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(var(--button-theme-rgb), 0.4);
+}
+
+/* ===================================
+   GLASS STYLE - Frosted glass effect
+   =================================== */
+
+.button-style--glass {
+  opacity: 0.9;
+}
+
+.button-style--glass .button-style-shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: hsl(0deg 0% 0% / 0.15);
+  will-change: transform;
+  transform: translateY(2px);
+  transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+.button-style--glass .button-style-edge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  will-change: transform;
+  pointer-events: none;
+  opacity: 0.1;
+}
+
+.button-style--glass .button-style-content {
+  will-change: transform;
+  transform: translateY(-4px);
+  transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+.button-style--glass:hover {
+  filter: brightness(110%) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+  transform: scale(1.02);
+}
+
+.button-style--glass:hover .button-style-content {
+  transform: translateY(-6px);
+  transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+}
+
+.button-style--glass:hover .button-style-shadow {
+  transform: translateY(4px);
+  transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+}
+
+.button-style--glass:active .button-style-content {
+  transform: translateY(-2px);
+  transition: transform 34ms;
+}
+
+.button-style--glass:active .button-style-shadow {
+  transform: translateY(1px);
+  transition: transform 34ms;
+}
+
+/* ===================================
+   GLOWING STYLE - Neon glow effect
+   =================================== */
+
+.button-style--glowing .button-style-content {
+  background: linear-gradient(
+    180deg,
+    rgba(var(--button-theme-rgb), 0.15) 0%,
+    rgba(var(--button-theme-rgb), 0.05) 100%
+  );
+  border: 2px solid var(--button-theme-color);
+  box-shadow:
+    0 0 5px rgba(var(--button-theme-rgb), 0.5),
+    0 0 15px rgba(var(--button-theme-rgb), 0.3),
+    0 0 30px rgba(var(--button-theme-rgb), 0.2),
+    inset 0 0 15px rgba(var(--button-theme-rgb), 0.1);
+  animation: glow-pulse 2s ease-in-out infinite alternate;
+}
+
+.button-style--glowing::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  border-radius: 12px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(var(--button-theme-rgb), 0.3) 0%,
+    transparent 70%
+  );
+  filter: blur(20px);
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.button-style--glowing:hover {
+  transform: scale(1.03);
+}
+
+.button-style--glowing:hover .button-style-content {
+  box-shadow:
+    0 0 10px rgba(var(--button-theme-rgb), 0.7),
+    0 0 25px rgba(var(--button-theme-rgb), 0.5),
+    0 0 50px rgba(var(--button-theme-rgb), 0.3),
+    0 0 80px rgba(var(--button-theme-rgb), 0.2),
+    inset 0 0 20px rgba(var(--button-theme-rgb), 0.2);
+}
+
+.button-style--glowing:active .button-style-content {
+  transform: scale(0.97);
+  box-shadow:
+    0 0 5px rgba(var(--button-theme-rgb), 0.8),
+    0 0 15px rgba(var(--button-theme-rgb), 0.6),
+    inset 0 0 25px rgba(var(--button-theme-rgb), 0.3);
+}
+
+@keyframes glow-pulse {
+  from {
+    box-shadow:
+      0 0 5px rgba(var(--button-theme-rgb), 0.5),
+      0 0 15px rgba(var(--button-theme-rgb), 0.3),
+      0 0 30px rgba(var(--button-theme-rgb), 0.2),
+      inset 0 0 15px rgba(var(--button-theme-rgb), 0.1);
+  }
+  to {
+    box-shadow:
+      0 0 8px rgba(var(--button-theme-rgb), 0.6),
+      0 0 20px rgba(var(--button-theme-rgb), 0.4),
+      0 0 40px rgba(var(--button-theme-rgb), 0.25),
+      inset 0 0 20px rgba(var(--button-theme-rgb), 0.15);
+  }
+}
+
+/* ===================================
+   OUTLINE STYLE - Minimal outline only
+   =================================== */
+
+.button-style--outline .button-style-content {
+  background: transparent;
+  border: 2px solid var(--button-theme-color);
+  box-shadow: none;
+}
+
+.button-style--outline:hover {
+  transform: scale(1.02);
+}
+
+.button-style--outline:hover .button-style-content {
+  background: rgba(var(--button-theme-rgb), 0.1);
+  border-color: var(--button-theme-color);
+  box-shadow:
+    0 0 10px rgba(var(--button-theme-rgb), 0.2),
+    inset 0 0 10px rgba(var(--button-theme-rgb), 0.05);
+}
+
+.button-style--outline:active .button-style-content {
+  transform: scale(0.98);
+  background: rgba(var(--button-theme-rgb), 0.15);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ===================================
+   HOVER STYLE - Reveals on hover
+   =================================== */
+
+.button-style--hover .button-style-content {
+  background: transparent;
+  border: 2px solid transparent;
+  box-shadow: none;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-style--hover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--button-theme-rgb), 0) 0%,
+    rgba(var(--button-theme-rgb), 0) 100%
+  );
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.button-style--hover:hover {
+  transform: scale(1.02);
+}
+
+.button-style--hover:hover::before {
+  opacity: 1;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--button-theme-rgb), 0.15) 0%,
+    rgba(var(--button-theme-rgb), 0.05) 100%
+  );
+}
+
+.button-style--hover:hover .button-style-content {
+  border-color: var(--button-theme-color);
+  border-color: white;
+  background: rgba(var(--button-theme-rgb), 0.08);
+  box-shadow:
+    0 4px 20px rgba(var(--button-theme-rgb), 0.2),
+    0 0 0 1px rgba(var(--button-theme-rgb), 0.3);
+}
+
+.button-style--hover:active .button-style-content {
+  transform: scale(0.98);
+  background: rgba(var(--button-theme-rgb), 0.12);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(var(--button-theme-rgb), 0.4);
+}
+
+/* ===================================
+   LEGACY SUPPORT (arcade-effect)
+   =================================== */
+
 .arcade-effect {
   position: relative;
   display: inline-block;
@@ -17,7 +333,6 @@
     transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
 }
 
-/* Shadow layer */
 .arcade-effect-shadow {
   position: absolute;
   top: 0;
@@ -33,7 +348,6 @@
   pointer-events: none;
 }
 
-/* Edge/depth layer */
 .arcade-effect-edge {
   position: absolute;
   top: 0;
@@ -46,7 +360,6 @@
   opacity: 0.1;
 }
 
-/* Front layer with plastic sheen */
 .arcade-effect-front {
   position: relative;
   display: flex;
@@ -61,7 +374,6 @@
   height: fit-content;
 }
 
-/* Make child button fill the front layer */
 .arcade-effect-front > * {
   position: relative;
   z-index: 1;
@@ -76,7 +388,6 @@
   white-space: nowrap;
 }
 
-/* Hover state */
 .arcade-effect:hover .arcade-effect-front {
   transform: translateY(-6px);
   transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
@@ -87,7 +398,6 @@
   transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
 }
 
-/* Active/pressed state */
 .arcade-effect:active .arcade-effect-front {
   transform: translateY(-2px);
   transition: transform 34ms;

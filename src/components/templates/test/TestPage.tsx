@@ -49,25 +49,25 @@ const TestPage = () => {
         }}
       /> */}
       {/* <Tool currentInfluencer={mockInfluencer} showResults /> */}
-      <ButtonStyle theme="all">
+      <ButtonStyle theme="all" type="default">
         <NextButton onClick={() => console.log("Next button clicked")} />
       </ButtonStyle>
-      <ButtonStyle theme="The_Biost">
+      <ButtonStyle theme="The_Biost" type="glass">
         <NextButton onClick={() => console.log("Next button clicked")} />
       </ButtonStyle>
-      <ButtonStyle theme="The_Bots">
+      <ButtonStyle theme="The_Bots" type="glowing">
         <NextButton onClick={() => console.log("Next button clicked")} />
       </ButtonStyle>
-      <ButtonStyle theme="The_Oligs">
+      <ButtonStyle theme="The_Oligs" type="outline">
         <NextButton onClick={() => console.log("Next button clicked")} />
       </ButtonStyle>
-      <ButtonStyle theme="The_Celebs">
+      <ButtonStyle theme="The_Biost" type="hover">
         <NextButton onClick={() => console.log("Next button clicked")} />
       </ButtonStyle>
 
       <BottomNav />
 
-      <ButtonStyle theme="The_Biost">
+      <ButtonStyle theme="all" type="hover">
         <RoomTab
           room={"Mark"}
           avatar={"avatar1.webp"}

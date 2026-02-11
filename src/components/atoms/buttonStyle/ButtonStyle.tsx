@@ -27,20 +27,28 @@ interface ButtonStyleProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   theme?: ThemeName;
   className?: string;
+  type?: "default" | "glass" | "glowing" | "outline" | "hover";
 }
 
 const ButtonStyle = ({
   children,
   theme = "all",
   className = "",
+  type = "default",
   ...props
 }: ButtonStyleProps) => {
   const baseColor = THEME_COLORS[theme];
-
   const rgb = hexToRgb(baseColor);
   const rgbString = rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : "255, 24, 99";
 
-  const edgeStyle = {
+  // CSS custom properties for theme colors
+  const cssVars = {
+    "--button-theme-color": baseColor,
+    "--button-theme-rgb": rgbString,
+  } as React.CSSProperties;
+
+  // Glass style specific inline styles
+  const glassEdgeStyle = {
     background: `linear-gradient(
       to left,
       rgba(${rgbString}, 0.3) 0%,
@@ -50,7 +58,7 @@ const ButtonStyle = ({
     )`,
   };
 
-  const frontStyle = {
+  const glassFrontStyle = {
     backgroundImage: `
       linear-gradient(
         180deg,
@@ -77,13 +85,27 @@ const ButtonStyle = ({
     `,
   };
 
+  // Glass type uses the arcade-effect structure
+  if (type === "glass") {
+    return (
+      <div className={`arcade-effect ${className}`} style={cssVars} {...props}>
+        <span className="arcade-effect-shadow" />
+        <span className="arcade-effect-edge" style={glassEdgeStyle} />
+        <span className="arcade-effect-front" style={glassFrontStyle}>
+          {children}
+        </span>
+      </div>
+    );
+  }
+
+  // All other types use the new button-style structure
   return (
-    <div className={`arcade-effect ${className}`} {...props}>
-      <span className="arcade-effect-shadow" />
-      <span className="arcade-effect-edge" style={edgeStyle} />
-      <span className="arcade-effect-front" style={frontStyle}>
-        {children}
-      </span>
+    <div
+      className={`button-style button-style--${type} ${className}`}
+      style={cssVars}
+      {...props}
+    >
+      <span className="button-style-content">{children}</span>
     </div>
   );
 };
