@@ -27,6 +27,13 @@
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
   }
+
+  /* Tablet landscape - center to screen */
+  @media (orientation: landscape) and (min-height: 600px) and (max-height: 1100px) and (max-width: 1366px) {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .players-hand {
@@ -61,5 +68,12 @@
     overflow-x: hidden;
     width: 100%;
     align-content: flex-start;
+  }
+
+  /* Tablet landscape - all cards in one row */
+  @media (orientation: landscape) and (min-height: 600px) and (max-height: 1100px) and (max-width: 1366px) {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
   }
 }
