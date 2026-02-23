@@ -2,7 +2,7 @@ import "./styles/button-style.css";
 
 // Theme color definitions
 const THEME_COLORS = {
-  all: "#0a0a0a",
+  all: "#FFFFFF",
   The_Biost: "#56B867",
   The_Bots: "#4345AF",
   The_Oligs: "#E1DFB0",

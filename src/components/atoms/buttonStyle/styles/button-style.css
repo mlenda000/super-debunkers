@@ -295,7 +295,7 @@
 
 .button-style--hover:hover .button-style-content {
   border-color: var(--button-theme-color);
-  border-color: white;
+  /* border-color: white; */
   background: rgba(var(--button-theme-rgb), 0.08);
   box-shadow:
     0 4px 20px rgba(var(--button-theme-rgb), 0.2),

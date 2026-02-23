@@ -58,10 +58,10 @@ const TestPage = () => {
       <ButtonStyle theme="The_Bots" type="glowing">
         <NextButton onClick={() => console.log("Next button clicked")} />
       </ButtonStyle>
-      <ButtonStyle theme="The_Oligs" type="outline">
+      <ButtonStyle theme="The_Celebs" type="outline">
         <NextButton onClick={() => console.log("Next button clicked")} />
       </ButtonStyle>
-      <ButtonStyle theme="The_Biost" type="hover">
+      <ButtonStyle theme="The_Celebs" type="hover">
         <NextButton onClick={() => console.log("Next button clicked")} />
       </ButtonStyle>
 
