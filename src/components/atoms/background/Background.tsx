@@ -20,6 +20,8 @@ const Background = () => {
       <div
         className="background"
         style={{ backgroundImage: `url(${getBackgroundImage()})` }}
+        role="presentation"
+        aria-hidden="true"
       />
     </React.Fragment>
   );

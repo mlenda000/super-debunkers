@@ -15,7 +15,6 @@ const PlayedCard: React.FC<PlayedCardProps> = ({ name, image, id, onUndo }) => {
       <button
         className="close-button"
         onClick={handleUndoClick}
-        onTouchEnd={handleUndoClick}
         aria-label={`Remove ${name} card from hand`}
         aria-describedby={`card-${id}`}
         type="button"

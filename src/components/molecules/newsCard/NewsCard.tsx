@@ -3,7 +3,7 @@ import type { NewsCardProps } from "@/types/gameTypes";
 const NewsCard = ({
   name,
   description,
-  category,
+  category: _category,
   image,
   tacticUsed,
   display,
@@ -18,10 +18,18 @@ const NewsCard = ({
   };
 
   return (
-    <div className={getClassName()}>
+    <div
+      className={getClassName()}
+      role="article"
+      aria-label={`News card: ${name}`}
+    >
       <div className="news-card__content">
         {image && (
-          <img src={image} alt={category[0]} className="news-card__images" />
+          <img
+            src={`${image.startsWith("/") ? image : "/images/news/" + image}`}
+            alt={`News illustration for ${name}`}
+            className="news-card__images"
+          />
         )}
         <div className="news-card__text">
           <h1 className="news-card__title">{name}</h1>
@@ -31,13 +39,16 @@ const NewsCard = ({
           )}
         </div>
         {tacticUsed && tacticUsed.length > 0 && (
-          <div className="news-card__tactic-count">
+          <div
+            className="news-card__tactic-count"
+            role="img"
+            aria-label={`${tacticUsed.length} tactic${tacticUsed.length !== 1 ? "s" : ""} used`}
+          >
             {(tacticUsed || []).map((tactic) => (
               <img
                 src={"/images/news/tactic-indicator.webp"}
-                alt="Tactic used count"
-                height="20px"
-                width="auto"
+                alt=""
+                className="news-card__tactic-img"
                 key={tactic}
               />
             ))}

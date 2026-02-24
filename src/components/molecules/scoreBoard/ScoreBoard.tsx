@@ -137,11 +137,15 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
         {gameRoom?.roomData?.players.length > 0 &&
           gameRoom?.roomData?.players.map((player: Player) => {
             return (
-              <React.Fragment key={player?.id}>
+              <div
+                key={player?.id}
+                role="listitem"
+                aria-label={`${player?.name || "Player"}: ${player?.score ?? 0} followers`}
+              >
                 {player?.isReady ? (
                   <img
                     src={`/icons/player-ready.webp`}
-                    alt="Player ready"
+                    alt={`${player?.name || "Player"} is ready`}
                     width="60px"
                     style={{ zIndex: 2 }}
                   />
@@ -153,7 +157,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
                   />
                 )}
                 <RotatingScore player={player} />
-              </React.Fragment>
+              </div>
             );
           })}
       </div>

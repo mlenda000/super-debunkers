@@ -39,14 +39,19 @@ const RotatingScore = ({ player }: { player: Player }) => {
     <span
       className="scoring-container"
       style={{ marginLeft: "8px", zIndex: 2 }}
+      role="status"
+      aria-label={`${player?.name}: ${displayScore} followers`}
+      aria-live="polite"
     >
       <span
         className={`scoreboard__names scoring-content ${fadeClass} ${showName ? "active" : ""}`}
+        aria-hidden="true"
       >
         {player?.name}
       </span>
       <span
         className={`scoreboard__names scoring-content ${fadeClass} ${!showName ? "active" : ""}`}
+        aria-hidden="true"
       >
         {displayScore}
       </span>

@@ -12,8 +12,8 @@ import type {
   TacticCardProps,
 } from "@/types/gameTypes";
 import { useGameContext } from "@/hooks/useGameContext";
-import PlayedCard from "@/components/molecules/playedCard/PlayedCard";
 import NewsCard from "@/components/molecules/newsCard/NewsCard";
+import PlayArea from "@/components/molecules/playArea/PlayArea";
 
 type MainTablePropsWithHand = MainTableProps & {
   playersHandItems: TacticCardProps[];
@@ -25,6 +25,8 @@ const MainTable: React.FC<
     resetKey: number;
     roundEnd: boolean;
     syncCardIndex?: number;
+    onSelectCard?: () => void;
+    isDragging?: boolean;
   }
 > = ({
   items,
@@ -40,6 +42,8 @@ const MainTable: React.FC<
   setSubmitForScoring,
   resetKey,
   syncCardIndex,
+  onSelectCard,
+  isDragging,
 }) => {
   const { setThemeStyle, playerName, playerId } = useGlobalContext();
   const {
@@ -246,7 +250,6 @@ const MainTable: React.FC<
         <NewsCard
           name={currentInfluencer?.caption || ""}
           description={currentInfluencer?.bodyCopy || ""}
-          example="Influencer Example"
           category={currentInfluencer?.tacticUsed || []}
           villain={currentInfluencer?.villain || "all"}
           image={
@@ -257,53 +260,15 @@ const MainTable: React.FC<
           tacticUsed={currentInfluencer?.tacticUsed || []}
         />
       </div>
-      <div className="main-table__tactics">
-        <div
-          className="main-table__background"
-          style={finishRound ? { display: "none" } : { display: "block" }}
-        >
-          <p className="main-table__place-cards">Place Cards</p>
-        </div>
-        {items.map((card) => (
-          <PlayedCard
-            name={card?.title}
-            category={card?.category}
-            image={card?.image}
-            alt={card?.alt}
-            id={card?.id}
-            key={card?.id}
-            onUndo={() => handleReturnCard(card?.id)}
-          />
-        ))}
-        {
-          <button
-            type="button"
-            onClick={handlePlayerReady}
-            className="main-table__finish-round"
-            aria-label={
-              playerReady
-                ? "Ready"
-                : finishRound
-                  ? "Mark ready"
-                  : "Place a card to get ready"
-            }
-          >
-            <img
-              src={
-                !playerReady && finishRound
-                  ? `/images/buttons/ready-button.webp`
-                  : playerReady && finishRound
-                    ? `/images/buttons/checked-button.webp`
-                    : `/images/buttons/not-ready-button.webp`
-              }
-              alt="Ready"
-              width={"180%"}
-              height={"auto"}
-              style={{ cursor: "pointer", maxWidth: "100px" }}
-            />
-          </button>
-        }
-      </div>
+      <PlayArea
+        items={items}
+        finishRound={finishRound}
+        playerReady={playerReady}
+        handleReturnCard={handleReturnCard}
+        handlePlayerReady={handlePlayerReady}
+        onSelectCard={onSelectCard}
+        isDragging={isDragging}
+      />
     </div>
   );
 };

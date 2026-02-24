@@ -20,7 +20,12 @@ const Carousel = ({ slides, onSlideChange }: ExtendedCarouselProps) => {
   };
 
   return (
-    <div className="carousel-container">
+    <div
+      className="carousel-container"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Information slides"
+    >
       <Swiper
         modules={[Navigation, Pagination]}
         spaceBetween={0}
@@ -57,8 +62,9 @@ const Carousel = ({ slides, onSlideChange }: ExtendedCarouselProps) => {
         >
           <img
             src="/images/buttons/back.webp"
-            alt="Left Arrow"
+            alt=""
             style={{ width: "100%" }}
+            aria-hidden="true"
           />
         </button>
       )}
@@ -71,8 +77,9 @@ const Carousel = ({ slides, onSlideChange }: ExtendedCarouselProps) => {
         >
           <img
             src="/images/buttons/next.webp"
-            alt="Right Arrow"
+            alt=""
             style={{ width: "100%" }}
+            aria-hidden="true"
           />
         </button>
       )}

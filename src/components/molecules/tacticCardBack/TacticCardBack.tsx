@@ -10,8 +10,9 @@ const TacticCardBack = ({
     <div className={`tactic-card-back ${className ?? ""}`}>
       <img
         src={imageBack}
-        alt={description}
+        alt=""
         className="tactic-card-image-back"
+        aria-hidden="true"
       />
       <p
         className={`tactic-card-back-description ${

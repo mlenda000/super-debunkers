@@ -100,6 +100,14 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
       role="button"
       aria-label={`Tactic card: ${category}. Press Enter or Space to move to table. Tap once to preview, double-tap to select.`}
     >
+      <button
+        className="tactic-card-item__info-button"
+        type="button"
+        aria-label={`Info about ${category} card`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <img src="/images/buttons/info-button.webp" alt="" aria-hidden="true" />
+      </button>
       {hoveredCardId === id ? (
         <TacticCardBack
           imageBack={imageBack}

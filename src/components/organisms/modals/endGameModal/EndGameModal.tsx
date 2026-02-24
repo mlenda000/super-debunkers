@@ -69,30 +69,40 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
             alt="Scoreboard"
             className="endgame-modal__scoreboard-img"
           />
-          <h2 className="endgame-modal__title">
+          <h2 className="endgame-modal__title" aria-hidden="true">
             <div>Rank</div>
             <div>Followers</div>
           </h2>
-          {finalPlayers
-            .sort((a: Player, b: Player) => (b?.score || 0) - (a?.score || 0))
-            .map((player: Player, index: number) => (
-              <div className="endgame-modal__player" key={player?.name}>
-                <div className="endgame-modal__player-left">
-                  <div className="endgame-modal__player-rank">{index + 1}.</div>
-                  <img
-                    src={`/images/avatars/winning/${player?.avatar}`}
-                    alt={player?.name}
-                    className="endgame-modal__player-avatar"
-                  />
-                  <div className="endgame-modal__player-name">
-                    {player?.name}
+          <div role="list" aria-label="Final player rankings">
+            {finalPlayers
+              .sort((a: Player, b: Player) => (b?.score || 0) - (a?.score || 0))
+              .map((player: Player, index: number) => (
+                <div
+                  className="endgame-modal__player"
+                  key={player?.name}
+                  role="listitem"
+                  aria-label={`Rank ${index + 1}: ${player?.name} with ${player?.score} followers`}
+                >
+                  <div className="endgame-modal__player-left">
+                    <div className="endgame-modal__player-rank">
+                      {index + 1}.
+                    </div>
+                    <img
+                      src={`/images/avatars/winning/${player?.avatar}`}
+                      alt=""
+                      className="endgame-modal__player-avatar"
+                      aria-hidden="true"
+                    />
+                    <div className="endgame-modal__player-name">
+                      {player?.name}
+                    </div>
+                  </div>
+                  <div className="endgame-modal__player-score">
+                    {player?.score}
                   </div>
                 </div>
-                <div className="endgame-modal__player-score">
-                  {player?.score}
-                </div>
-              </div>
-            ))}
+              ))}
+          </div>
         </div>
         <div className="endgame-modal__button">
           <button

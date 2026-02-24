@@ -28,13 +28,10 @@ const RoomTab = ({
     <button
       className="room-tab"
       onClick={handleInteraction}
-      onKeyDown={handleKeyDown}
       style={{ zIndex: 2 }}
       disabled={(playerCount ?? 0) >= 5 || gameRound > 1}
-      aria-label={`Join room ${room}`}
+      aria-label={`Join room ${room}${playerCount > 0 ? `, ${playerCount} player${playerCount !== 1 ? "s" : ""} in room` : ", empty room"}`}
       aria-disabled={(playerCount ?? 0) >= 5 || gameRound > 1}
-      tabIndex={0}
-      role="button"
     >
       <h2 className="room-tab__title">{room}</h2>
       {roomPlayers && roomPlayers.length > 0 && (
