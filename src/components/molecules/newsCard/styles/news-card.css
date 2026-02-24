@@ -172,7 +172,7 @@
 
   .news-card__title {
     font-family: "Alfa Slab One", serif;
-    font-size: clamp(12px, 2dvh, 24px);
+    font-size: clamp(10px, 4dvh, 24px);
     font-weight: 400;
     margin-bottom: 0.3rem;
     text-align: left;
@@ -180,7 +180,7 @@
   }
 
   .news-card__description {
-    font-size: clamp(11px, 2dvh, 20px);
+    font-size: clamp(9px, 4dvh, 20px);
     font-weight: 400;
     margin-bottom: 0;
     font-family: "Plus Jakarta Sans", sans-serif;
@@ -191,7 +191,7 @@
     display: -webkit-box;
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
-    margin-top: clamp(2px, 2dvh, 12px);
+    margin-top: clamp(4px, 4dvh, 12px);
   }
 
   .news-card__text {
