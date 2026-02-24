@@ -50,10 +50,10 @@ const TestPage = () => {
       /> */}
       <NewsCard
         name={
-          "URGENT: Your favorite influencers are LEAVING TikTok forever! Don't get left behind! 😨💔"
+          "Kids with outdated phones are facing social isolation and depression at school! Parents must act NOW! 😢📱"
         }
         description={
-          "Top creators are secretly moving to a new exclusive app called \"StarVault\"! If you don't join NOW, you'll lose access to your faves forever! Only 24 hours left to get in!"
+          "New studies show children with outdated technology experience devastating bullying and mental health! Don't let your child suffer social rejection—they need the latest iPhone to feel valued and included!"
         }
         category={["fear-mongering"]}
         villain={"all"}

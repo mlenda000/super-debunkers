@@ -22,7 +22,6 @@
   align-items: center;
   justify-content: center;
   width: clamp(100px, 20vh, 500px);
-  /* height: 100%; */
   aspect-ratio: 2.5 / 4;
   border: 2px dashed rgba(255, 255, 255, 0.6);
   border-radius: clamp(6px, 1vw, 12px);
