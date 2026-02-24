@@ -199,7 +199,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    padding: clamp(8px, 2dvh, 16px);
+    padding: clamp(8px, 2dvh, 16px) clamp(12px, 2dvw, 24px);
     text-wrap: balance;
     overflow: hidden;
     flex: 1;
