@@ -21,8 +21,8 @@
 
 @media (max-height: 600px) {
   .tactic-card-item {
-    width: calc((100vw - 32px) / 6);
+    width: clamp(100px, calc(4dvw - 2.5dvh), 350px);
+    height: auto;
     aspect-ratio: 921 / 1422;
-    max-height: 35vh;
   }
 }

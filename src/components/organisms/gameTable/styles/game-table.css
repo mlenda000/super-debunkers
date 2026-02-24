@@ -93,13 +93,12 @@
   .playershand {
     position: absolute;
     left: clamp(100svw, 100dvw, 100lvw);
-    top: 3dvh;
+    top: 0;
     width: clamp(100svw, 100dvw, 100lvw);
-    height: clamp(100svh, 100dvh, 100lvh);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-block: 4px;
+    padding-block: 0;
   }
 
   .toggle-button {
