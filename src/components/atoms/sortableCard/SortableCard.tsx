@@ -39,6 +39,7 @@ const SortableCard = ({ id, children }: SortableCardProps) => {
       className="sortable-item"
       aria-grabbed={isDragging}
       aria-describedby="dnd-instructions"
+      role="listitem"
     >
       {children}
     </div>

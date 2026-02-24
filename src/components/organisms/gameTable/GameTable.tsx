@@ -306,10 +306,10 @@ const GameTable: React.FC<GameTableProps> = ({
         {/* Mobile navigation button - only show on hand page */}
         {showingHand && (
           <button
+            type="button"
             className="toggle-button on-left"
             onClick={() => setShowingHand(false)}
             aria-label="View game table"
-            tabIndex={0}
           >
             ← Table
           </button>

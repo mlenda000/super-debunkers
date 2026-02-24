@@ -107,7 +107,8 @@ const TestTool = ({
         <img
           src="/images/tool/tool-swiper.webp"
           className="tool__swiper"
-          alt="tool swiper"
+          alt=""
+          aria-hidden="true"
         />
       </div>
 
@@ -115,8 +116,9 @@ const TestTool = ({
       <div className="tool__layer tool__layer--frame">
         <img
           src="/images/tool/tool-wrapper.webp"
-          alt="tool frame"
+          alt=""
           className="tool__frame-image"
+          aria-hidden="true"
         />
       </div>
 

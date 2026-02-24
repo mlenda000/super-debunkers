@@ -44,6 +44,7 @@ const PlayArea = ({
           onClick={onSelectCard}
           disabled={!onSelectCard}
           style={isDragging ? { pointerEvents: "none" } : undefined}
+          aria-label={`Empty card slot ${i + 1} of ${MAX_SLOTS}`}
         >
           <span className="play-area__slot-text--desktop">Place Card</span>
           <span className="play-area__slot-text--mobile">Select Card</span>
