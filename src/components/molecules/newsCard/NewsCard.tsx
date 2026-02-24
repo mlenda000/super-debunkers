@@ -21,7 +21,11 @@ const NewsCard = ({
     <div className={getClassName()}>
       <div className="news-card__content">
         {image && (
-          <img src={image} alt={category[0]} className="news-card__images" />
+          <img
+            src={`${image.startsWith("/") ? image : "/images/news/" + image}`}
+            alt={category[0]}
+            className="news-card__images"
+          />
         )}
         <div className="news-card__text">
           <h1 className="news-card__title">{name}</h1>
@@ -36,8 +40,9 @@ const NewsCard = ({
               <img
                 src={"/images/news/tactic-indicator.webp"}
                 alt="Tactic used count"
-                height="20px"
-                width="auto"
+                className="news-card__tactic-img"
+                // height="20px"
+                // width="auto"
                 key={tactic}
               />
             ))}

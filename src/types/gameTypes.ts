@@ -36,7 +36,6 @@ export interface NewsCard {
 export interface NewsCardProps {
   name: string;
   description: string;
-  example: string;
   category: string[];
   villain: ThemeStyle;
   image: string;
