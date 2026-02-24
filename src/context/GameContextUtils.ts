@@ -16,7 +16,7 @@ import type {
  */
 export function handleGameMessage(
   message: Record<string, unknown>,
-  setters: Partial<GameContextType>
+  setters: Partial<GameContextType>,
 ) {
   if (!message || typeof message !== "object") return;
   switch (message.type) {
@@ -46,6 +46,7 @@ export function handleGameMessage(
         count: Number(message.count ?? roomData?.count),
         room: String(message.room),
         type: "roomUpdate",
+        cardIndex: message.cardIndex as number | undefined,
         roomData: {
           count: Number(roomData?.count ?? message.count),
           players: players,

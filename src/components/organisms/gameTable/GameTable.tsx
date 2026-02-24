@@ -282,6 +282,8 @@ const GameTable: React.FC<GameTableProps> = ({
                   setSubmitForScoring={setSubmitForScoring}
                   resetKey={resetKey}
                   syncCardIndex={gameRoom?.cardIndex}
+                  onSelectCard={() => setShowingHand(true)}
+                  isDragging={!!activeId}
                 />
               </Droppable>
             </div>
@@ -301,15 +303,17 @@ const GameTable: React.FC<GameTableProps> = ({
           </div>
         </div>
 
-        {/* Mobile navigation button */}
-        <button
-          className={`toggle-button ${showingHand ? "on-left" : ""}`}
-          onClick={() => setShowingHand(!showingHand)}
-          aria-label={showingHand ? "View game table" : "View your cards"}
-          tabIndex={0}
-        >
-          {showingHand ? "← Table" : "Cards →"}
-        </button>
+        {/* Mobile navigation button - only show on hand page */}
+        {showingHand && (
+          <button
+            className="toggle-button on-left"
+            onClick={() => setShowingHand(false)}
+            aria-label="View game table"
+            tabIndex={0}
+          >
+            ← Table
+          </button>
+        )}
       </>
 
       {/* DragOverlay renders the dragged card at root level, above all other content */}

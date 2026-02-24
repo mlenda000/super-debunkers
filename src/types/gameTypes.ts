@@ -108,6 +108,7 @@ export interface GameRoom {
   room: string;
   type: string;
   roomData: RoomData;
+  cardIndex?: number;
 }
 
 export type GameContextType = {
@@ -153,4 +154,5 @@ export interface MainTableProps {
   mainTableItems: TacticCardProps[];
   setMainTableItems: (items: TacticCardProps[]) => void;
   setSubmitForScoring: (val: boolean) => void;
+  onSelectCard?: () => void;
 }

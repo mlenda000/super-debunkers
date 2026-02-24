@@ -1,7 +1,7 @@
 .card-container {
   position: relative;
   width: clamp(100px, 20vh, 500px);
-  margin: 0 auto;
+  margin: 0;
 }
 
 .card-image {
