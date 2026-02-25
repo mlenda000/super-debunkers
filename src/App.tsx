@@ -16,10 +16,7 @@ import "@/components/atoms/skipLink/styles/skip-link.css";
 import "./App.css";
 
 function App() {
-  const [rooms, setRooms] = useState<string[]>([
-    "Create room",
-    "dfg-misinformation",
-  ]);
+  const [rooms, setRooms] = useState<string[]>(["Create room"]);
   return (
     <React.Fragment>
       <BrowserRouter>
