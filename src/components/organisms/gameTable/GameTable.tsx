@@ -220,6 +220,28 @@ const GameTable: React.FC<GameTableProps> = ({
     setRoundHasEnded,
   ]);
 
+  // Safety net: recover from stuck scoring state
+  // If submitForScoring has been true for 25s without a scoreUpdate resetting it,
+  // force-reset so the game doesn't permanently lock up
+  useEffect(() => {
+    if (!submitForScoring) return;
+
+    const recoveryTimer = setTimeout(() => {
+      // If we're still in scoring mode after 25s, force recovery
+      if (submitForScoring) {
+        console.warn(
+          "[GameTable] Scoring timeout — forcing recovery to prevent game lock",
+        );
+        setSubmitForScoring(false);
+        setFinishRound(false);
+        setResetKey((prev) => prev + 1);
+        endOfRoundSentRef.current = false;
+      }
+    }, 25000);
+
+    return () => clearTimeout(recoveryTimer);
+  }, [submitForScoring]);
+
   return (
     <DndContext
       onDragStart={handleDragStart}

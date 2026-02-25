@@ -1,7 +1,12 @@
 import { useGameContext } from "@/hooks/useGameContext";
 
 const RoundModal = () => {
-  const { gameRound, finalRound } = useGameContext();
+  const { gameRound, finalRound, gameRoom } = useGameContext();
+
+  // Compute final round from server-provided maxRounds as primary check,
+  // with the explicit finalRound state as fallback
+  const isFinalRound =
+    finalRound || gameRound === (gameRoom?.maxRounds || 5);
 
   return (
     <div
@@ -13,7 +18,7 @@ const RoundModal = () => {
       aria-live="polite"
     >
       <div className="round-modal__content ">
-        {finalRound ? (
+        {isFinalRound ? (
           <h1 id="round-modal-title" className="round-modal__title">
             Final round!
           </h1>

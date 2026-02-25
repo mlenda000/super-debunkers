@@ -120,6 +120,8 @@ const GamePage = () => {
               ? (message.deck as GameDeck)
               : prev?.roomData?.deck,
           },
+          isGameOver: message.isGameOver ?? prev?.isGameOver,
+          maxRounds: message.maxRounds ?? prev?.maxRounds,
         }));
 
         if (message.players) {
@@ -186,7 +188,14 @@ const GamePage = () => {
               ...prev.roomData,
               players: message.players,
             },
+            isGameOver: message.isGameOver ?? prev.isGameOver,
+            maxRounds: message.maxRounds ?? prev.maxRounds,
           }));
+
+          // Set endGame from server signal
+          if (message.isGameOver) {
+            setEndGame?.(true);
+          }
         }
       }
     });

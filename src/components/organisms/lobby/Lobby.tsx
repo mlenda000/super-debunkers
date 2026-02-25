@@ -25,6 +25,15 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
   const [roomPlayers, setRoomPlayers] = useState<{ [key: string]: Player[] }>(
     {},
   );
+  const [roomStatus, setRoomStatus] = useState<{
+    [key: string]: {
+      isFull?: boolean;
+      isInProgress?: boolean;
+      isGameOver?: boolean;
+      disconnectedPlayerNames?: string[];
+    };
+  }>({});
+  const [joiningRoom, setJoiningRoom] = useState<string | null>(null);
 
   // Get player data from context (preferred) and localStorage (fallback)
   const {
@@ -59,31 +68,19 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
         const data = await response.json();
         if (data.rooms && setRoomsRef.current) {
           const currentRooms = roomsRef.current;
-          // Merge server rooms with existing rooms (keeping "Create room")
+          // Add any new rooms from the server that we don't already have.
+          // Do NOT remove rooms that are missing from the lobby response —
+          // the lobby server can lag behind. Rooms are only removed via the
+          // explicit "roomDeleted" WebSocket message.
           const serverRoomNames = data.rooms.map(
             (r: { name: string }) => r.name,
-          );
-          const existingRooms = currentRooms.filter(
-            (r) => r === "Create room" || serverRoomNames.includes(r),
           );
           const newRooms = serverRoomNames.filter(
             (name: string) => !currentRooms.includes(name),
           );
-          const mergedRooms = [...existingRooms, ...newRooms];
 
-          // Update room players from server data
-          const playersMap: { [key: string]: Player[] } = {};
-          data.rooms.forEach((room: { name: string; players: Player[] }) => {
-            playersMap[room.name] = room.players || [];
-          });
-          setRoomPlayers((prev) => ({ ...prev, ...playersMap }));
-
-          // Only update if there are actual changes
-          if (
-            JSON.stringify(mergedRooms.sort()) !==
-            JSON.stringify(currentRooms.sort())
-          ) {
-            setRoomsRef.current(mergedRooms);
+          if (newRooms.length > 0) {
+            setRoomsRef.current([...currentRooms, ...newRooms]);
           }
         }
       }
@@ -102,17 +99,16 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
       return () => clearTimeout(initialFetch);
     }
 
-    // Poll every 5 seconds for new rooms
+    // Poll every 5 seconds for room list + status flags
     const pollInterval = setInterval(fetchAvailableRooms, 5000);
 
     return () => clearInterval(pollInterval);
   }, [fetchAvailableRooms]);
 
-  // Function to fetch room players via HTTP
+  // Fetch player data from each room's own endpoint (the only source of truth
+  // for both player avatars AND room status like isFull/isInProgress)
   const fetchRoomPlayers = useCallback(async (room: string) => {
-    // Skip "Create room" as it's not an actual room
     if (room === "Create room") return;
-
     try {
       const response = await fetch(`${PARTYKIT_URL}/parties/main/${room}`);
       if (response.ok) {
@@ -121,24 +117,28 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
           ...prev,
           [room]: data.players || [],
         }));
+        // Status flags come from this endpoint too (the actual room server)
+        setRoomStatus((prev) => ({
+          ...prev,
+          [room]: {
+            isFull: data.isFull,
+            isInProgress: data.isInProgress,
+            isGameOver: data.isGameOver,
+            disconnectedPlayerNames: data.disconnectedPlayerNames,
+          },
+        }));
       }
     } catch (error) {
       console.error(`[Lobby] Failed to fetch players for room ${room}:`, error);
     }
   }, []);
 
-  // Fetch all room players on mount and periodically
+  // Poll player data for all rooms
   useEffect(() => {
-    // Initial fetch for all rooms
-    rooms.forEach((room) => {
-      fetchRoomPlayers(room);
-    });
+    rooms.forEach((room) => fetchRoomPlayers(room));
 
-    // Poll every 3 seconds for updates
     const pollInterval = setInterval(() => {
-      rooms.forEach((room) => {
-        fetchRoomPlayers(room);
-      });
+      rooms.forEach((room) => fetchRoomPlayers(room));
     }, 3000);
 
     return () => clearInterval(pollInterval);
@@ -205,6 +205,16 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
             ...prev,
             [room]: message.players || [],
           }));
+          // Update status flags from roomUpdate broadcast
+          setRoomStatus((prev) => ({
+            ...prev,
+            [room]: {
+              isFull: message.isFull,
+              isInProgress: message.isInProgress,
+              isGameOver: message.isGameOver,
+              disconnectedPlayerNames: message.disconnectedPlayerNames,
+            },
+          }));
         }
       });
       unsubscribers.push(unsubscribe);
@@ -220,10 +230,15 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
     room: string,
     avatarPath: string,
   ) => {
+    // Prevent double-click: ignore if already joining a room
+    if (joiningRoom) return;
+
     const avatarName = avatarPath.substring(avatarPath.lastIndexOf("/") + 1);
     if (room === "Create room") {
       navigate("/game/create-room");
     } else {
+      setJoiningRoom(room);
+
       const token = localStorage.getItem("authToken") || undefined;
 
       // Switch room and wait for reconnection
@@ -231,6 +246,14 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
 
       // Subscribe to room updates AFTER switching rooms (so we're on the new socket)
       const unsubscribe = subscribeToMessages((message) => {
+        // Handle join rejection from server
+        if (message.type === "joinRejected") {
+          unsubscribe();
+          setJoiningRoom(null);
+          console.warn(`[Lobby] Join rejected: ${message.reason}`);
+          return;
+        }
+
         if (message.type === "roomUpdate" && message.room === room) {
           // Player successfully added to room
           unsubscribe();
@@ -278,11 +301,12 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
         }
       }
 
-      // Fallback: navigate after 2 seconds if no confirmation received
+      // Fallback: clean up joining state after 5 seconds if no confirmation received
       setTimeout(() => {
         unsubscribe();
-        navigate(`/game/${room}`);
-      }, 2000);
+        setJoiningRoom(null);
+        // Do NOT blindly navigate — only clean up state so user can retry
+      }, 5000);
     }
   };
 
@@ -317,17 +341,29 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
             aria-label="Available game rooms"
           >
             {rooms &&
-              rooms.map((room: string) => (
-                <RoomTab
-                  room={room}
-                  onClick={() =>
-                    handleClick(playerName || "", room, avatar || "")
-                  }
-                  key={room}
-                  avatar={avatar || ""}
-                  roomPlayers={roomPlayers[room] || []}
-                />
-              ))}
+              rooms.map((room: string) => {
+                const status = roomStatus[room];
+                const canReconnect =
+                  !!status?.isInProgress &&
+                  !!playerName &&
+                  (status.disconnectedPlayerNames || []).includes(playerName);
+                return (
+                  <RoomTab
+                    room={room}
+                    onClick={() =>
+                      handleClick(playerName || "", room, avatar || "")
+                    }
+                    key={room}
+                    avatar={avatar || ""}
+                    roomPlayers={roomPlayers[room] || []}
+                    isFull={status?.isFull}
+                    isInProgress={status?.isInProgress}
+                    isGameOver={status?.isGameOver}
+                    joiningRoom={joiningRoom === room}
+                    canReconnect={canReconnect}
+                  />
+                );
+              })}
           </div>
         </div>
       </>

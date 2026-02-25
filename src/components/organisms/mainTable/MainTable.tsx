@@ -46,15 +46,8 @@ const MainTable: React.FC<
   isDragging,
 }) => {
   const { setThemeStyle, playerName, playerId } = useGlobalContext();
-  const {
-    gameRoom,
-    gameRound,
-    setEndGame,
-    setFinalRound,
-    setPlayers,
-    setGameRoom,
-    currentPlayer,
-  } = useGameContext();
+  const { gameRoom, gameRound, setPlayers, setGameRoom, currentPlayer } =
+    useGameContext();
   const [playerReady, setPlayerReady] = React.useState<boolean>(false);
   // message was unused; reset is driven by resetKey now
 
@@ -143,16 +136,10 @@ const MainTable: React.FC<
         newPlayerRef.current = false; // Mark the player as no longer new
       }
     }
-    if (gameRound === 5) {
-      setFinalRound?.(true);
-      setEndGame?.(true);
-    }
   }, [
     setCurrentInfluencer,
     gameCards,
     gameRound,
-    setFinalRound,
-    setEndGame,
     isDeckShuffled,
     syncCardIndex,
   ]);
@@ -268,6 +255,7 @@ const MainTable: React.FC<
         handlePlayerReady={handlePlayerReady}
         onSelectCard={onSelectCard}
         isDragging={isDragging}
+        tacticUsed={currentInfluencer?.tacticUsed}
       />
     </div>
   );
