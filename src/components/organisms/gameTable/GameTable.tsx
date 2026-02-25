@@ -298,6 +298,7 @@ const GameTable: React.FC<GameTableProps> = ({
               <PlayersHand
                 items={playersHandItems}
                 onMoveCardToTable={handleMoveCardToTable}
+                onCardSelected={() => setShowingHand(false)}
               />
             </div>
           </div>

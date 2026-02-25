@@ -1,13 +1,22 @@
 import { useState } from "react";
-import type { PlayersHandProps } from "@/types/gameTypes";
+import type { PlayersHandProps, TacticCardProps } from "@/types/gameTypes";
 import TacticCard from "../tacticCard/TacticCard";
 import SortableCard from "@/components/atoms/sortableCard/SortableCard";
+import TacticModal from "@/components/organisms/modals/tacticModal/TacticModal";
 
 const PlayersHand: React.FC<PlayersHandProps> = ({
   items,
   onMoveCardToTable,
+  onCardSelected,
 }) => {
   const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
+  const [infoCard, setInfoCard] = useState<TacticCardProps | null>(null);
+
+  const handleSelectCard = (cardId: string) => {
+    onMoveCardToTable?.(cardId);
+    setInfoCard(null);
+    onCardSelected?.();
+  };
   return (
     <div
       className="players-area"
@@ -39,10 +48,18 @@ const PlayersHand: React.FC<PlayersHandProps> = ({
               hoveredCardId={hoveredCardId}
               setHoveredCardId={setHoveredCardId}
               onMoveToTable={onMoveCardToTable}
+              onInfoClick={(card) => setInfoCard(card)}
             />
           </SortableCard>
         ))}
       </div>
+      {infoCard && (
+        <TacticModal
+          card={infoCard}
+          onClose={() => setInfoCard(null)}
+          onSelectCard={handleSelectCard}
+        />
+      )}
     </div>
   );
 };
