@@ -38,9 +38,17 @@ const ResponseModal = ({
 
   const responseMsg: ResponseMessage = {
     wasCorrect: currentPlayer?.wasCorrect ?? false,
+    correctCount: currentPlayer?.correctCount ?? 0,
+    totalPlayed: currentPlayer?.totalPlayed ?? 0,
     streak: currentPlayer?.streak ?? 0,
     hasStreak: currentPlayer?.hasStreak ?? false,
   };
+
+  // Partial correct: played more than 1 card and got some (but not all) correct
+  const isPartialCorrect =
+    responseMsg.totalPlayed! > 1 &&
+    responseMsg.correctCount! > 0 &&
+    responseMsg.correctCount! < responseMsg.totalPlayed!;
 
   // Wait until scoring data is available before advancing to score modal
   const hasScoring = typeof currentPlayer?.wasCorrect !== "undefined";
@@ -72,18 +80,22 @@ const ResponseModal = ({
           {hasScoring
             ? responseMsg?.hasStreak
               ? "WIN STREAK!"
-              : responseMsg?.wasCorrect
-                ? "DEBUNKED!"
-                : "OOPS!"
+              : isPartialCorrect
+                ? "GREAT EFFORT!"
+                : responseMsg?.wasCorrect
+                  ? "DEBUNKED!"
+                  : "OOPS!"
             : "Processing results…"}
         </h1>
         <h3 id="response-modal-subtitle" className="response-modal__subtitle">
           {hasScoring
             ? responseMsg?.hasStreak
               ? `YOU DEBUNKED ${responseMsg?.streak} IN A ROW`
-              : responseMsg?.wasCorrect
-                ? "YOU NAILED IT"
-                : "YOU'LL GET THEM NEXT TIME"
+              : isPartialCorrect
+                ? `YOU GOT ${responseMsg.correctCount} OUT OF ${responseMsg.totalPlayed} — KEEP GOING!`
+                : responseMsg?.wasCorrect
+                  ? "YOU NAILED IT"
+                  : "YOU'LL GET THEM NEXT TIME"
             : "PLEASE WAIT WHILE WE UPDATE YOUR SCORE"}
         </h3>
         {!hasScoring && (

@@ -53,6 +53,8 @@ export interface Player {
   tacticUsed?: string[];
   // Scoring-related fields sent by server
   wasCorrect?: boolean;
+  correctCount?: number;
+  totalPlayed?: number;
   streak?: number;
   hasStreak?: boolean;
   scoreUpdated?: boolean;
@@ -110,6 +112,8 @@ export interface GameRoom {
   type: string;
   roomData: RoomData;
   cardIndex?: number;
+  isGameOver?: boolean;
+  maxRounds?: number;
 }
 
 export type GameContextType = {

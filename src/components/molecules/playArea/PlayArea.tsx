@@ -8,9 +8,8 @@ interface PlayAreaProps {
   handlePlayerReady: () => void;
   onSelectCard?: () => void;
   isDragging?: boolean;
+  tacticUsed?: string[];
 }
-
-const MAX_SLOTS = 2;
 
 const PlayArea = ({
   items,
@@ -20,8 +19,10 @@ const PlayArea = ({
   handlePlayerReady,
   onSelectCard,
   isDragging,
+  tacticUsed = ["1"],
 }: PlayAreaProps) => {
-  const emptySlots = MAX_SLOTS - items.length;
+  const maxSlots = tacticUsed.length;
+  const emptySlots = maxSlots - items.length;
 
   return (
     <div className="play-area">
@@ -44,7 +45,7 @@ const PlayArea = ({
           onClick={onSelectCard}
           disabled={!onSelectCard}
           style={isDragging ? { pointerEvents: "none" } : undefined}
-          aria-label={`Empty card slot ${i + 1} of ${MAX_SLOTS}`}
+          aria-label={`Empty card slot ${i + 1} of ${maxSlots}`}
         >
           <span className="play-area__slot-text--desktop">Place Card</span>
           <span className="play-area__slot-text--mobile">Select Card</span>

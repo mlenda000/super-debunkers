@@ -225,6 +225,8 @@ export interface ResponseModalProps {
 // ResponseMessage Type (used in ResponseModal)
 export interface ResponseMessage {
   wasCorrect?: boolean;
+  correctCount?: number;
+  totalPlayed?: number;
   streak?: number;
   hasStreak?: boolean;
 }

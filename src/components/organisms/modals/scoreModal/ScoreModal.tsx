@@ -8,16 +8,15 @@ const ScoreModal = ({
   setShowRoundModal,
   setShowScoreCard,
 }: ScoreModalProps) => {
-  const { gameRoom, gameRound, lastScoreUpdatePlayers } = useGameContext();
+  const { gameRoom, gameRound, lastScoreUpdatePlayers, players } =
+    useGameContext();
 
   const handleDeal = useCallback(() => {
     if (gameRoom?.roomData?.players) {
-      // Note: The server already advances the round and broadcasts via roomUpdate
-      // We just need to check if we should show endgame or round modal
-      const currentRound = gameRound ?? 1;
+      // Use server-side isGameOver flag to determine if game has ended
+      const isGameOver = gameRoom.isGameOver ?? false;
 
-      // Only show endgame modal if we've completed all 5 rounds
-      if (currentRound > 5) {
+      if (isGameOver) {
         setIsEndGame(true);
       } else {
         // Show the round modal for the next round (2 seconds)
