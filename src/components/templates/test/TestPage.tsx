@@ -1,30 +1,30 @@
 import "./styles/test.css";
-import type { ThemeStyle } from "@/types/gameTypes";
-import Tool from "@/components/molecules/tool/Tool";
-import ScoreModal from "@/components/organisms/modals/scoreModal/ScoreModal";
-import EndGameModal from "@/components/organisms/modals/endGameModal/EndGameModal";
-import PlayedCard from "@/components/molecules/playedCard/PlayedCard";
-import NewsCard from "@/components/molecules/newsCard/NewsCard";
+// import type { ThemeStyle } from "@/types/gameTypes";
+// import Tool from "@/components/molecules/tool/Tool";
+// import ScoreModal from "@/components/organisms/modals/scoreModal/ScoreModal";
+// import EndGameModal from "@/components/organisms/modals/endGameModal/EndGameModal";
+// import PlayedCard from "@/components/molecules/playedCard/PlayedCard";
+// import NewsCard from "@/components/molecules/newsCard/NewsCard";
 
-const mockInfluencer = {
-  caption: "this is a mock caption",
-  bodyCopy: "this is a mock body copy",
-  tacticUsed: [
-    // "emotional-manipulation",
-    // "conspiracy-theory",
-    // "gaslighting",
-    // "impersonation",
-    // "cherry-picking",
-    // "tricky-jokes",
-    // "fear-mongering",
-    // "deepfakes",
-    // "sock-puppetry",
-    // "clickbait",
-    "true",
-  ],
-  villain: "all" as ThemeStyle,
-  newsImage: "scientist.webp",
-};
+// const mockInfluencer = {
+//   caption: "this is a mock caption",
+//   bodyCopy: "this is a mock body copy",
+//   tacticUsed: [
+//     // "emotional-manipulation",
+//     // "conspiracy-theory",
+//     // "gaslighting",
+//     // "impersonation",
+//     // "cherry-picking",
+//     // "tricky-jokes",
+//     // "fear-mongering",
+//     // "deepfakes",
+//     // "sock-puppetry",
+//     // "clickbait",
+//     "true",
+//   ],
+//   villain: "all" as ThemeStyle,
+//   newsImage: "scientist.webp",
+// };
 
 const TestPage = () => {
   return (
@@ -48,7 +48,7 @@ const TestPage = () => {
           throw new Error("Function not implemented.");
         }}
       /> */}
-      <NewsCard
+      {/* <NewsCard
         name={
           "Kids with outdated phones are facing social isolation and depression at school! Parents must act NOW! 😢📱"
         }
@@ -58,7 +58,8 @@ const TestPage = () => {
         category={["fear-mongering"]}
         villain={"all"}
         image={"celeb_influencers.webp"}
-      />
+      /> */}
+      <p className="test-text">Next next</p>
     </div>
   );
 };

@@ -115,11 +115,13 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
             </li>
             <li>
               If you <span style={{ fontWeight: 900 }}>guess wrong</span>,
-              you’ll
-              <span style={{ fontWeight: 900 }}>lose followers</span> and if you
-              <span style={{ fontWeight: 900 }}>guess right</span>, you’ll{" "}
-              <span style={{ fontWeight: 900 }}>gain</span>
-              more <span style={{ fontWeight: 900 }}>followers!</span>
+              you’ll{" "}
+              <span style={{ fontWeight: 900 }}>
+                lose 50 followers for each wrong guess,
+              </span>{" "}
+              and if you <span style={{ fontWeight: 900 }}>guess right</span>,
+              you’ll <span style={{ fontWeight: 900 }}>gain </span>
+              100 more <span style={{ fontWeight: 900 }}>followers!</span>
             </li>
             <li>
               <span style={{ fontWeight: 900 }}>The player</span> with the{" "}

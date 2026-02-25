@@ -44,6 +44,8 @@
     align-items: center;
     gap: var(--spacing-3xl);
     justify-content: center;
+    min-height: 120px;
+    height: auto;
   }
   .name-selection__avatar {
     justify-self: center;
@@ -102,7 +104,7 @@
   }
 
   @media (max-height: 600px) {
-    margin-bottom: var(--spacing-xl);
-    margin-top: -40px;
+    margin-bottom: 0;
+    margin-top: 0;
   }
 }

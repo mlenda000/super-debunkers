@@ -36,8 +36,8 @@
 
 .tactic-card-item__info-button {
   position: absolute;
-  top: clamp(-8px, -1.5vw, -12px);
-  right: clamp(-8px, -1.5vw, -12px);
+  top: clamp(-12px, -1.5dvw, -16px);
+  right: clamp(-12px, -1.5dvw, -16px);
   width: clamp(20px, 3vw, 32px);
   height: clamp(20px, 3vw, 32px);
   border-radius: 50%;

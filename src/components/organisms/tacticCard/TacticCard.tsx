@@ -42,7 +42,17 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
       example,
       alt,
     });
-  }, [onInfoClick, id, category, image, imageBack, title, description, example, alt]);
+  }, [
+    onInfoClick,
+    id,
+    category,
+    image,
+    imageBack,
+    title,
+    description,
+    example,
+    alt,
+  ]);
 
   // Attach native event listeners to bypass dnd-kit's pointer interception
   useEffect(() => {
@@ -64,7 +74,10 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
     btn.addEventListener("pointerdown", stopAll, true);
     btn.addEventListener("mousedown", stopAll, true);
     btn.addEventListener("click", handleNativeClick, true);
-    btn.addEventListener("touchstart", stopAll, { passive: false, capture: true });
+    btn.addEventListener("touchstart", stopAll, {
+      passive: false,
+      capture: true,
+    });
     btn.addEventListener("touchend", stopAll, true);
 
     return () => {
@@ -160,7 +173,7 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
         type="button"
         aria-label={`Info about ${category} card`}
       >
-        <img src="/images/buttons/info-button.webp" alt="" aria-hidden="true" />
+        <img src="/images/buttons/info.webp" alt="" aria-hidden="true" />
       </button>
       <div
         key={category}
