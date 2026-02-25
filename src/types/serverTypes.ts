@@ -55,6 +55,7 @@ export type MessageType =
   | "availableRooms"
   | "roomDeleted"
   | "gameEnded"
+  | "joinRejected"
   // Legacy types (if needed)
   | "USER_JOINED"
   | "USER_LEFT"
@@ -88,6 +89,12 @@ export interface WebSocketMessage {
   roomName?: string;
   rooms?: string[];
   availableRooms?: string[];
+  // Room status fields
+  isFull?: boolean;
+  isInProgress?: boolean;
+  isGameOver?: boolean;
+  disconnectedPlayerNames?: string[];
+  reason?: string;
 }
 
 export type MessageHandler = (message: WebSocketMessage) => void;

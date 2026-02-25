@@ -92,3 +92,46 @@
     -webkit-text-stroke: black 0.5px;
   }
 }
+
+/* Disabled state */
+.room-tab--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  border-color: rgba(120, 120, 120, 0.6);
+  box-shadow: none;
+
+  &:hover,
+  &:active,
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+/* Status badge */
+.room-tab__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Subway Berlin", sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+  background-color: rgba(226, 31, 73, 0.85);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+}
+
+/* Rejoin variant */
+.room-tab__status--rejoin {
+  background-color: rgba(34, 197, 94, 0.85);
+}

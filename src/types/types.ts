@@ -112,6 +112,11 @@ export interface RoomTabProps {
   room: string;
   avatar: string;
   onClick: (playerName: string, room: string, avatar: string) => void;
+  isFull?: boolean;
+  isInProgress?: boolean;
+  isGameOver?: boolean;
+  joiningRoom?: boolean;
+  canReconnect?: boolean;
 }
 
 export interface TacticCardFrontProps {
