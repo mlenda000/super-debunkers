@@ -4,10 +4,10 @@ const NextButton = ({
   onClick,
   disabled = false,
   className = "next-button",
-  children = "Next",
+  children = "next",
   "aria-label": ariaLabel,
 }: NextButtonProps) => {
-  const buttonText = typeof children === "string" ? children : "Next";
+  const buttonText = typeof children === "string" ? children : "next";
 
   return (
     <button

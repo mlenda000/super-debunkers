@@ -31,6 +31,6 @@
     "imageType": "single",
     "image": "/images/directions/avatar.webp",
     "imageAlt": "Example of an avatar",
-    "description": "If you make the wrong guesses, you will lose followers, but if you guess correctly, you will gain more.\n\nThe player with the most followers at the end wins!"
+    "description": "If you make the wrong guesses, you will lose 50 followers for each wrong guess, but if you guess correctly, you will gain 100 more followers.\n\nThe player with the most followers at the end wins!"
   }
 ]

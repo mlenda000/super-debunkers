@@ -101,9 +101,7 @@ const CreateRoom = ({
               ? "Create room and continue"
               : "Enter a room name to continue"
           }
-        >
-          Next
-        </Button>
+        />
       </div>
     </>
   );
