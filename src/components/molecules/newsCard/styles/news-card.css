@@ -235,11 +235,11 @@
 
     .news-card__title {
       margin-block: 4px;
-      font-size: clamp(14px, 2dvh, 20px);
+      font-size: clamp(11px, 2dvh, 20px);
     }
 
     .news-card__description {
-      font-size: clamp(12px, 2dvh, 20px);
+      font-size: clamp(10px, 2dvh, 20px);
       margin-top: clamp(2px, 0.5vh, 12px);
       margin-bottom: 8px;
     }

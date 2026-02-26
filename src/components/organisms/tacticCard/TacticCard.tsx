@@ -28,6 +28,8 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
   const tapCountRef = useRef(0);
   const tapTimeoutRef = useRef<number | null>(null);
   const touchStartTimeRef = useRef<number>(0);
+  const longPressTimeoutRef = useRef<number | null>(null);
+  const longPressFiredRef = useRef(false);
   const infoButtonRef = useRef<HTMLButtonElement>(null);
   const infoClickedRef = useRef(false);
 
@@ -119,10 +121,35 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isInfoButton(e.target)) return;
     touchStartTimeRef.current = Date.now();
+    longPressFiredRef.current = false;
+
+    // Start long-press timer — place card after 500ms hold
+    if (longPressTimeoutRef.current) {
+      clearTimeout(longPressTimeoutRef.current);
+    }
+    longPressTimeoutRef.current = setTimeout(() => {
+      longPressFiredRef.current = true;
+      if (onMoveToTable) {
+        onMoveToTable(id);
+      }
+    }, 500) as unknown as number;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (isInfoButton(e.target)) return;
+
+    // Clear long-press timer
+    if (longPressTimeoutRef.current) {
+      clearTimeout(longPressTimeoutRef.current);
+      longPressTimeoutRef.current = null;
+    }
+
+    // If long-press already fired, skip tap logic
+    if (longPressFiredRef.current) {
+      longPressFiredRef.current = false;
+      return;
+    }
+
     const touchDuration = Date.now() - touchStartTimeRef.current;
     // Only count as tap if touch was quick (< 500ms)
     if (touchDuration < 500) {
@@ -188,7 +215,7 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
         onTouchEnd={handleTouchEnd}
         tabIndex={0}
         role="button"
-        aria-label={`Tactic card: ${category}. Press Enter or Space to move to table. Tap once to preview, double-tap to select.`}
+        aria-label={`Tactic card: ${category}. Press Enter or Space to move to table. Tap to preview, hold to select.`}
       >
         {hoveredCardId === id ? (
           <TacticCardBack
