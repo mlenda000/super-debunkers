@@ -27,3 +27,16 @@
     max-width: 100%;
   }
 }
+
+/* Persistent backdrop for end-of-round modal sequence */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 99;
+  animation: modal-fade-in 0.35s ease both;
+}
+
+.modal-backdrop--closing {
+  animation: modal-fade-out 0.3s ease both;
+}

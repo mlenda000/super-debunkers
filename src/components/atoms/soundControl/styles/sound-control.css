@@ -27,14 +27,14 @@
   touch-action: manipulation;
 
   &:focus {
-    outline: 2px solid #f6b139;
-    outline-offset: 4px;
+    outline: 1px solid white;
+    outline-offset: 2px;
     border-radius: 3px;
   }
 
   &:focus-visible {
-    outline: 2px solid #f6b139;
-    outline-offset: 4px;
+    outline: 1px solid white;
+    outline-offset: 2px;
     border-radius: 3px;
   }
 }
@@ -74,24 +74,14 @@
   cursor: pointer;
   padding: 0;
   margin: 0;
+  margin-right: 6px;
   display: flex;
   align-items: center;
   touch-action: manipulation;
   /* Safari accessibility fix */
   -webkit-appearance: none;
   -webkit-user-select: none;
-
-  &:focus {
-    outline: 2px solid #f6b139;
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-
-  &:focus-visible {
-    outline: 2px solid #f6b139;
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
+  border-radius: 5px;
 }
 .volume-icon {
   width: clamp(6px, 4vh, 12px);

@@ -3,6 +3,8 @@ import TacticCardBack from "@/components/molecules/tacticCardBack/TacticCardBack
 import TacticCardFront from "@/components/molecules/tacticCardFront/TacticCardFront";
 import type { TacticCardProps } from "@/types/gameTypes";
 
+const flipSound = new Audio("/audio/card-flip.mp3");
+
 interface TacticCardWithHoverProps extends TacticCardProps {
   hoveredCardId: string | null;
   setHoveredCardId: (id: string | null) => void;
@@ -28,8 +30,28 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
   const tapCountRef = useRef(0);
   const tapTimeoutRef = useRef<number | null>(null);
   const touchStartTimeRef = useRef<number>(0);
+  const longPressTimeoutRef = useRef<number | null>(null);
+  const longPressFiredRef = useRef(false);
   const infoButtonRef = useRef<HTMLButtonElement>(null);
   const infoClickedRef = useRef(false);
+  const prevFlippedRef = useRef(false);
+  const hasMountedRef = useRef(false);
+
+  // Play flip sound only on user-initiated flips (skip initial mount / scoring resets)
+  const isFlipped = hoveredCardId === id;
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      // First render — sync state without playing sound
+      hasMountedRef.current = true;
+      prevFlippedRef.current = isFlipped;
+      return;
+    }
+    if (isFlipped !== prevFlippedRef.current) {
+      prevFlippedRef.current = isFlipped;
+      flipSound.currentTime = 0;
+      flipSound.play().catch(() => {});
+    }
+  }, [isFlipped]);
 
   const handleInfoClick = useCallback(() => {
     onInfoClick?.({
@@ -119,10 +141,34 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isInfoButton(e.target)) return;
     touchStartTimeRef.current = Date.now();
+    longPressFiredRef.current = false;
+
+    // Start long-press timer — flip card after 500ms hold
+    if (longPressTimeoutRef.current) {
+      clearTimeout(longPressTimeoutRef.current);
+    }
+    longPressTimeoutRef.current = setTimeout(() => {
+      longPressFiredRef.current = true;
+      // Toggle the card flip
+      setHoveredCardId(hoveredCardId === id ? null : id);
+    }, 500) as unknown as number;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (isInfoButton(e.target)) return;
+
+    // Clear long-press timer
+    if (longPressTimeoutRef.current) {
+      clearTimeout(longPressTimeoutRef.current);
+      longPressTimeoutRef.current = null;
+    }
+
+    // If long-press already fired, skip tap logic
+    if (longPressFiredRef.current) {
+      longPressFiredRef.current = false;
+      return;
+    }
+
     const touchDuration = Date.now() - touchStartTimeRef.current;
     // Only count as tap if touch was quick (< 500ms)
     if (touchDuration < 500) {
@@ -134,13 +180,13 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
       }
 
       if (tapCountRef.current === 1) {
-        // Single tap - show the back of the card
-        setHoveredCardId(id);
+        // Single tap — toggle the card flip
         tapTimeoutRef.current = setTimeout(() => {
+          setHoveredCardId(hoveredCardId === id ? null : id);
           tapCountRef.current = 0;
-        }, 300);
+        }, 300) as unknown as number;
       } else if (tapCountRef.current === 2) {
-        // Double tap - move card to table
+        // Double tap — move card to table
         tapCountRef.current = 0;
         if (onMoveToTable) {
           onMoveToTable(id);
@@ -188,7 +234,7 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
         onTouchEnd={handleTouchEnd}
         tabIndex={0}
         role="button"
-        aria-label={`Tactic card: ${category}. Press Enter or Space to move to table. Tap once to preview, double-tap to select.`}
+        aria-label={`Tactic card: ${category}. Press Enter or Space to move to table. Tap or hold to flip, double-tap to select.`}
       >
         {hoveredCardId === id ? (
           <TacticCardBack

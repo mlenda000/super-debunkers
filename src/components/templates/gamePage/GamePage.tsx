@@ -79,26 +79,12 @@ const GamePage = () => {
 
   const roundStartRef = useRef<boolean>(false); // Track if this is the first round
 
-  // Hide initial round modal after 2 seconds
+  // Mark first round as started
   useEffect(() => {
     if (!roundStartRef.current) {
       roundStartRef.current = true;
-      const timer = setTimeout(() => {
-        setShowRoundModal(false);
-      }, 2000);
-      return () => clearTimeout(timer);
     }
   }, []);
-
-  // Hide round modal after 2 seconds when shown between rounds (but only if we're showing it)
-  useEffect(() => {
-    if (showRoundModal && roundStartRef.current) {
-      const timer = setTimeout(() => {
-        setShowRoundModal(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [showRoundModal]);
 
   // Subscribe to room updates
   useEffect(() => {
@@ -228,6 +214,13 @@ const GamePage = () => {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [roomId]);
 
+  const showModalBackdrop =
+    showRoundModal ||
+    roundEnd ||
+    showResponseModal ||
+    showScoreCard ||
+    isEndGame;
+
   return (
     <div className="game-page">
       <RotateScreen />
@@ -240,7 +233,10 @@ const GamePage = () => {
         isInfoModalOpen={isInfoModalOpen}
         setIsInfoModalOpen={setIsInfoModalOpen}
       />
-      {showRoundModal && <RoundModal />}
+      {showModalBackdrop && <div className="modal-backdrop" />}
+      {showRoundModal && (
+        <RoundModal onClose={() => setShowRoundModal(false)} />
+      )}
       {roundEnd && (
         <ResultModal
           setRoundEnd={setRoundEndWithLog}

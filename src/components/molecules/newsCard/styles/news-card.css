@@ -1,3 +1,13 @@
+/* Hide news card until image is loaded */
+.news-card--loading {
+  opacity: 0;
+}
+
+.news-card--loaded {
+  opacity: 1;
+  transition: opacity 0.3s ease-in;
+}
+
 .news-card {
   display: flex;
   justify-content: center;
@@ -215,7 +225,7 @@
 
 @media (max-height: 600px) {
   .news-card {
-    .news-card__content {
+    /* .news-card__content {
       width: 100%;
       height: 100%;
       flex-direction: row;
@@ -231,13 +241,38 @@
       object-fit: cover;
       margin-left: 0;
       flex: 0 0 33.333%;
-    }
+    } */
 
     .news-card__title {
-      margin-block: 2px;
+      margin-block: 4px;
+      font-size: clamp(11px, 2dvh, 20px);
     }
 
     .news-card__description {
+      font-size: clamp(10px, 2dvh, 20px);
+      margin-top: clamp(2px, 0.5vh, 12px);
+      margin-bottom: 8px;
+    }
+
+    .news-card__text {
+      padding-inline: clamp(8px, min(1vw, 1.5vh), 12px);
+    }
+
+    .news-card__tactic-count {
+      bottom: -2px;
+      right: 2px;
+    }
+  }
+
+  .news-card__in-tool {
+    .news-card__title {
+      margin-block: 2px;
+
+      font-size: clamp(11px, min(1.4dvw, 3dvh), 20px);
+    }
+
+    .news-card__description {
+      font-size: clamp(9px, 2dvh, 20px);
       margin-top: clamp(2px, 0.5vh, 12px);
       line-height: 1.2;
       margin-bottom: 8px;

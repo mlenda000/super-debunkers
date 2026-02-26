@@ -47,7 +47,7 @@ const PlayersHand: React.FC<PlayersHandProps> = ({
               alt={card?.alt}
               hoveredCardId={hoveredCardId}
               setHoveredCardId={setHoveredCardId}
-              onMoveToTable={onMoveCardToTable}
+              onMoveToTable={handleSelectCard}
               onInfoClick={(card) => setInfoCard(card)}
             />
           </SortableCard>

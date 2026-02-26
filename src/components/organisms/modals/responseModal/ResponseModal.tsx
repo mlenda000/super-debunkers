@@ -1,6 +1,7 @@
 import { useGameContext } from "@/hooks/useGameContext";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
+import { useModalFade } from "@/hooks/useModalFade";
 import type { ResponseModalProps, ResponseMessage } from "@/types/types";
 
 const ResponseModal = ({
@@ -53,22 +54,25 @@ const ResponseModal = ({
   // Wait until scoring data is available before advancing to score modal
   const hasScoring = typeof currentPlayer?.wasCorrect !== "undefined";
 
+  const handleDismiss = useCallback(() => {
+    setShowScoreCard(true);
+    setShowResponseModal(false);
+  }, [setShowScoreCard, setShowResponseModal]);
+
+  const { isClosing, startClose } = useModalFade(handleDismiss);
+
   useEffect(() => {
-    // Always set a timeout to advance - either when data arrives or after max wait
     const advanceTimer = setTimeout(
-      () => {
-        setShowScoreCard(true);
-        setShowResponseModal(false);
-      },
+      () => startClose(),
       hasScoring ? 3000 : 10000,
-    ); // Wait 3s if we have data, 10s max if waiting
+    );
 
     return () => clearTimeout(advanceTimer);
-  }, [hasScoring, currentPlayer, setShowScoreCard, setShowResponseModal]);
+  }, [hasScoring, currentPlayer, startClose]);
 
   return (
     <div
-      className="round-modal__overlay"
+      className={`round-modal__overlay round-modal__overlay--no-bg${isClosing ? " round-modal__overlay--closing" : ""}`}
       style={{ zIndex: 100 }}
       role="dialog"
       aria-modal="true"

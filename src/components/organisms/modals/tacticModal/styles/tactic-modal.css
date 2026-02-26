@@ -4,9 +4,8 @@
   align-items: center;
   gap: clamp(16px, 3dvw, 32px);
   width: 80dvw;
-  height: 100%;
+  height: fit-content;
   max-width: 80dvw;
-  max-height: 75dvh;
   border-radius: 16px;
   padding: clamp(16px, 3dvw, 40px);
   box-sizing: border-box;
