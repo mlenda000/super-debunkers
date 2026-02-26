@@ -226,7 +226,9 @@ const GamePage = () => {
         isInfoModalOpen={isInfoModalOpen}
         setIsInfoModalOpen={setIsInfoModalOpen}
       />
-      {showRoundModal && <RoundModal onClose={() => setShowRoundModal(false)} />}
+      {showRoundModal && (
+        <RoundModal onClose={() => setShowRoundModal(false)} />
+      )}
       {roundEnd && (
         <ResultModal
           setRoundEnd={setRoundEndWithLog}

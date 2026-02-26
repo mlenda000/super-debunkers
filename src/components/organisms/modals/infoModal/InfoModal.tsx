@@ -74,7 +74,10 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
 
   return (
     <>
-      <div className={`info-modal__overlay${isClosing ? " info-modal__overlay--closing" : ""}`} aria-hidden="true" />
+      <div
+        className={`info-modal__overlay${isClosing ? " info-modal__overlay--closing" : ""}`}
+        aria-hidden="true"
+      />
       <div
         className={`info-modal${isClosing ? " info-modal--closing" : ""}`}
         role="dialog"

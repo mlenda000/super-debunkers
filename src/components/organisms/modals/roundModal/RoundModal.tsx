@@ -12,8 +12,7 @@ const RoundModal = ({ onClose }: RoundModalProps) => {
 
   // Compute final round from server-provided maxRounds as primary check,
   // with the explicit finalRound state as fallback
-  const isFinalRound =
-    finalRound || gameRound === (gameRoom?.maxRounds || 5);
+  const isFinalRound = finalRound || gameRound === (gameRoom?.maxRounds || 5);
 
   // Auto-dismiss after ~1.7s display + 0.3s fade-out = ~2s total
   useEffect(() => {
