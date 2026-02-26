@@ -167,6 +167,7 @@ export const sendPlayerReady = (
 export const sendPlayerNotReady = (
   socket: PartySocket | null,
   players: Player[],
+  room?: string,
 ): void => {
   if (!socket || socket.readyState !== PartySocket.OPEN) {
     console.error("Socket not ready");
@@ -176,6 +177,7 @@ export const sendPlayerNotReady = (
     JSON.stringify({
       type: "playerNotReady",
       players,
+      room,
     }),
   );
 };

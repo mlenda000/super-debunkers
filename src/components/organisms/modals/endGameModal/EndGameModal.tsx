@@ -21,11 +21,16 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
         ? (gameRoom.roomData.players as Player[])
         : (players as Player[]);
 
-  const topPlayer = finalPlayers.reduce<Player | null>(
-    (top: Player | null, player: Player) =>
-      (player?.score ?? 0) > (top?.score ?? 0) ? player : top,
-    null,
+  const highScore = finalPlayers.reduce(
+    (max, player) => Math.max(max, player?.score ?? 0),
+    0,
   );
+
+  const topPlayers = finalPlayers.filter(
+    (player) => (player?.score ?? 0) === highScore,
+  );
+
+  const isTied = topPlayers.length > 1;
 
   const handleDismiss = () => {
     const socket = getWebSocketInstance();
@@ -54,14 +59,43 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
     >
       <div className="endgame-modal__content">
         <div className="endgame-modal__winner">
-          <img
-            src={`/images/avatars/winning/${topPlayer?.avatar}`}
-            alt={`Winner: ${topPlayer?.name}`}
-            className="endgame-modal__winner-avatar"
-          />
-          <h1 id="endgame-modal-title" className="endgame-modal__winner-text">
-            {topPlayer?.name} Wins!!!
-          </h1>
+          {isTied ? (
+            <>
+              <div className="endgame-modal__winner-avatars">
+                {topPlayers.map((player) => (
+                  <img
+                    key={player?.name}
+                    src={`/images/avatars/winning/${player?.avatar}`}
+                    alt={`Winner: ${player?.name}`}
+                    className="endgame-modal__winner-avatar"
+                  />
+                ))}
+              </div>
+              <h1
+                id="endgame-modal-title"
+                className="endgame-modal__winner-text"
+              >
+                {topPlayers.map((p) => p?.name).join(" & ")}
+              </h1>
+              <p className="endgame-modal__winner-subtitle">
+                Tied! Great work!
+              </p>
+            </>
+          ) : (
+            <>
+              <img
+                src={`/images/avatars/winning/${topPlayers[0]?.avatar}`}
+                alt={`Winner: ${topPlayers[0]?.name}`}
+                className="endgame-modal__winner-avatar"
+              />
+              <h1
+                id="endgame-modal-title"
+                className="endgame-modal__winner-text"
+              >
+                {topPlayers[0]?.name} Wins!!!
+              </h1>
+            </>
+          )}
         </div>
         <div className="endgame-modal__scores">
           <img

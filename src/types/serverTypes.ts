@@ -56,6 +56,7 @@ export type MessageType =
   | "roomDeleted"
   | "gameEnded"
   | "joinRejected"
+  | "reconnectState"
   // Legacy types (if needed)
   | "USER_JOINED"
   | "USER_LEFT"
@@ -95,6 +96,13 @@ export interface WebSocketMessage {
   isGameOver?: boolean;
   disconnectedPlayerNames?: string[];
   reason?: string;
+  // Reconnection state fields
+  currentRound?: number;
+  maxRounds?: number;
+  cardIndex?: number;
+  newsCard?: any;
+  themeStyle?: string;
+  influencerCard?: any;
 }
 
 export type MessageHandler = (message: WebSocketMessage) => void;

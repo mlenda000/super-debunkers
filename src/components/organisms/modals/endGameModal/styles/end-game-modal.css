@@ -18,6 +18,20 @@
   gap: clamp(4px, 1vh, 12px);
 }
 
+.endgame-modal__winner-avatars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2vw, 20px);
+}
+
+.endgame-modal__winner-subtitle {
+  font-family: "Subway Berlin", sans-serif;
+  font-size: clamp(20px, 5vw, 40px);
+  margin: 0;
+  text-align: center;
+}
+
 .endgame-modal__winner-avatar {
   width: clamp(80px, 20vw, 150px);
   height: auto;

@@ -135,6 +135,8 @@ export type GameContextType = {
   setNewsCards?: (cards: NewsCard[]) => void;
   activeNewsCard?: NewsCard | null;
   setActiveNewsCard?: (card: NewsCard | null) => void;
+  previousNewsCard?: NewsCard | null;
+  setPreviousNewsCard?: (card: NewsCard | null) => void;
   gameRound?: number;
   setGameRound?: (round: number) => void;
   endGame?: boolean;
