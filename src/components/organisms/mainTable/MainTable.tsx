@@ -96,19 +96,9 @@ const MainTable: React.FC<
     setSubmitForScoring(false);
     setFinishRound(false);
 
-    // Deal the next card after the score modal closes (3 seconds for modal + buffer)
-    const timeout = setTimeout(() => {
-      const cards = gameCardsRef.current;
-      const nextCard = cards[indexRef.current];
-      if (nextCard) {
-        setCurrentInfluencer(nextCard);
-        indexRef.current++;
-      }
-    }, 11000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
+    // The next card is now set authoritatively by the server via the
+    // syncCardIndex effect — no local timeout needed. This ensures both
+    // players always see the same newscard at the same time.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetKey]);
 
@@ -226,7 +216,12 @@ const MainTable: React.FC<
         setPlayerReady(false);
         setFinishRound(false);
         const socket = getWebSocketInstance();
-        sendPlayerNotReady(socket, (gameRoom?.roomData?.players || []) as any);
+        const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
+        sendPlayerNotReady(
+          socket,
+          (gameRoom?.roomData?.players || []) as any,
+          roomName,
+        );
       }
     }
   };

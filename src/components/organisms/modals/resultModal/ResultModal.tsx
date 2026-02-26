@@ -8,7 +8,10 @@ const ResultModal = ({
   setRoundEnd,
   setShowResponseModal,
 }: ResultModalProps) => {
-  const { activeNewsCard, lastScoreUpdatePlayers } = useGameContext();
+  const { previousNewsCard, activeNewsCard, lastScoreUpdatePlayers } =
+    useGameContext();
+  // Show the card from the round that just ended, not the upcoming one
+  const displayCard = previousNewsCard ?? activeNewsCard;
   const [showComponents, setShowComponents] = useState(false);
   const hasAdvancedRef = useRef(false);
 
@@ -73,7 +76,7 @@ const ResultModal = ({
       aria-label="Round results showing detected misinformation tactics"
     >
       <div className="result-modal__content ">
-        <Tool showResults={showComponents} currentInfluencer={activeNewsCard} />
+        <Tool showResults={showComponents} currentInfluencer={displayCard} />
       </div>
     </div>
   );

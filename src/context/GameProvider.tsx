@@ -33,6 +33,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   >();
   const [newsCards, setNewsCards] = useState<NewsCard[]>([]);
   const [activeNewsCard, setActiveNewsCard] = useState<NewsCard | null>(null);
+  const [previousNewsCard, setPreviousNewsCard] = useState<NewsCard | null>(
+    null,
+  );
   const [gameRound, setGameRound] = useState<number>(1);
   const [endGame, setEndGame] = useState<boolean>(false);
   const [isDeckShuffled, setIsDeckShuffled] = useState<boolean>(false);
@@ -58,6 +61,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     setTacticCards(undefined);
     setNewsCards([]);
     setActiveNewsCard(null);
+    setPreviousNewsCard(null);
     setGameRound(1);
     setEndGame(false);
     setIsDeckShuffled(false);
@@ -73,6 +77,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const memoTacticCards = useMemo(() => tacticCards, [tacticCards]);
   const memoNewsCards = useMemo(() => newsCards, [newsCards]);
   const memoActiveNewsCard = useMemo(() => activeNewsCard, [activeNewsCard]);
+  const memoPreviousNewsCard = useMemo(
+    () => previousNewsCard,
+    [previousNewsCard],
+  );
   const memoGameRound = useMemo(() => gameRound, [gameRound]);
   const memoEndGame = useMemo(() => endGame, [endGame]);
   const memoIsDeckShuffled = useMemo(() => isDeckShuffled, [isDeckShuffled]);
@@ -99,6 +107,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         setNewsCards,
         activeNewsCard: memoActiveNewsCard,
         setActiveNewsCard,
+        previousNewsCard: memoPreviousNewsCard,
+        setPreviousNewsCard,
         gameRound: memoGameRound,
         setGameRound,
         endGame: memoEndGame,

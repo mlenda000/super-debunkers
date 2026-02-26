@@ -258,20 +258,30 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
           // Player successfully added to room
           unsubscribe();
 
-          // Pass room data via navigation state
+          // Pass ALL room data via navigation state so reconnecting players
+          // get the full room state (round, card, theme, scores, etc.)
           navigate(`/game/${room}`, {
             state: {
               gameRoom: {
                 count: message.count || 0,
                 room: message.room || "",
                 type: "roomUpdate",
+                cardIndex: message.cardIndex,
+                isGameOver: message.isGameOver,
+                maxRounds: message.maxRounds,
                 roomData: {
                   count: message.count || 0,
                   players: message.players || [],
                   name: message.room || "",
                   deck: message.deck,
+                  newsCard: message.newsCard,
                 },
               },
+              // Pass extra fields that GamePage needs for reconnection
+              currentRound: message.currentRound,
+              themeStyle: message.themeStyle,
+              newsCard: message.newsCard,
+              cardIndex: message.cardIndex,
             },
           });
         }
@@ -324,6 +334,31 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       sendEnteredLobby(undefined, "lobby", avatarName, playerName || "");
+
+      // Check if the player was in a room before (page refresh / disconnect)
+      // and attempt auto-rejoin if the room still exists
+      const storedRoom = sessionStorage.getItem("currentRoom");
+      if (storedRoom && playerName) {
+        try {
+          const response = await fetch(`${PARTYKIT_URL}/parties/main/${storedRoom}`);
+          if (response.ok) {
+            const data = await response.json();
+            const disconnectedNames: string[] = data.disconnectedPlayerNames || [];
+            // Only auto-rejoin if the server still has this player as disconnected
+            if (disconnectedNames.includes(playerName)) {
+              // Clear the stored room first to prevent loops
+              sessionStorage.removeItem("currentRoom");
+              // Auto-navigate back to the room
+              handleClick(playerName, storedRoom, avatarName);
+              return;
+            }
+          }
+        } catch (error) {
+          console.error("[Lobby] Failed to check stored room for reconnection:", error);
+        }
+        // Room no longer exists or player not in disconnected list — clear stale entry
+        sessionStorage.removeItem("currentRoom");
+      }
     };
     sendLobbyMessage();
   }, [avatar, playerName, resetGameState]);
