@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
 import TacticCardFront from "@/components/molecules/tacticCardFront/TacticCardFront";
+import { useModalFade } from "@/hooks/useModalFade";
 import type { TacticCardProps } from "@/types/gameTypes";
 
 interface TacticModalProps {
@@ -13,13 +14,15 @@ const TacticModal: React.FC<TacticModalProps> = ({
   onClose,
   onSelectCard,
 }) => {
+  const { isClosing, startClose } = useModalFade(onClose);
+
   const modal = (
     <div
-      className="tactic-modal__overlay"
+      className={`tactic-modal__overlay${isClosing ? " tactic-modal__overlay--closing" : ""}`}
       role="dialog"
       aria-modal="true"
       aria-labelledby="tactic-modal-title"
-      onClick={onClose}
+      onClick={startClose}
     >
       <div
         className="tactic-modal__container"
@@ -58,7 +61,7 @@ const TacticModal: React.FC<TacticModalProps> = ({
           >
             Select Card
           </button>
-          <button onClick={onClose}>Close</button>
+          <button onClick={startClose}>Close</button>
         </div>
       </div>
     </div>

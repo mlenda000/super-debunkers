@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useGameContext } from "@/hooks/useGameContext";
+import { useModalFade } from "@/hooks/useModalFade";
 import type { ResultModalProps } from "@/types/types";
-import Tool from "@/components/molecules/tool/Tool"; // Assuming Tool is a component you want to show in the modal
+import Tool from "@/components/molecules/tool/Tool";
 
 const ResultModal = ({
   setRoundEnd,
@@ -10,6 +11,14 @@ const ResultModal = ({
   const { activeNewsCard, lastScoreUpdatePlayers } = useGameContext();
   const [showComponents, setShowComponents] = useState(false);
   const hasAdvancedRef = useRef(false);
+
+  const handleDismiss = useCallback(() => {
+    hasAdvancedRef.current = true;
+    setRoundEnd(false);
+    setShowResponseModal(true);
+  }, [setRoundEnd, setShowResponseModal]);
+
+  const { isClosing, startClose } = useModalFade(handleDismiss);
 
   useEffect(() => {
     // Show components after 4.3 seconds
@@ -38,18 +47,14 @@ const ResultModal = ({
 
     const advanceTimer = setTimeout(() => {
       if (hasValidScoringData && !hasAdvancedRef.current) {
-        hasAdvancedRef.current = true;
-        setRoundEnd(false);
-        setShowResponseModal(true);
+        startClose();
       }
     }, minDisplayTime);
 
     // Max wait of 15 seconds regardless of data
     const maxWaitTimer = setTimeout(() => {
       if (!hasAdvancedRef.current) {
-        hasAdvancedRef.current = true;
-        setRoundEnd(false);
-        setShowResponseModal(true);
+        startClose();
       }
     }, 15000);
 
@@ -57,11 +62,11 @@ const ResultModal = ({
       clearTimeout(advanceTimer);
       clearTimeout(maxWaitTimer);
     };
-  }, [hasValidScoringData, setRoundEnd, setShowResponseModal]);
+  }, [hasValidScoringData, startClose]);
 
   return (
     <div
-      className="result-modal__overlay"
+      className={`result-modal__overlay${isClosing ? " result-modal__overlay--closing" : ""}`}
       style={{ zIndex: 100 }}
       role="dialog"
       aria-modal="true"

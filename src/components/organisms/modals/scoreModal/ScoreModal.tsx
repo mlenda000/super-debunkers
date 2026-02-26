@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from "react";
 import { useGameContext } from "@/hooks/useGameContext";
+import { useModalFade } from "@/hooks/useModalFade";
 import type { Player } from "@/types/gameTypes";
 import type { ScoreModalProps } from "@/types/types";
 
@@ -13,30 +14,27 @@ const ScoreModal = ({
 
   const handleDeal = useCallback(() => {
     if (gameRoom?.roomData?.players) {
-      // Use server-side isGameOver flag to determine if game has ended
       const isGameOver = gameRoom.isGameOver ?? false;
 
       if (isGameOver) {
         setIsEndGame(true);
       } else {
-        // Show the round modal for the next round (2 seconds)
         setShowRoundModal?.(true);
       }
 
-      // Hide the score modal
       setShowScoreCard?.(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameRoom, gameRound, setIsEndGame, setShowRoundModal, setShowScoreCard]);
 
+  const { isClosing, startClose } = useModalFade(handleDeal);
+
   // Auto-advance to next round after 3 seconds
   useEffect(() => {
-    const timer = setTimeout(() => {
-      handleDeal();
-    }, 3000);
+    const timer = setTimeout(() => startClose(), 3000);
 
     return () => clearTimeout(timer);
-  }, [handleDeal]);
+  }, [startClose]);
 
   const sourcePlayers: Player[] =
     lastScoreUpdatePlayers && lastScoreUpdatePlayers.length > 0
@@ -47,7 +45,7 @@ const ScoreModal = ({
 
   return (
     <div
-      className="round-modal__overlay"
+      className={`round-modal__overlay${isClosing ? " round-modal__overlay--closing" : ""}`}
       style={{ zIndex: 100 }}
       role="dialog"
       aria-modal="true"

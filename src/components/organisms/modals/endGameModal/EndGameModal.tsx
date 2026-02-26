@@ -5,6 +5,7 @@ import type { Player } from "@/types/gameTypes";
 import type { EndGameModalProps } from "@/types/types";
 import { sendEndGame, sendPlayerLeaves } from "@/utils/gameMessageUtils";
 import { getWebSocketInstance } from "@/services/webSocketService";
+import { useModalFade } from "@/hooks/useModalFade";
 import "./styles/end-game-modal.css";
 
 const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
@@ -26,16 +27,13 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
     null,
   );
 
-  const handleClick = () => {
+  const handleDismiss = () => {
     const socket = getWebSocketInstance();
     const roomName = gameRoom?.room || gameRoom?.roomData?.name;
 
     // Notify server that this player is leaving and game has ended
     if (roomName) {
-      // Send end game signal to server
       sendEndGame(socket, roomName);
-
-      // Send player leaves message
       sendPlayerLeaves(socket, roomName);
     }
 
@@ -44,9 +42,11 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
     setIsEndGame(false);
   };
 
+  const { isClosing, startClose } = useModalFade(handleDismiss);
+
   return (
     <div
-      className="round-modal__overlay"
+      className={`round-modal__overlay${isClosing ? " round-modal__overlay--closing" : ""}`}
       style={{ zIndex: 100 }}
       role="dialog"
       aria-modal="true"
@@ -107,7 +107,7 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
         <div className="endgame-modal__button">
           <button
             className="endgame-modal__home-btn"
-            onClick={handleClick}
+            onClick={startClose}
             aria-label="Return to home page"
           >
             <img

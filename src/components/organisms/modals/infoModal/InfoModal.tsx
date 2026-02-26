@@ -1,9 +1,13 @@
 import { useEffect, useRef, useCallback } from "react";
+import { useModalFade } from "@/hooks/useModalFade";
 import type { InfoModalProps } from "@/types/types";
 
 const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  const handleDismiss = useCallback(() => onClose(false), [onClose]);
+  const { isClosing, startClose } = useModalFade(handleDismiss);
 
   // Focus the close button when modal opens
   useEffect(() => {
@@ -16,10 +20,10 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose(false);
+        startClose();
       }
     },
-    [onClose],
+    [startClose],
   );
 
   useEffect(() => {
@@ -42,7 +46,7 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
         modalRef.current &&
         !modalRef.current.contains(event.target as Node)
       ) {
-        onClose(false);
+        startClose();
       }
     }
 
@@ -64,15 +68,15 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, startClose]);
 
   if (!isOpen) return null;
 
   return (
     <>
-      <div className="info-modal__overlay" aria-hidden="true" />
+      <div className={`info-modal__overlay${isClosing ? " info-modal__overlay--closing" : ""}`} aria-hidden="true" />
       <div
-        className="info-modal"
+        className={`info-modal${isClosing ? " info-modal--closing" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="info-modal-title"
@@ -81,7 +85,7 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
           <button
             ref={closeButtonRef}
             className="info-modal__close"
-            onClick={() => onClose(false)}
+            onClick={() => startClose()}
             aria-label="Close how to play instructions"
             tabIndex={0}
           >
