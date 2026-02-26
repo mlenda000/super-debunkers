@@ -6,12 +6,7 @@
   font-family: "Subway Berlin", sans-serif;
   white-space: nowrap;
   position: relative;
-}
-
-.scoreboard__names {
-  margin-right: 40px;
   margin-left: 4px;
-  font-size: clamp(24px, 1.5rem, 60px);
 }
 
 .scoreboard__avatar {
@@ -28,13 +23,18 @@
 .scoreboard-right__container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: clamp(4px, 2dvh, 12px);
   margin-right: 40px;
 }
 .scoreboard__score-numeric {
   font-size: clamp(24px, 1.5rem, 60px);
 }
 
+@media (max-height: 600px) {
+  .scoreboard__score-numeric {
+    font-size: clamp(14px, 4dvh, 40px);
+  }
+}
 .scoreboard-info__image {
   cursor: pointer;
   width: clamp(24px, 4vw, 60px);

@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 
-const FADE_DURATION = 300; // matches modal-fade-out 0.3s
+const FADE_DURATION = 150; // matches modal-fade-out 0.15s
 
 /**
  * Hook that manages a "closing" CSS class so modals can fade out

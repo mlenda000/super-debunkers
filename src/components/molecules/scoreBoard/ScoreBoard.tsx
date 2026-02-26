@@ -162,13 +162,10 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
           })}
       </div>
       <div style={{ zIndex: 2 }} className="scoreboard-right__container ">
-        <div className="scoreboard-timer" aria-live="polite">
-          <h1>
-            <span className="scoreboard__score-numeric" style={{ zIndex: 2 }}>
-              Round {gameRound}
-            </span>
-          </h1>
-        </div>
+        <span className="scoreboard__score-numeric" style={{ zIndex: 2 }}>
+          Round {gameRound}
+        </span>
+
         <button
           className="scoreboard-info__image"
           onClick={(e) => {

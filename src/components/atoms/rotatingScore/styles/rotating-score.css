@@ -19,3 +19,16 @@
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
+
+.scoreboard__names {
+  margin-right: clamp(24px, 8vw, 40px);
+  margin-left: 4px;
+  font-size: clamp(24px, 1.5rem, 60px);
+}
+
+@media (max-height: 600px) {
+  .scoreboard__names {
+    margin-right: clamp(8px, 2dvh, 20px);
+    font-size: clamp(14px, 2dvh, 40px);
+  }
+}

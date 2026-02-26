@@ -54,7 +54,7 @@ const PlayArea = ({
       <button
         type="button"
         onClick={handlePlayerReady}
-        className="play-area__finish-round"
+        className={`play-area__finish-round${!playerReady && finishRound ? " play-area__finish-round--bounce" : ""}`}
         aria-label={
           playerReady
             ? "Ready"
