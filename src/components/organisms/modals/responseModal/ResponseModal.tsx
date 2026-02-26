@@ -72,7 +72,7 @@ const ResponseModal = ({
 
   return (
     <div
-      className={`round-modal__overlay${isClosing ? " round-modal__overlay--closing" : ""}`}
+      className={`round-modal__overlay round-modal__overlay--no-bg${isClosing ? " round-modal__overlay--closing" : ""}`}
       style={{ zIndex: 100 }}
       role="dialog"
       aria-modal="true"

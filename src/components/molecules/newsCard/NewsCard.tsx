@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import type { NewsCardProps } from "@/types/gameTypes";
 
 const NewsCard = ({
@@ -10,6 +11,25 @@ const NewsCard = ({
   inTool = false,
 }: NewsCardProps) => {
   //ratio 2.5 : 3.5
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  const imageSrc = image
+    ? image.startsWith("/")
+      ? image
+      : "/images/news/" + image
+    : "";
+
+  useEffect(() => {
+    if (!imageSrc) {
+      setImageLoaded(true);
+      return;
+    }
+    setImageLoaded(false);
+    const img = new Image();
+    img.onload = () => setImageLoaded(true);
+    img.onerror = () => setImageLoaded(true);
+    img.src = imageSrc;
+  }, [imageSrc]);
 
   const getClassName = () => {
     if (inTool) return "news-card__in-tool";
@@ -19,14 +39,14 @@ const NewsCard = ({
 
   return (
     <div
-      className={getClassName()}
+      className={`${getClassName()} ${imageLoaded ? "news-card--loaded" : "news-card--loading"}`}
       role="article"
       aria-label={`News card: ${name}`}
     >
       <div className="news-card__content">
         {image && (
           <img
-            src={`${image.startsWith("/") ? image : "/images/news/" + image}`}
+            src={imageSrc}
             alt={`News illustration for ${name}`}
             className="news-card__images"
           />

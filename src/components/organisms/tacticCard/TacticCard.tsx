@@ -3,6 +3,8 @@ import TacticCardBack from "@/components/molecules/tacticCardBack/TacticCardBack
 import TacticCardFront from "@/components/molecules/tacticCardFront/TacticCardFront";
 import type { TacticCardProps } from "@/types/gameTypes";
 
+const flipSound = new Audio("/audio/card-flip.mp3");
+
 interface TacticCardWithHoverProps extends TacticCardProps {
   hoveredCardId: string | null;
   setHoveredCardId: (id: string | null) => void;
@@ -32,6 +34,24 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
   const longPressFiredRef = useRef(false);
   const infoButtonRef = useRef<HTMLButtonElement>(null);
   const infoClickedRef = useRef(false);
+  const prevFlippedRef = useRef(false);
+  const hasMountedRef = useRef(false);
+
+  // Play flip sound only on user-initiated flips (skip initial mount / scoring resets)
+  const isFlipped = hoveredCardId === id;
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      // First render — sync state without playing sound
+      hasMountedRef.current = true;
+      prevFlippedRef.current = isFlipped;
+      return;
+    }
+    if (isFlipped !== prevFlippedRef.current) {
+      prevFlippedRef.current = isFlipped;
+      flipSound.currentTime = 0;
+      flipSound.play().catch(() => {});
+    }
+  }, [isFlipped]);
 
   const handleInfoClick = useCallback(() => {
     onInfoClick?.({
@@ -123,15 +143,14 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
     touchStartTimeRef.current = Date.now();
     longPressFiredRef.current = false;
 
-    // Start long-press timer — place card after 500ms hold
+    // Start long-press timer — flip card after 500ms hold
     if (longPressTimeoutRef.current) {
       clearTimeout(longPressTimeoutRef.current);
     }
     longPressTimeoutRef.current = setTimeout(() => {
       longPressFiredRef.current = true;
-      if (onMoveToTable) {
-        onMoveToTable(id);
-      }
+      // Toggle the card flip
+      setHoveredCardId(hoveredCardId === id ? null : id);
     }, 500) as unknown as number;
   };
 
@@ -161,13 +180,13 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
       }
 
       if (tapCountRef.current === 1) {
-        // Single tap - show the back of the card
-        setHoveredCardId(id);
+        // Single tap — toggle the card flip
         tapTimeoutRef.current = setTimeout(() => {
+          setHoveredCardId(hoveredCardId === id ? null : id);
           tapCountRef.current = 0;
-        }, 300);
+        }, 300) as unknown as number;
       } else if (tapCountRef.current === 2) {
-        // Double tap - move card to table
+        // Double tap — move card to table
         tapCountRef.current = 0;
         if (onMoveToTable) {
           onMoveToTable(id);
@@ -215,7 +234,7 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
         onTouchEnd={handleTouchEnd}
         tabIndex={0}
         role="button"
-        aria-label={`Tactic card: ${category}. Press Enter or Space to move to table. Tap to preview, hold to select.`}
+        aria-label={`Tactic card: ${category}. Press Enter or Space to move to table. Tap or hold to flip, double-tap to select.`}
       >
         {hoveredCardId === id ? (
           <TacticCardBack

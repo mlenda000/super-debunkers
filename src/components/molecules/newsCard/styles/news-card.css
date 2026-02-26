@@ -1,3 +1,13 @@
+/* Hide news card until image is loaded */
+.news-card--loading {
+  opacity: 0;
+}
+
+.news-card--loaded {
+  opacity: 1;
+  transition: opacity 0.3s ease-in;
+}
+
 .news-card {
   display: flex;
   justify-content: center;
@@ -258,11 +268,11 @@
     .news-card__title {
       margin-block: 2px;
 
-      font-size: clamp(10px, min(1.4dvw, 3dvh), 20px);
+      font-size: clamp(11px, min(1.4dvw, 3dvh), 20px);
     }
 
     .news-card__description {
-      font-size: clamp(12px, 2dvh, 20px);
+      font-size: clamp(9px, 2dvh, 20px);
       margin-top: clamp(2px, 0.5vh, 12px);
       line-height: 1.2;
       margin-bottom: 8px;

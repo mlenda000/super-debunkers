@@ -24,6 +24,11 @@
   justify-content: center;
   align-items: center;
 }
+
+/* When used inside the end-of-round sequence with a persistent backdrop */
+.round-modal__overlay--no-bg {
+  background-color: transparent;
+}
 .round-modal__content {
   display: flex;
   padding: 20px;

@@ -214,6 +214,13 @@ const GamePage = () => {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [roomId]);
 
+  const showModalBackdrop =
+    showRoundModal ||
+    roundEnd ||
+    showResponseModal ||
+    showScoreCard ||
+    isEndGame;
+
   return (
     <div className="game-page">
       <RotateScreen />
@@ -226,6 +233,7 @@ const GamePage = () => {
         isInfoModalOpen={isInfoModalOpen}
         setIsInfoModalOpen={setIsInfoModalOpen}
       />
+      {showModalBackdrop && <div className="modal-backdrop" />}
       {showRoundModal && (
         <RoundModal onClose={() => setShowRoundModal(false)} />
       )}

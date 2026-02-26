@@ -87,6 +87,13 @@ const GameTable: React.FC<GameTableProps> = ({
     setActiveId(event.active.id);
   };
 
+  const placeSound = useRef(new Audio("/audio/card-placing.mp3"));
+
+  const playPlaceSound = useCallback(() => {
+    placeSound.current.currentTime = 0;
+    placeSound.current.play().catch(() => {});
+  }, []);
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveId(null);
@@ -105,6 +112,7 @@ const GameTable: React.FC<GameTableProps> = ({
         (card) => String(card.id) !== "1",
       );
       setMainTableItems([...removeStartingText, activeCard]);
+      playPlaceSound();
     }
   };
 
@@ -123,8 +131,9 @@ const GameTable: React.FC<GameTableProps> = ({
         (card) => String(card.id) !== "1",
       );
       setMainTableItems([...removeStartingText, cardToMove]);
+      playPlaceSound();
     },
-    [playersHandItems, mainTableItems],
+    [playersHandItems, mainTableItems, playPlaceSound],
   );
 
   useEffect(() => {

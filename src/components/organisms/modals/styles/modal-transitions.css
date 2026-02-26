@@ -17,17 +17,24 @@
   }
 }
 
-/* Apply fade-in to ALL modal overlays by default */
-.round-modal__overlay,
-.result-modal__overlay,
+/* Apply fade-in to standalone modal overlays only */
 .info-modal__overlay,
 .tactic-modal__overlay {
   animation: modal-fade-in 0.35s ease both;
 }
 
-/* When an overlay also carries --closing, play the reverse */
+/* Sequence modals: don't fade the overlay (backdrop handles it) — only fade content */
+.round-modal__overlay,
+.result-modal__overlay {
+  animation: none;
+}
+
+/* When an overlay carries --closing, fade out the content */
 .round-modal__overlay--closing,
-.result-modal__overlay--closing,
+.result-modal__overlay--closing {
+  animation: modal-fade-out 0.3s ease both;
+}
+
 .info-modal__overlay--closing,
 .tactic-modal__overlay--closing {
   animation: modal-fade-out 0.3s ease both;
