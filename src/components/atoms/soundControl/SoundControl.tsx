@@ -154,14 +154,10 @@ const SoundControl = ({
     (update: (v: number) => void, current: number) =>
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       const step = e.shiftKey ? 10 : 5;
-      if (
-        ["ArrowUp", "ArrowRight", "+", "="].includes(e.key)
-      ) {
+      if (["ArrowUp", "ArrowRight", "+", "="].includes(e.key)) {
         e.preventDefault();
         update(current + step);
-      } else if (
-        ["ArrowDown", "ArrowLeft", "-", "_"].includes(e.key)
-      ) {
+      } else if (["ArrowDown", "ArrowLeft", "-", "_"].includes(e.key)) {
         e.preventDefault();
         update(current - step);
       }
@@ -222,7 +218,9 @@ const SoundControl = ({
         <button
           onClick={handleSfxMuteToggle}
           className="volume-button"
-          aria-label={isSfxMuted ? "Unmute sound effects" : "Mute sound effects"}
+          aria-label={
+            isSfxMuted ? "Unmute sound effects" : "Mute sound effects"
+          }
           aria-pressed={!isSfxMuted}
           tabIndex={0}
         >
