@@ -19,7 +19,8 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   gameRoom: propGameRoom,
   gameRound: propGameRound,
 }) => {
-  const { setThemeStyle, sfxVolume, setSfxVolume, sfxMuted, setSfxMuted } = useGlobalContext();
+  const { setThemeStyle, sfxVolume, setSfxVolume, sfxMuted, setSfxMuted } =
+    useGlobalContext();
   const {
     gameRoom: ctxGameRoom,
     gameRound: ctxGameRound,
