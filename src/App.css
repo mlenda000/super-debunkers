@@ -54,26 +54,32 @@
 /* Fonts */
 @font-face {
   font-family: "DIN Alternate";
-  src: url("/fonts/DINAlternate-Bold.ttf") format("truetype");
+  src:
+    url("/fonts/DINAlternate-Bold.woff2") format("woff2"),
+    url("/fonts/DINAlternate-Bold.ttf") format("truetype");
   font-weight: var(--font-weight-bold);
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
   font-family: "Subway Berlin";
-  src: url("/fonts/subway-berlin-sc.otf") format("opentype");
+  src:
+    url("/fonts/subway-berlin-sc.woff2") format("woff2"),
+    url("/fonts/subway-berlin-sc.otf") format("opentype");
   font-weight: var(--font-weight-normal);
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
   font-family: "Alfa Slab One";
-  src: url("/fonts/AlfaSlabOne-Regular.ttf") format("truetype");
+  src:
+    url("/fonts/AlfaSlabOne-Regular.woff2") format("woff2"),
+    url("/fonts/AlfaSlabOne-Regular.ttf") format("truetype");
   font-weight: var(--font-weight-normal);
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 /* Global styles */

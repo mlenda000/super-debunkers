@@ -115,7 +115,7 @@
   }
 
   .news-card__title {
-    font-family: "Alfa Slab", serif;
+    font-family: "Alfa Slab One", serif;
     font-size: clamp(10px, min(2.2dvw, 4dvh), 24px);
     font-weight: 400;
     margin-bottom: 0.5rem;
