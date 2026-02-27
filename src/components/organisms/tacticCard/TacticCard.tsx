@@ -1,4 +1,5 @@
 import { useRef, useEffect, useCallback } from "react";
+import { useGlobalContext } from "@/hooks/useGlobalContext";
 import TacticCardBack from "@/components/molecules/tacticCardBack/TacticCardBack";
 import TacticCardFront from "@/components/molecules/tacticCardFront/TacticCardFront";
 import type { TacticCardProps } from "@/types/gameTypes";
@@ -37,6 +38,13 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
   const prevFlippedRef = useRef(false);
   const hasMountedRef = useRef(false);
 
+  const { sfxVolume, sfxMuted } = useGlobalContext();
+
+  // Keep flip sound volume in sync with SFX settings
+  useEffect(() => {
+    flipSound.volume = sfxMuted ? 0 : sfxVolume / 100;
+  }, [sfxVolume, sfxMuted]);
+
   // Play flip sound only on user-initiated flips (skip initial mount / scoring resets)
   const isFlipped = hoveredCardId === id;
   useEffect(() => {
@@ -49,9 +57,11 @@ const TacticCard: React.FC<TacticCardWithHoverProps> = ({
     if (isFlipped !== prevFlippedRef.current) {
       prevFlippedRef.current = isFlipped;
       flipSound.currentTime = 0;
-      flipSound.play().catch(() => {});
+      if (!sfxMuted) {
+        flipSound.play().catch(() => {});
+      }
     }
-  }, [isFlipped]);
+  }, [isFlipped, sfxMuted]);
 
   const handleInfoClick = useCallback(() => {
     onInfoClick?.({

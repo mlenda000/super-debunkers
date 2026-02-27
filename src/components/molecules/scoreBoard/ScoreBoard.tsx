@@ -19,7 +19,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   gameRoom: propGameRoom,
   gameRound: propGameRound,
 }) => {
-  const { setThemeStyle } = useGlobalContext();
+  const { setThemeStyle, sfxVolume, setSfxVolume, sfxMuted, setSfxMuted } = useGlobalContext();
   const {
     gameRoom: ctxGameRoom,
     gameRound: ctxGameRound,
@@ -105,6 +105,16 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
       if (audioRef.current) {
         audioRef.current.play().catch(() => {});
       }
+    }
+  };
+
+  // Handle SFX volume changes from SoundControl
+  const handleSfxVolumeChange = (newVolume: number) => {
+    setSfxVolume(newVolume);
+    if (newVolume === 0) {
+      setSfxMuted(true);
+    } else if (sfxMuted) {
+      setSfxMuted(false);
     }
   };
 
@@ -212,10 +222,14 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
       <SoundControl
         isOpen={isVolumeControlOpen}
         onClose={() => setIsVolumeControlOpen(false)}
-        onVolumeChange={handleVolumeChange}
-        initialVolume={volume}
-        isMuted={isSoundPlaying}
-        setIsMuted={setIsSoundPlaying}
+        onMusicVolumeChange={handleVolumeChange}
+        initialMusicVolume={volume}
+        isMusicPlaying={isSoundPlaying}
+        setIsMusicPlaying={setIsSoundPlaying}
+        onSfxVolumeChange={handleSfxVolumeChange}
+        initialSfxVolume={sfxVolume}
+        isSfxMuted={sfxMuted}
+        setIsSfxMuted={setSfxMuted}
       />
     </div>
   );

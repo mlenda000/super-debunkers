@@ -55,6 +55,10 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
     return localStorage.getItem("avatarImage") || "";
   });
 
+  // SFX audio state
+  const [sfxVolume, setSfxVolume] = useState<number>(20);
+  const [sfxMuted, setSfxMuted] = useState<boolean>(false);
+
   // Fetch playerId from server if not valid in localStorage
   useEffect(() => {
     if (isPlayerIdValid()) {
@@ -156,6 +160,10 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
     setPlayerName,
     playerId,
     setPlayerId,
+    sfxVolume,
+    setSfxVolume,
+    sfxMuted,
+    setSfxMuted,
   };
 
   return (

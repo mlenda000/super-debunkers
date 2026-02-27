@@ -42,6 +42,12 @@ export interface GlobalContextType {
   setAvatar: (avatar: string) => void;
   playerName: string;
   setPlayerName: (name: string) => void;
+
+  // Audio state
+  sfxVolume: number;
+  setSfxVolume: (volume: number) => void;
+  sfxMuted: boolean;
+  setSfxMuted: (muted: boolean) => void;
 }
 
 export interface GlobalProviderProps {

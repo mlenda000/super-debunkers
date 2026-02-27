@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useGameContext } from "@/hooks/useGameContext";
+import { useGlobalContext } from "@/hooks/useGlobalContext";
 import type { NewsCard, TacticCardProps } from "@/types/gameTypes";
 import { Droppable } from "@/components/atoms/droppable/Droppable";
 import {
@@ -31,6 +32,7 @@ const GameTable: React.FC<GameTableProps> = ({
 }) => {
   const { gameRoom, gameRound, activeNewsCard, setActiveNewsCard } =
     useGameContext();
+  const { sfxVolume, sfxMuted } = useGlobalContext();
   const currentInfluencer =
     activeNewsCard === undefined ? null : activeNewsCard;
   // Ensure setCurrentInfluencer is always a function
@@ -89,10 +91,17 @@ const GameTable: React.FC<GameTableProps> = ({
 
   const placeSound = useRef(new Audio("/audio/card-placing.mp3"));
 
+  // Keep SFX volume in sync
+  useEffect(() => {
+    placeSound.current.volume = sfxMuted ? 0 : sfxVolume / 100;
+  }, [sfxVolume, sfxMuted]);
+
   const playPlaceSound = useCallback(() => {
     placeSound.current.currentTime = 0;
-    placeSound.current.play().catch(() => {});
-  }, []);
+    if (!sfxMuted) {
+      placeSound.current.play().catch(() => {});
+    }
+  }, [sfxMuted]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;

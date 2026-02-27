@@ -8,16 +8,31 @@
   padding: 8px 12px;
   box-shadow: 0 4px 12px rgba(189, 2, 98, 0.3);
   z-index: 9999;
-  min-width: 150px;
-  /* max-width: fit-content; */
+  min-width: 170px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  gap: 6px;
   touch-action: manipulation;
 }
 
+.volume-slider-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.volume-label {
+  color: white;
+  font-size: clamp(8px, 1.4vh, 12px);
+  min-width: 34px;
+  text-align: right;
+  user-select: none;
+  font-family: inherit;
+}
+
 .volume-slider {
-  width: 100%;
+  flex: 1;
   height: clamp(2px, 1vh, 6px);
   border-radius: 3px;
   background: #ddd;

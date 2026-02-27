@@ -1,12 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import {
   subscribeToMessages,
   getWebSocketInstance,
+  switchRoom,
 } from "@/services/webSocketService";
 import { useGameContext } from "@/hooks/useGameContext";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
-import { sendPlayerLeaves } from "@/utils/gameMessageUtils";
+import { sendPlayerLeaves, sendPlayerEnters } from "@/utils/gameMessageUtils";
+import { PARTYKIT_URL } from "@/services/env";
+import PartySocket from "partysocket";
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
 import GameTable from "@/components/organisms/gameTable/GameTable";
 import ResultModal from "@/components/organisms/modals/resultModal/ResultModal";
@@ -20,6 +23,7 @@ import type { GameDeck } from "@/types/gameTypes";
 const GamePage = () => {
   const { room: roomId } = useParams<{ room: string }>();
   const location = useLocation();
+  const navigate = useNavigate();
   const {
     gameRoom,
     setGameRoom,
@@ -135,12 +139,16 @@ const GamePage = () => {
     }
   }, []);
 
-  // Subscribe to room updates
+  // Subscribe to room updates (and handle reconnection on page refresh)
   useEffect(() => {
     // Mark when subscription was set up (to guard against StrictMode cleanup)
     setupTimeRef.current = Date.now();
 
-    const unsubscribe = subscribeToMessages((message) => {
+    let unsubscribe: () => void = () => {};
+    let cancelled = false;
+
+    // Message handler — shared between normal and reconnection flows
+    const handleMessage = (message: any) => {
       if (message.type === "roomUpdate" && message.room === roomId) {
         // Snapshot the current active card before the roomUpdate overwrites it,
         // so the result modal can show the card from the round that just ended.
@@ -292,9 +300,96 @@ const GamePage = () => {
         // Mark as joined
         hasJoinedRef.current = true;
       }
-    });
+
+      // Redirect to lobby if server rejects the join during reconnection
+      if (message.type === "joinRejected" && !cancelled) {
+        navigate("/game/lobby");
+      }
+    };
+
+    // Async init — handles reconnection on page refresh
+    const init = async () => {
+      const existingSocket = getWebSocketInstance();
+      const needsReconnect =
+        !existingSocket || existingSocket.readyState !== PartySocket.OPEN;
+
+      if (needsReconnect && roomId) {
+        // Page was refreshed or loaded directly — WebSocket not connected
+        const storedName = localStorage.getItem("playerName");
+        const storedPlayerId = localStorage.getItem("playerId");
+        const storedAvatar = localStorage.getItem("avatarImage") || "";
+
+        if (!storedName) {
+          // Can't reconnect without a player name
+          if (!cancelled) navigate("/game/lobby");
+          return;
+        }
+
+        try {
+          // Verify the room still exists on the server
+          const response = await fetch(
+            `${PARTYKIT_URL}/parties/main/${roomId}`,
+          );
+          if (!response.ok || cancelled) {
+            if (!cancelled) navigate("/game/lobby");
+            return;
+          }
+
+          const data = await response.json();
+          if (data.isGameOver) {
+            if (!cancelled) navigate("/game/lobby");
+            return;
+          }
+
+          // Connect WebSocket to the game room
+          const token = localStorage.getItem("authToken") || undefined;
+          await switchRoom({ roomId, token });
+          if (cancelled) return;
+
+          // Subscribe to messages AFTER connection is established
+          unsubscribe = subscribeToMessages(handleMessage);
+
+          // Send playerEnters to rejoin the room (triggers server-side reconnection)
+          const newSocket = getWebSocketInstance();
+          if (newSocket) {
+            const avatarName = storedAvatar.substring(
+              storedAvatar.lastIndexOf("/") + 1,
+            );
+            const sendJoin = () => {
+              if (cancelled) return;
+              sendPlayerEnters(
+                newSocket,
+                {
+                  id: storedPlayerId || undefined,
+                  name: storedName,
+                  avatar: avatarName,
+                  room: roomId,
+                },
+                roomId,
+              );
+              hasJoinedRef.current = true;
+            };
+
+            if (newSocket.readyState === PartySocket.OPEN) {
+              sendJoin();
+            } else {
+              newSocket.addEventListener("open", sendJoin, { once: true });
+            }
+          }
+        } catch (error) {
+          console.error("[GamePage] Reconnection failed:", error);
+          if (!cancelled) navigate("/game/lobby");
+        }
+      } else {
+        // Normal flow: WebSocket already connected (navigated from lobby)
+        unsubscribe = subscribeToMessages(handleMessage);
+      }
+    };
+
+    init();
 
     return () => {
+      cancelled = true;
       // Only send playerLeaves if we've been in the room for a real amount of time
       // (protects against React StrictMode cleanup which happens immediately on setup)
       const timeInRoom = Date.now() - setupTimeRef.current;

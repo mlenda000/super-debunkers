@@ -4,31 +4,42 @@ import "./styles/sound-control.css";
 interface SoundControlProps {
   isOpen: boolean;
   onClose: () => void;
-  onVolumeChange?: (volume: number) => void;
-  initialVolume?: number;
+  // Music
+  onMusicVolumeChange?: (volume: number) => void;
+  initialMusicVolume?: number;
+  isMusicPlaying: boolean;
+  setIsMusicPlaying: (playing: boolean) => void;
+  // SFX
+  onSfxVolumeChange?: (volume: number) => void;
+  initialSfxVolume?: number;
+  isSfxMuted: boolean;
+  setIsSfxMuted: (muted: boolean) => void;
+  // Layout
   position?: { top: number; right: number };
-  isMuted: boolean;
-  setIsMuted: (muted: boolean) => void;
 }
 
 const SoundControl = ({
   isOpen,
   onClose,
-  onVolumeChange,
-  initialVolume = 20,
+  onMusicVolumeChange,
+  initialMusicVolume = 20,
+  isMusicPlaying,
+  setIsMusicPlaying,
+  onSfxVolumeChange,
+  initialSfxVolume = 20,
+  isSfxMuted,
+  setIsSfxMuted,
   position,
-  isMuted,
-  setIsMuted,
 }: SoundControlProps) => {
-  const [volume, setVolume] = useState(initialVolume);
+  const [musicVolume, setMusicVolume] = useState(initialMusicVolume);
+  const [sfxVolume, setSfxVolume] = useState(initialSfxVolume);
   const controlRef = useRef<HTMLDivElement>(null);
-  const muteButtonRef = useRef<HTMLButtonElement>(null);
-  const sliderRef = useRef<HTMLInputElement>(null);
+  const musicMuteRef = useRef<HTMLButtonElement>(null);
 
-  // Focus the mute button when the control opens
+  // Focus the first mute button when the control opens
   useEffect(() => {
-    if (isOpen && muteButtonRef.current) {
-      muteButtonRef.current.focus();
+    if (isOpen && musicMuteRef.current) {
+      musicMuteRef.current.focus();
     }
   }, [isOpen]);
 
@@ -45,7 +56,6 @@ const SoundControl = ({
     };
 
     if (isOpen) {
-      // Small delay to prevent immediate close on mobile due to event propagation
       const timeoutId = setTimeout(() => {
         document.addEventListener("mousedown", handleClickOutside);
         document.addEventListener("touchstart", handleClickOutside);
@@ -81,103 +91,81 @@ const SoundControl = ({
     };
   }, [isOpen, onClose]);
 
-  const updateVolume = useCallback(
+  // --- Music helpers ---
+  const updateMusicVolume = useCallback(
     (newVolume: number) => {
-      const clampedVolume = Math.max(0, Math.min(100, newVolume));
-      setVolume(clampedVolume);
-      if (onVolumeChange) {
-        onVolumeChange(clampedVolume);
-      }
+      const clamped = Math.max(0, Math.min(100, newVolume));
+      setMusicVolume(clamped);
+      onMusicVolumeChange?.(clamped);
 
-      // Update mute state based on volume
-      if (clampedVolume === 0) {
-        setIsMuted(false);
-      } else if (!isMuted) {
-        setIsMuted(true);
+      if (clamped === 0) {
+        setIsMusicPlaying(false);
+      } else if (!isMusicPlaying) {
+        setIsMusicPlaying(true);
       }
     },
-    [onVolumeChange, isMuted, setIsMuted],
+    [onMusicVolumeChange, isMusicPlaying, setIsMusicPlaying],
   );
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseInt(e.target.value);
-    updateVolume(newVolume);
-  };
-
-  // Handle keyboard controls for volume - works on the entire component
-  const handleComponentKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      const step = e.shiftKey ? 10 : 5; // Larger step with shift key
-
-      switch (e.key) {
-        case "ArrowUp":
-        case "ArrowRight":
-        case "+":
-        case "=":
-          e.preventDefault();
-          updateVolume(volume + step);
-          break;
-        case "ArrowDown":
-        case "ArrowLeft":
-        case "-":
-        case "_":
-          e.preventDefault();
-          updateVolume(volume - step);
-          break;
-      }
-    },
-    [volume, updateVolume],
-  );
-
-  // Handle keyboard controls for volume slider
-  const handleSliderKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const step = e.shiftKey ? 10 : 5; // Larger step with shift key
-
-    switch (e.key) {
-      case "ArrowUp":
-      case "ArrowRight":
-      case "+":
-      case "=":
-        e.preventDefault();
-        updateVolume(volume + step);
-        break;
-      case "ArrowDown":
-      case "ArrowLeft":
-      case "-":
-      case "_":
-        e.preventDefault();
-        updateVolume(volume - step);
-        break;
-    }
-  };
-
-  const handleMuteToggle = () => {
-    if (isMuted) {
-      // Currently playing, so mute it
-      setVolume(0);
-      setIsMuted(false);
-      if (onVolumeChange) {
-        onVolumeChange(0);
-      }
+  const handleMusicMuteToggle = () => {
+    if (isMusicPlaying) {
+      setMusicVolume(0);
+      setIsMusicPlaying(false);
+      onMusicVolumeChange?.(0);
     } else {
-      // Currently muted, so unmute it
-      const newVolume = initialVolume || 20;
-      setVolume(newVolume);
-      setIsMuted(true);
-      if (onVolumeChange) {
-        onVolumeChange(newVolume);
-      }
+      const restored = initialMusicVolume || 20;
+      setMusicVolume(restored);
+      setIsMusicPlaying(true);
+      onMusicVolumeChange?.(restored);
     }
   };
 
-  // Handle keyboard activation of mute button (also supports volume keys)
-  const handleMuteKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleMuteToggle();
+  // --- SFX helpers ---
+  const updateSfxVolume = useCallback(
+    (newVolume: number) => {
+      const clamped = Math.max(0, Math.min(100, newVolume));
+      setSfxVolume(clamped);
+      onSfxVolumeChange?.(clamped);
+
+      if (clamped === 0) {
+        setIsSfxMuted(true);
+      } else if (isSfxMuted) {
+        setIsSfxMuted(false);
+      }
+    },
+    [onSfxVolumeChange, isSfxMuted, setIsSfxMuted],
+  );
+
+  const handleSfxMuteToggle = () => {
+    if (!isSfxMuted) {
+      setSfxVolume(0);
+      setIsSfxMuted(true);
+      onSfxVolumeChange?.(0);
+    } else {
+      const restored = initialSfxVolume || 20;
+      setSfxVolume(restored);
+      setIsSfxMuted(false);
+      onSfxVolumeChange?.(restored);
     }
-    // Volume keys are handled by the parent onKeyDown
   };
+
+  // Generic keyboard handler for sliders
+  const makeSliderKeyDown =
+    (update: (v: number) => void, current: number) =>
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      const step = e.shiftKey ? 10 : 5;
+      if (
+        ["ArrowUp", "ArrowRight", "+", "="].includes(e.key)
+      ) {
+        e.preventDefault();
+        update(current + step);
+      } else if (
+        ["ArrowDown", "ArrowLeft", "-", "_"].includes(e.key)
+      ) {
+        e.preventDefault();
+        update(current - step);
+      }
+    };
 
   if (!isOpen) return null;
 
@@ -188,44 +176,83 @@ const SoundControl = ({
       style={position}
       role="group"
       aria-label="Volume controls"
-      onKeyDown={handleComponentKeyDown}
     >
-      <button
-        ref={muteButtonRef}
-        onClick={handleMuteToggle}
-        onKeyDown={handleMuteKeyDown}
-        className="volume-button"
-        aria-label={isMuted ? "Mute audio" : "Unmute audio"}
-        aria-pressed={!isMuted}
-        tabIndex={0}
-      >
-        <img
-          src={
-            !isMuted
-              ? "/images/buttons/mute.webp"
-              : "/images/buttons/audio.webp"
-          }
-          alt=""
-          className="volume-icon"
-          aria-hidden="true"
+      {/* Music row */}
+      <div className="volume-slider-row">
+        <span className="volume-label">Music</span>
+        <button
+          ref={musicMuteRef}
+          onClick={handleMusicMuteToggle}
+          className="volume-button"
+          aria-label={isMusicPlaying ? "Mute music" : "Unmute music"}
+          aria-pressed={isMusicPlaying}
+          tabIndex={0}
+        >
+          <img
+            src={
+              isMusicPlaying
+                ? "/images/buttons/audio.webp"
+                : "/images/buttons/mute.webp"
+            }
+            alt=""
+            className="volume-icon"
+            aria-hidden="true"
+          />
+        </button>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={musicVolume}
+          onChange={(e) => updateMusicVolume(parseInt(e.target.value))}
+          onKeyDown={makeSliderKeyDown(updateMusicVolume, musicVolume)}
+          className="volume-slider"
+          aria-label={`Music volume: ${musicVolume}%`}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={musicVolume}
+          aria-valuetext={`${musicVolume} percent`}
+          tabIndex={0}
         />
-      </button>
-      <input
-        ref={sliderRef}
-        type="range"
-        min="0"
-        max="100"
-        value={volume}
-        onChange={handleVolumeChange}
-        onKeyDown={handleSliderKeyDown}
-        className="volume-slider"
-        aria-label={`Volume: ${volume}%`}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={volume}
-        aria-valuetext={`${volume} percent`}
-        tabIndex={0}
-      />
+      </div>
+
+      {/* SFX row */}
+      <div className="volume-slider-row">
+        <span className="volume-label">SFX</span>
+        <button
+          onClick={handleSfxMuteToggle}
+          className="volume-button"
+          aria-label={isSfxMuted ? "Unmute sound effects" : "Mute sound effects"}
+          aria-pressed={!isSfxMuted}
+          tabIndex={0}
+        >
+          <img
+            src={
+              isSfxMuted
+                ? "/images/buttons/mute.webp"
+                : "/images/buttons/audio.webp"
+            }
+            alt=""
+            className="volume-icon"
+            aria-hidden="true"
+          />
+        </button>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={sfxVolume}
+          onChange={(e) => updateSfxVolume(parseInt(e.target.value))}
+          onKeyDown={makeSliderKeyDown(updateSfxVolume, sfxVolume)}
+          className="volume-slider"
+          aria-label={`Sound effects volume: ${sfxVolume}%`}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={sfxVolume}
+          aria-valuetext={`${sfxVolume} percent`}
+          tabIndex={0}
+        />
+      </div>
     </div>
   );
 };
