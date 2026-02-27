@@ -5,6 +5,7 @@ import Button from "@/components/atoms/button/Button";
 import { PARTYKIT_URL } from "@/services/env";
 import { getWebSocketInstance } from "@/services/webSocketService";
 import { sendCreateRoom } from "@/utils/gameMessageUtils";
+import { isProfane } from "@/services/profanityFilter";
 
 const CreateRoom = ({
   rooms,
@@ -21,14 +22,22 @@ const CreateRoom = ({
   };
 
   const handleSubmit = async () => {
-    if (currentInput === "") {
+    const trimmedGameRoomName = currentInput.trim();
+    if (!trimmedGameRoomName) {
       alert("Please enter a room name");
       return;
     }
 
     // Check if room name already exists locally
-    if (rooms.includes(currentInput)) {
+    if (rooms.includes(trimmedGameRoomName)) {
       alert("A room with that name already exists");
+      return;
+    }
+
+    if (isProfane(trimmedGameRoomName)) {
+      alert(
+        "Please enter a different room name that does not contain profanity.",
+      );
       return;
     }
 
@@ -39,16 +48,16 @@ const CreateRoom = ({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ roomName: currentInput }),
+        body: JSON.stringify({ roomName: trimmedGameRoomName }),
       });
 
       if (response.ok) {
         // Also send via WebSocket to notify other connected clients
         const socket = getWebSocketInstance();
-        sendCreateRoom(socket, currentInput);
+        sendCreateRoom(socket, trimmedGameRoomName);
 
         // Update local state
-        setRooms([...rooms, currentInput]);
+        setRooms([...rooms, trimmedGameRoomName]);
         navigate(`/game/lobby`);
       } else {
         const errorData = await response.json();
@@ -58,8 +67,8 @@ const CreateRoom = ({
       console.error("Error creating room:", error);
       // Fallback: create room locally and notify via WebSocket
       const socket = getWebSocketInstance();
-      sendCreateRoom(socket, currentInput);
-      setRooms([...rooms, currentInput]);
+      sendCreateRoom(socket, trimmedGameRoomName);
+      setRooms([...rooms, trimmedGameRoomName]);
       navigate(`/game/lobby`);
     }
   };

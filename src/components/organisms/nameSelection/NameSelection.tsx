@@ -4,24 +4,31 @@ import { useGlobalContext } from "@/hooks/useGlobalContext";
 import Input from "@/components/atoms/input/Input";
 import AvatarImage from "@/components/atoms/avatarImage/AvatarImage";
 import NextButton from "@/components/atoms/button/Button";
+import { isProfane } from "@/services/profanityFilter";
 
 const NameSelection = () => {
   const navigate = useNavigate();
   const { avatar, playerName, setPlayerName } = useGlobalContext();
 
-  const handleNameChange = (value: string) => {
-    setPlayerName(value);
-    // Sync to localStorage
+  const onValidName = (value: string) => {
     localStorage.setItem("playerName", value);
+    navigate("/game/lobby");
   };
 
   const handleSubmit = () => {
-    if (playerName === "") {
+    const trimmedName = playerName.trim();
+
+    if (!trimmedName) {
       alert("Please enter a name");
       return;
-    } else {
-      navigate("/game/lobby");
     }
+
+    if (isProfane(trimmedName)) {
+      alert("Please enter a different name that does not contain profanity.");
+      return;
+    }
+
+    onValidName(trimmedName);
   };
   return (
     <>
@@ -51,7 +58,7 @@ const NameSelection = () => {
               </label>
               <Input
                 value={playerName}
-                onChange={(e) => handleNameChange(e.target.value)}
+                onChange={(e) => setPlayerName(e.target.value)}
                 placeholder="Enter your name"
                 id="player-name"
                 name="playerName"

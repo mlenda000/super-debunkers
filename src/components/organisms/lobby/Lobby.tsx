@@ -68,19 +68,31 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
         const data = await response.json();
         if (data.rooms && setRoomsRef.current) {
           const currentRooms = roomsRef.current;
-          // Add any new rooms from the server that we don't already have.
-          // Do NOT remove rooms that are missing from the lobby response —
-          // the lobby server can lag behind. Rooms are only removed via the
-          // explicit "roomDeleted" WebSocket message.
           const serverRoomNames = data.rooms.map(
             (r: { name: string }) => r.name,
+          );
+
+          // Reconcile: keep only rooms that still exist on the server,
+          // plus any special entries like "Create room", and add new ones.
+          const reconciledRooms = currentRooms.filter(
+            (r) => r === "Create room" || serverRoomNames.includes(r),
           );
           const newRooms = serverRoomNames.filter(
             (name: string) => !currentRooms.includes(name),
           );
+          const mergedRooms = [...reconciledRooms, ...newRooms];
 
-          if (newRooms.length > 0) {
-            setRoomsRef.current([...currentRooms, ...newRooms]);
+          // Also clear sessionStorage if the stored room no longer exists on the server
+          const storedRoom = sessionStorage.getItem("currentRoom");
+          if (storedRoom && !serverRoomNames.includes(storedRoom)) {
+            sessionStorage.removeItem("currentRoom");
+          }
+
+          if (
+            JSON.stringify(mergedRooms.sort()) !==
+            JSON.stringify(currentRooms.sort())
+          ) {
+            setRoomsRef.current(mergedRooms);
           }
         }
       }
@@ -172,6 +184,11 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
             delete updated[deletedRoomName];
             return updated;
           });
+        }
+        // Clear sessionStorage if the deleted room matches the stored room
+        const storedRoom = sessionStorage.getItem("currentRoom");
+        if (storedRoom && storedRoom === deletedRoomName) {
+          sessionStorage.removeItem("currentRoom");
         }
       }
 
@@ -340,10 +357,13 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
       const storedRoom = sessionStorage.getItem("currentRoom");
       if (storedRoom && playerName) {
         try {
-          const response = await fetch(`${PARTYKIT_URL}/parties/main/${storedRoom}`);
+          const response = await fetch(
+            `${PARTYKIT_URL}/parties/main/${storedRoom}`,
+          );
           if (response.ok) {
             const data = await response.json();
-            const disconnectedNames: string[] = data.disconnectedPlayerNames || [];
+            const disconnectedNames: string[] =
+              data.disconnectedPlayerNames || [];
             // Only auto-rejoin if the server still has this player as disconnected
             if (disconnectedNames.includes(playerName)) {
               // Clear the stored room first to prevent loops
@@ -354,7 +374,10 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
             }
           }
         } catch (error) {
-          console.error("[Lobby] Failed to check stored room for reconnection:", error);
+          console.error(
+            "[Lobby] Failed to check stored room for reconnection:",
+            error,
+          );
         }
         // Room no longer exists or player not in disconnected list — clear stale entry
         sessionStorage.removeItem("currentRoom");
