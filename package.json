@@ -16,6 +16,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.13.2",
+    "bad-words": "^4.0.0",
     "dotenv": "^17.2.3",
     "partysocket": "^1.1.6",
     "react": "^19.2.0",
