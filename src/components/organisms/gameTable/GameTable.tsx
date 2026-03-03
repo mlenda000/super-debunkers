@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useGameContext } from "@/hooks/useGameContext";
-import { useGlobalContext } from "@/hooks/useGlobalContext";
 import type { NewsCard, TacticCardProps } from "@/types/gameTypes";
 import { Droppable } from "@/components/atoms/droppable/Droppable";
 import {
@@ -20,7 +19,15 @@ import TacticCard from "@/components/organisms/tacticCard/TacticCard";
 import categoryCards from "@/data/tacticsCards.json";
 import Scoreboard from "@/components/molecules/scoreBoard/ScoreBoard";
 
-import type { GameTableProps } from "@/types/types";
+interface GameTableProps {
+  setRoundEnd: (val: boolean) => void;
+  roundEnd: boolean;
+  roundHasEnded: boolean;
+  setRoundHasEnded: (val: boolean) => void;
+  gameRoom?: any;
+  isInfoModalOpen: boolean;
+  setIsInfoModalOpen: (val: boolean) => void;
+}
 
 const GameTable: React.FC<GameTableProps> = ({
   setRoundEnd,
@@ -32,7 +39,6 @@ const GameTable: React.FC<GameTableProps> = ({
 }) => {
   const { gameRoom, gameRound, activeNewsCard, setActiveNewsCard } =
     useGameContext();
-  const { sfxVolume, sfxMuted } = useGlobalContext();
   const currentInfluencer =
     activeNewsCard === undefined ? null : activeNewsCard;
   // Ensure setCurrentInfluencer is always a function
@@ -60,9 +66,6 @@ const GameTable: React.FC<GameTableProps> = ({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const playersHandRef = useRef<HTMLDivElement>(null);
 
-  // Track if endOfRound was already sent for current round to prevent loops
-  const endOfRoundSentRef = useRef(false);
-
   // Configure sensors for mouse and touch
   const mouseSensor = useSensor(MouseSensor);
   const touchSensor = useSensor(TouchSensor);
@@ -89,20 +92,6 @@ const GameTable: React.FC<GameTableProps> = ({
     setActiveId(event.active.id);
   };
 
-  const placeSound = useRef(new Audio("/audio/card-placing.mp3"));
-
-  // Keep SFX volume in sync
-  useEffect(() => {
-    placeSound.current.volume = sfxMuted ? 0 : sfxVolume / 100;
-  }, [sfxVolume, sfxMuted]);
-
-  const playPlaceSound = useCallback(() => {
-    placeSound.current.currentTime = 0;
-    if (!sfxMuted) {
-      placeSound.current.play().catch(() => {});
-    }
-  }, [sfxMuted]);
-
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveId(null);
@@ -121,7 +110,6 @@ const GameTable: React.FC<GameTableProps> = ({
         (card) => String(card.id) !== "1",
       );
       setMainTableItems([...removeStartingText, activeCard]);
-      playPlaceSound();
     }
   };
 
@@ -140,9 +128,8 @@ const GameTable: React.FC<GameTableProps> = ({
         (card) => String(card.id) !== "1",
       );
       setMainTableItems([...removeStartingText, cardToMove]);
-      playPlaceSound();
     },
-    [playersHandItems, mainTableItems, playPlaceSound],
+    [playersHandItems, mainTableItems],
   );
 
   useEffect(() => {
@@ -196,69 +183,33 @@ const GameTable: React.FC<GameTableProps> = ({
   );
 
   // All players in the room are ready and have played at least one tactic
-  const roomPlayers = gameRoom?.roomData?.players;
-  const allPlayersReady = useMemo(() => {
-    if (!Array.isArray(roomPlayers) || roomPlayers.length === 0) return false;
-    return roomPlayers.every(
-      (player) => player?.isReady === true && player?.tacticUsed?.length > 0,
-    );
-  }, [roomPlayers]);
-
-  // Reset the endOfRound sent flag when players are no longer ready (new round started properly)
-  // This ensures we don't reset prematurely based on gameRound changes
-  useEffect(() => {
-    if (!allPlayersReady && submitForScoring === false) {
-      // Safe to reset - players are not ready and we're not in scoring mode
-      endOfRoundSentRef.current = false;
-    }
-  }, [allPlayersReady, submitForScoring]);
+  const allPlayersReady = Array.isArray(gameRoom?.roomData?.players)
+    ? gameRoom.roomData.players.length > 0 &&
+      gameRoom.roomData.players.every(
+        (player) =>
+          player?.isReady === true && (player?.tacticUsed?.length ?? 0) > 0,
+      )
+    : false;
 
   useEffect(() => {
-    // Only send endOfRound once per round
-    if (allPlayersReady && !submitForScoring && !endOfRoundSentRef.current) {
-      endOfRoundSentRef.current = true; // Mark as sent immediately to prevent re-entry
+    if (allPlayersReady && !submitForScoring) {
       setRoundHasEnded(true);
-      const players = gameRoom?.roomData?.players || [];
+      const players = gameRoom.roomData.players;
+
       const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
       sendEndOfRound(players as any, gameRound ?? 0, roomName);
       setRoundEnd(true);
       setSubmitForScoring(true);
       setRoundHasEnded(false);
-      // Don't increment resetKey here - let the scoreUpdate message handler do it
-      // This prevents double-incrementing which cancels the card dealing timeout
+      setResetKey((prev) => prev + 1);
     }
   }, [
     allPlayersReady,
     submitForScoring,
     gameRound,
-    gameRoom?.roomData?.players,
-    gameRoom?.room,
-    gameRoom?.roomData?.name,
     setRoundEnd,
     setRoundHasEnded,
   ]);
-
-  // Safety net: recover from stuck scoring state
-  // If submitForScoring has been true for 25s without a scoreUpdate resetting it,
-  // force-reset so the game doesn't permanently lock up
-  useEffect(() => {
-    if (!submitForScoring) return;
-
-    const recoveryTimer = setTimeout(() => {
-      // If we're still in scoring mode after 25s, force recovery
-      if (submitForScoring) {
-        console.warn(
-          "[GameTable] Scoring timeout — forcing recovery to prevent game lock",
-        );
-        setSubmitForScoring(false);
-        setFinishRound(false);
-        setResetKey((prev) => prev + 1);
-        endOfRoundSentRef.current = false;
-      }
-    }, 25000);
-
-    return () => clearTimeout(recoveryTimer);
-  }, [submitForScoring]);
 
   return (
     <DndContext
@@ -273,7 +224,7 @@ const GameTable: React.FC<GameTableProps> = ({
             ref={scrollContainerRef}
             role="region"
             aria-label="Game content area - use arrow keys or swipe to navigate"
-            tabIndex={-1}
+            tabIndex={0}
             onKeyDown={handleKeyDown}
           >
             {/* Grid Row Top - Scoreboard */}
@@ -322,8 +273,6 @@ const GameTable: React.FC<GameTableProps> = ({
                   setSubmitForScoring={setSubmitForScoring}
                   resetKey={resetKey}
                   syncCardIndex={gameRoom?.cardIndex}
-                  onSelectCard={() => setShowingHand(true)}
-                  isDragging={!!activeId}
                 />
               </Droppable>
             </div>
@@ -338,23 +287,20 @@ const GameTable: React.FC<GameTableProps> = ({
               <PlayersHand
                 items={playersHandItems}
                 onMoveCardToTable={handleMoveCardToTable}
-                onCardSelected={() => setShowingHand(false)}
               />
             </div>
           </div>
         </div>
 
-        {/* Mobile navigation button - only show on hand page */}
-        {showingHand && (
-          <button
-            type="button"
-            className="toggle-button on-left"
-            onClick={() => setShowingHand(false)}
-            aria-label="View game table"
-          >
-            ← Table
-          </button>
-        )}
+        {/* Mobile navigation button */}
+        <button
+          className={`toggle-button ${showingHand ? "on-left" : ""}`}
+          onClick={() => setShowingHand(!showingHand)}
+          aria-label={showingHand ? "View game table" : "View your cards"}
+          tabIndex={0}
+        >
+          {showingHand ? "← Table" : "Cards →"}
+        </button>
       </>
 
       {/* DragOverlay renders the dragged card at root level, above all other content */}
