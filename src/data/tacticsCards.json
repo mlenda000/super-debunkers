@@ -10,7 +10,7 @@
   },
   "tactic-2": {
     "tactic": "tricky-jokes",
-    "title": "Jokes that trick people",
+    "title": "Jokes that mislead people",
     "description": "Sharing funny memes as if they’re real news.",
     "image": "/images/tactics/tricky.webp",
     "imageAlt": "Tricky Jokes tactic image",
@@ -55,7 +55,7 @@
   },
   "tactic-7": {
     "tactic": "sock-puppetry",
-    "title": "Sock Puppetry",
+    "title": "Multiple fake online identities",
     "description": "Using fake accounts to make it seem like lots of people agree with something.",
     "image": "/images/tactics/sock.webp",
     "imageAlt": "Sock Puppetry tactic image",

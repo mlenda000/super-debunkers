@@ -1,15 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import {
   subscribeToMessages,
   getWebSocketInstance,
-  switchRoom,
 } from "@/services/webSocketService";
 import { useGameContext } from "@/hooks/useGameContext";
-import { useGlobalContext } from "@/hooks/useGlobalContext";
-import { sendPlayerLeaves, sendPlayerEnters } from "@/utils/gameMessageUtils";
-import { PARTYKIT_URL } from "@/services/env";
-import PartySocket from "partysocket";
+import { sendPlayerLeaves } from "@/utils/gameMessageUtils";
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
 import GameTable from "@/components/organisms/gameTable/GameTable";
 import ResultModal from "@/components/organisms/modals/resultModal/ResultModal";
@@ -23,25 +19,15 @@ import type { GameDeck } from "@/types/gameTypes";
 const GamePage = () => {
   const { room: roomId } = useParams<{ room: string }>();
   const location = useLocation();
-  const navigate = useNavigate();
   const {
     gameRoom,
     setGameRoom,
     setPlayers,
     setIsDeckShuffled,
     setLastScoreUpdatePlayers,
-    setGameRound,
-    activeNewsCard,
-    setActiveNewsCard,
-    setPreviousNewsCard,
-    setEndGame,
   } = useGameContext();
-  const { setThemeStyle } = useGlobalContext();
   const hasJoinedRef = useRef(false);
   const setupTimeRef = useRef<number>(0);
-  const isReconnectRef = useRef(false);
-  // Track active card in a ref so the subscription callback can snapshot it
-  const activeNewsCardRef = useRef(activeNewsCard);
 
   const [showRoundModal, setShowRoundModal] = useState<boolean>(true);
   const [roundEnd, setRoundEnd] = useState<boolean>(false);
@@ -51,38 +37,35 @@ const GamePage = () => {
   const [showResponseModal, setShowResponseModal] = useState<boolean>(false);
   const [showScoreCard, setShowScoreCard] = useState<boolean>(false);
 
-  // Keep the ref in sync with the latest activeNewsCard
-  useEffect(() => {
-    activeNewsCardRef.current = activeNewsCard;
-  }, [activeNewsCard]);
-
-  // Memoized callback setters to prevent unnecessary re-subscriptions
+  // Memoized callback setters with logging to prevent unnecessary re-subscriptions
   const setShowRoundModalWithLog = useCallback((val: boolean) => {
+    console.log(`[GamePage] setShowRoundModal: ${val}`);
     setShowRoundModal(val);
   }, []);
 
   const setRoundEndWithLog = useCallback((val: boolean) => {
+    console.log(`[GamePage] setRoundEnd: ${val}`);
     setRoundEnd(val);
   }, []);
 
   const setShowResponseModalWithLog = useCallback((val: boolean) => {
+    console.log(`[GamePage] setShowResponseModal: ${val}`);
     setShowResponseModal(val);
   }, []);
 
   const setShowScoreCardWithLog = useCallback((val: boolean) => {
+    console.log(`[GamePage] setShowScoreCard: ${val}`);
     setShowScoreCard(val);
   }, []);
 
   // Initialize with navigation state if available
   useEffect(() => {
-    const state = location.state as {
-      gameRoom?: any;
-      currentRound?: number;
-      themeStyle?: string;
-      newsCard?: any;
-      cardIndex?: number;
-    };
+    const state = location.state as { gameRoom?: any };
     if (state?.gameRoom) {
+      console.log(
+        "[GamePage] Initializing with navigation state:",
+        state.gameRoom,
+      );
       setGameRoom?.(state.gameRoom);
 
       if (state.gameRoom.roomData?.players) {
@@ -93,114 +76,84 @@ const GamePage = () => {
         setIsDeckShuffled?.(state.gameRoom.roomData.deck.isShuffled || false);
       }
 
-      // Restore round number from navigation state (critical for reconnection)
-      if (typeof state.currentRound === "number" && state.currentRound > 0) {
-        setGameRound?.(state.currentRound);
-      }
-
-      // Restore theme from navigation state
-      if (state.themeStyle) {
-        setThemeStyle?.(state.themeStyle);
-      }
-
-      // Restore the active news card so the reconnecting player sees
-      // the same card that was in play when they disconnected
-      if (state.newsCard) {
-        setActiveNewsCard?.(state.newsCard);
-      } else if (state.gameRoom.roomData?.newsCard) {
-        setActiveNewsCard?.(state.gameRoom.roomData.newsCard);
-      }
-
-      // If the round is > 1 or we have a cardIndex, this is a reconnection
-      // — skip the "Round X" intro modal since the player is mid-game
-      const round = state.currentRound ?? 1;
-      const cardIdx = state.cardIndex ?? state.gameRoom?.cardIndex;
-      if (round > 1 || (cardIdx !== undefined && cardIdx > 0)) {
-        isReconnectRef.current = true;
-        setShowRoundModal(false);
-      }
-
       // Mark that player has joined a room
       hasJoinedRef.current = true;
     }
-
-    // Store current room in sessionStorage for reconnection after page refresh/disconnect
-    if (roomId) {
-      sessionStorage.setItem("currentRoom", roomId);
-    }
-  }, [location.state, roomId]);
+  }, [location.state]);
 
   const roundStartRef = useRef<boolean>(false); // Track if this is the first round
 
-  // Mark first round as started
+  // Hide initial round modal after 2 seconds
   useEffect(() => {
     if (!roundStartRef.current) {
       roundStartRef.current = true;
+      console.log(
+        "[GamePage] Starting game, showing initial RoundModal for 2 seconds",
+      );
+      const timer = setTimeout(() => {
+        console.log("[GamePage] Hiding initial RoundModal");
+        setShowRoundModal(false);
+      }, 2000);
+      return () => clearTimeout(timer);
     }
   }, []);
 
-  // Subscribe to room updates (and handle reconnection on page refresh)
+  // Hide round modal after 2 seconds when shown between rounds (but only if we're showing it)
   useEffect(() => {
+    if (showRoundModal && roundStartRef.current) {
+      console.log(
+        "[GamePage] RoundModal shown between rounds, will hide after 2 seconds",
+      );
+      const timer = setTimeout(() => {
+        console.log("[GamePage] Hiding RoundModal for next round");
+        setShowRoundModal(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showRoundModal]);
+
+  // Subscribe to room updates
+  useEffect(() => {
+    console.log(
+      "[GamePage] Setting up message subscription for roomId:",
+      roomId,
+    );
+
     // Mark when subscription was set up (to guard against StrictMode cleanup)
     setupTimeRef.current = Date.now();
 
-    let unsubscribe: () => void = () => {};
-    let cancelled = false;
-
-    // Message handler — shared between normal and reconnection flows
-    const handleMessage = (message: any) => {
+    const unsubscribe = subscribeToMessages((message) => {
       if (message.type === "roomUpdate" && message.room === roomId) {
-        // Snapshot the current active card before the roomUpdate overwrites it,
-        // so the result modal can show the card from the round that just ended.
-        if (message.newsCard && activeNewsCardRef.current) {
-          setPreviousNewsCard?.(activeNewsCardRef.current);
-        }
+        console.log(
+          "[GamePage] ✅ Processing roomUpdate - updating context with players:",
+          message.players,
+        );
 
-        setGameRoom?.((prev) => ({
-          count: message.count || prev?.count || 0,
-          room: message.room || prev?.room || "",
+        setGameRoom?.({
+          count: message.count || 0,
+          room: message.room || "",
           type: "roomUpdate",
-          cardIndex: message.cardIndex ?? prev?.cardIndex,
           roomData: {
-            count: message.count || prev?.roomData?.count || 0,
-            players: message.players || prev?.roomData?.players || [],
-            name: message.room || prev?.roomData?.name || "",
-            // Preserve existing deck if not provided in message
-            deck: message.deck
-              ? (message.deck as GameDeck)
-              : prev?.roomData?.deck,
-            newsCard: message.newsCard || prev?.roomData?.newsCard,
+            count: message.count || 0,
+            players: message.players || [],
+            name: message.room || "",
+            deck: message.deck as GameDeck,
           },
-          isGameOver: message.isGameOver ?? prev?.isGameOver,
-          maxRounds: message.maxRounds ?? prev?.maxRounds,
-        }));
+        });
 
         if (message.players) {
+          console.log("[GamePage] Setting players to:", message.players);
           setPlayers?.(message.players);
         }
 
         if (message.deck) {
           setIsDeckShuffled?.(message.deck.isShuffled || false);
         }
-
-        // Sync round from server if provided (for joining mid-game)
-        if (
-          typeof message.currentRound === "number" &&
-          message.currentRound > 0
-        ) {
-          setGameRound?.(message.currentRound);
-        }
-
-        // Sync theme/background from server if provided
-        if (message.themeStyle) {
-          setThemeStyle?.(message.themeStyle);
-        }
-
-        // Sync newsCard from server if provided
-        if (message.newsCard) {
-          // Set the active news card so MainTable displays it
-          setActiveNewsCard?.(message.newsCard);
-        }
+      } else if (message.type === "roomUpdate") {
+        console.log("[GamePage] ❌ Ignoring roomUpdate for different room", {
+          messageRoom: message.room,
+          currentRoom: roomId,
+        });
       }
 
       if (message.type === "playerReady") {
@@ -220,7 +173,12 @@ const GamePage = () => {
       }
 
       if (message.type === "scoreUpdate") {
+        console.log("[GamePage] Received scoreUpdate message:", message);
         if (message.room === roomId && message.players) {
+          console.log(
+            "[GamePage] ✅ ScoreUpdate for this room, players have scoring data:",
+            message.players,
+          );
           setPlayers?.(message.players);
           setLastScoreUpdatePlayers?.(message.players);
 
@@ -231,187 +189,45 @@ const GamePage = () => {
               ...prev.roomData,
               players: message.players,
             },
-            isGameOver: message.isGameOver ?? prev.isGameOver,
-            maxRounds: message.maxRounds ?? prev.maxRounds,
           }));
-
-          // Set endGame from server signal
-          if (message.isGameOver) {
-            setEndGame?.(true);
-          }
-        }
-      }
-
-      // Handle reconnection state — server sends this ONLY to a reconnecting
-      // player with their full preserved state (score, streak, round, card, etc.)
-      if (message.type === "reconnectState" && message.room === roomId) {
-        isReconnectRef.current = true;
-
-        // Restore full game room state
-        setGameRoom?.((prev) => ({
-          count: message.count || prev?.count || 0,
-          room: message.room || prev?.room || "",
-          type: "roomUpdate",
-          cardIndex: message.cardIndex,
-          isGameOver: message.isGameOver ?? prev?.isGameOver,
-          maxRounds: message.maxRounds ?? prev?.maxRounds,
-          roomData: {
-            count: message.count || prev?.roomData?.count || 0,
-            players: message.players || prev?.roomData?.players || [],
-            name: message.room || prev?.roomData?.name || "",
-            deck: message.deck
-              ? (message.deck as GameDeck)
-              : prev?.roomData?.deck,
-            newsCard: message.newsCard || prev?.roomData?.newsCard,
-          },
-        }));
-
-        // Restore players with full scoring data
-        if (message.players) {
-          setPlayers?.(message.players);
-        }
-
-        // Restore deck
-        if (message.deck) {
-          setIsDeckShuffled?.(message.deck.isShuffled || false);
-        }
-
-        // Restore round number
-        if (
-          typeof message.currentRound === "number" &&
-          message.currentRound > 0
-        ) {
-          setGameRound?.(message.currentRound);
-        }
-
-        // Restore theme
-        if (message.themeStyle) {
-          setThemeStyle?.(message.themeStyle);
-        }
-
-        // Restore the exact news card that was in play
-        if (message.newsCard) {
-          setActiveNewsCard?.(message.newsCard);
-        }
-
-        // Skip the round intro modal — player is returning mid-game
-        setShowRoundModal(false);
-
-        // Mark as joined
-        hasJoinedRef.current = true;
-      }
-
-      // Redirect to lobby if server rejects the join during reconnection
-      if (message.type === "joinRejected" && !cancelled) {
-        navigate("/game/lobby");
-      }
-    };
-
-    // Async init — handles reconnection on page refresh
-    const init = async () => {
-      const existingSocket = getWebSocketInstance();
-      const needsReconnect =
-        !existingSocket || existingSocket.readyState !== PartySocket.OPEN;
-
-      if (needsReconnect && roomId) {
-        // Page was refreshed or loaded directly — WebSocket not connected
-        const storedName = localStorage.getItem("playerName");
-        const storedPlayerId = localStorage.getItem("playerId");
-        const storedAvatar = localStorage.getItem("avatarImage") || "";
-
-        if (!storedName) {
-          // Can't reconnect without a player name
-          if (!cancelled) navigate("/game/lobby");
-          return;
-        }
-
-        try {
-          // Verify the room still exists on the server
-          const response = await fetch(
-            `${PARTYKIT_URL}/parties/main/${roomId}`,
+        } else {
+          console.log(
+            "[GamePage] ❌ ScoreUpdate doesn't match room or has no players",
+            {
+              messageRoom: message.room,
+              currentRoom: roomId,
+              hasPlayers: !!message.players,
+            },
           );
-          if (!response.ok || cancelled) {
-            if (!cancelled) navigate("/game/lobby");
-            return;
-          }
-
-          const data = await response.json();
-          if (data.isGameOver) {
-            if (!cancelled) navigate("/game/lobby");
-            return;
-          }
-
-          // Connect WebSocket to the game room
-          const token = localStorage.getItem("authToken") || undefined;
-          await switchRoom({ roomId, token });
-          if (cancelled) return;
-
-          // Subscribe to messages AFTER connection is established
-          unsubscribe = subscribeToMessages(handleMessage);
-
-          // Send playerEnters to rejoin the room (triggers server-side reconnection)
-          const newSocket = getWebSocketInstance();
-          if (newSocket) {
-            const avatarName = storedAvatar.substring(
-              storedAvatar.lastIndexOf("/") + 1,
-            );
-            const sendJoin = () => {
-              if (cancelled) return;
-              sendPlayerEnters(
-                newSocket,
-                {
-                  id: storedPlayerId || undefined,
-                  name: storedName,
-                  avatar: avatarName,
-                  room: roomId,
-                },
-                roomId,
-              );
-              hasJoinedRef.current = true;
-            };
-
-            if (newSocket.readyState === PartySocket.OPEN) {
-              sendJoin();
-            } else {
-              newSocket.addEventListener("open", sendJoin, { once: true });
-            }
-          }
-        } catch (error) {
-          console.error("[GamePage] Reconnection failed:", error);
-          if (!cancelled) navigate("/game/lobby");
         }
-      } else {
-        // Normal flow: WebSocket already connected (navigated from lobby)
-        unsubscribe = subscribeToMessages(handleMessage);
       }
-    };
-
-    init();
+    });
 
     return () => {
-      cancelled = true;
       // Only send playerLeaves if we've been in the room for a real amount of time
       // (protects against React StrictMode cleanup which happens immediately on setup)
       const timeInRoom = Date.now() - setupTimeRef.current;
       if (hasJoinedRef.current && timeInRoom > 500) {
         const socket = getWebSocketInstance();
         if (socket && roomId) {
+          console.log("[GamePage] Sending playerLeaves for room:", roomId);
           sendPlayerLeaves(socket, roomId);
         }
-        // Clear stored room since the player is intentionally leaving
-        sessionStorage.removeItem("currentRoom");
       }
       unsubscribe();
     };
   }, [roomId]);
 
   // Ensure we notify server when window/tab closes
-  // NOTE: We do NOT clear sessionStorage here so the player can rejoin on refresh
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (hasJoinedRef.current) {
         const socket = getWebSocketInstance();
         if (socket && roomId) {
+          console.log(
+            "[GamePage] Window closing, sending playerLeaves for room:",
+            roomId,
+          );
           sendPlayerLeaves(socket, roomId);
         }
       }
@@ -420,12 +236,16 @@ const GamePage = () => {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [roomId]);
 
-  const showModalBackdrop =
-    showRoundModal ||
-    roundEnd ||
-    showResponseModal ||
-    showScoreCard ||
-    isEndGame;
+  // Log all modal state changes for debugging
+  useEffect(() => {
+    console.log("[GamePage] Modal states:", {
+      showRoundModal,
+      roundEnd,
+      showResponseModal,
+      showScoreCard,
+      isEndGame,
+    });
+  }, [showRoundModal, roundEnd, showResponseModal, showScoreCard, isEndGame]);
 
   return (
     <div className="game-page">
@@ -439,10 +259,7 @@ const GamePage = () => {
         isInfoModalOpen={isInfoModalOpen}
         setIsInfoModalOpen={setIsInfoModalOpen}
       />
-      {showModalBackdrop && <div className="modal-backdrop" />}
-      {showRoundModal && (
-        <RoundModal onClose={() => setShowRoundModal(false)} />
-      )}
+      {showRoundModal && <RoundModal />}
       {roundEnd && (
         <ResultModal
           setRoundEnd={setRoundEndWithLog}
