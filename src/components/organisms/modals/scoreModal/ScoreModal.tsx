@@ -51,9 +51,7 @@ const ScoreModal = ({
   ]);
 
   useEffect(() => {
-    console.log("[ScoreModal] Showing score for 3 seconds");
     const timer = setTimeout(() => {
-      console.log("[ScoreModal] Auto-advancing to next round");
       handleDeal();
     }, 3000);
 

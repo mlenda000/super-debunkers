@@ -39,22 +39,18 @@ const GamePage = () => {
 
   // Memoized callback setters with logging to prevent unnecessary re-subscriptions
   const setShowRoundModalWithLog = useCallback((val: boolean) => {
-    console.log(`[GamePage] setShowRoundModal: ${val}`);
     setShowRoundModal(val);
   }, []);
 
   const setRoundEndWithLog = useCallback((val: boolean) => {
-    console.log(`[GamePage] setRoundEnd: ${val}`);
     setRoundEnd(val);
   }, []);
 
   const setShowResponseModalWithLog = useCallback((val: boolean) => {
-    console.log(`[GamePage] setShowResponseModal: ${val}`);
     setShowResponseModal(val);
   }, []);
 
   const setShowScoreCardWithLog = useCallback((val: boolean) => {
-    console.log(`[GamePage] setShowScoreCard: ${val}`);
     setShowScoreCard(val);
   }, []);
 
@@ -62,10 +58,6 @@ const GamePage = () => {
   useEffect(() => {
     const state = location.state as { gameRoom?: any };
     if (state?.gameRoom) {
-      console.log(
-        "[GamePage] Initializing with navigation state:",
-        state.gameRoom,
-      );
       setGameRoom?.(state.gameRoom);
 
       if (state.gameRoom.roomData?.players) {
@@ -87,11 +79,7 @@ const GamePage = () => {
   useEffect(() => {
     if (!roundStartRef.current) {
       roundStartRef.current = true;
-      console.log(
-        "[GamePage] Starting game, showing initial RoundModal for 2 seconds",
-      );
       const timer = setTimeout(() => {
-        console.log("[GamePage] Hiding initial RoundModal");
         setShowRoundModal(false);
       }, 2000);
       return () => clearTimeout(timer);
@@ -101,11 +89,7 @@ const GamePage = () => {
   // Hide round modal after 2 seconds when shown between rounds (but only if we're showing it)
   useEffect(() => {
     if (showRoundModal && roundStartRef.current) {
-      console.log(
-        "[GamePage] RoundModal shown between rounds, will hide after 2 seconds",
-      );
       const timer = setTimeout(() => {
-        console.log("[GamePage] Hiding RoundModal for next round");
         setShowRoundModal(false);
       }, 2000);
       return () => clearTimeout(timer);
@@ -114,21 +98,11 @@ const GamePage = () => {
 
   // Subscribe to room updates
   useEffect(() => {
-    console.log(
-      "[GamePage] Setting up message subscription for roomId:",
-      roomId,
-    );
-
     // Mark when subscription was set up (to guard against StrictMode cleanup)
     setupTimeRef.current = Date.now();
 
     const unsubscribe = subscribeToMessages((message) => {
       if (message.type === "roomUpdate" && message.room === roomId) {
-        console.log(
-          "[GamePage] ✅ Processing roomUpdate - updating context with players:",
-          message.players,
-        );
-
         setGameRoom?.({
           count: message.count || 0,
           room: message.room || "",
@@ -142,18 +116,12 @@ const GamePage = () => {
         });
 
         if (message.players) {
-          console.log("[GamePage] Setting players to:", message.players);
           setPlayers?.(message.players);
         }
 
         if (message.deck) {
           setIsDeckShuffled?.(message.deck.isShuffled || false);
         }
-      } else if (message.type === "roomUpdate") {
-        console.log("[GamePage] ❌ Ignoring roomUpdate for different room", {
-          messageRoom: message.room,
-          currentRoom: roomId,
-        });
       }
 
       if (message.type === "playerReady") {
@@ -173,12 +141,7 @@ const GamePage = () => {
       }
 
       if (message.type === "scoreUpdate") {
-        console.log("[GamePage] Received scoreUpdate message:", message);
         if (message.room === roomId && message.players) {
-          console.log(
-            "[GamePage] ✅ ScoreUpdate for this room, players have scoring data:",
-            message.players,
-          );
           setPlayers?.(message.players);
           setLastScoreUpdatePlayers?.(message.players);
 
@@ -190,15 +153,6 @@ const GamePage = () => {
               players: message.players,
             },
           }));
-        } else {
-          console.log(
-            "[GamePage] ❌ ScoreUpdate doesn't match room or has no players",
-            {
-              messageRoom: message.room,
-              currentRoom: roomId,
-              hasPlayers: !!message.players,
-            },
-          );
         }
       }
     });
@@ -210,7 +164,6 @@ const GamePage = () => {
       if (hasJoinedRef.current && timeInRoom > 500) {
         const socket = getWebSocketInstance();
         if (socket && roomId) {
-          console.log("[GamePage] Sending playerLeaves for room:", roomId);
           sendPlayerLeaves(socket, roomId);
         }
       }
@@ -224,10 +177,6 @@ const GamePage = () => {
       if (hasJoinedRef.current) {
         const socket = getWebSocketInstance();
         if (socket && roomId) {
-          console.log(
-            "[GamePage] Window closing, sending playerLeaves for room:",
-            roomId,
-          );
           sendPlayerLeaves(socket, roomId);
         }
       }
@@ -235,17 +184,6 @@ const GamePage = () => {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [roomId]);
-
-  // Log all modal state changes for debugging
-  useEffect(() => {
-    console.log("[GamePage] Modal states:", {
-      showRoundModal,
-      roundEnd,
-      showResponseModal,
-      showScoreCard,
-      isEndGame,
-    });
-  }, [showRoundModal, roundEnd, showResponseModal, showScoreCard, isEndGame]);
 
   return (
     <div className="game-page">

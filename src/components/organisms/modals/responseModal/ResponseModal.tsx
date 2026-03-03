@@ -34,21 +34,6 @@ const ResponseModal = ({
     (p) => p.name === currentPlayerName,
   );
 
-  console.log("[ResponseModal] Debug:", {
-    currentPlayerName,
-    currentPlayer,
-    hasWasCorrect: typeof currentPlayer?.wasCorrect !== "undefined",
-    wasCorrect: currentPlayer?.wasCorrect,
-    streak: currentPlayer?.streak,
-    hasStreak: currentPlayer?.hasStreak,
-    sourcePlayers: sourcePlayers?.map((p) => ({
-      name: p.name,
-      wasCorrect: p.wasCorrect,
-      streak: p.streak,
-      hasStreak: p.hasStreak,
-    })),
-  });
-
   const responseMsg: ResponseMessage = {
     wasCorrect: currentPlayer?.wasCorrect ?? false,
     streak: currentPlayer?.streak ?? 0,
@@ -59,20 +44,9 @@ const ResponseModal = ({
   const hasScoring = typeof currentPlayer?.wasCorrect !== "undefined";
 
   useEffect(() => {
-    console.log(
-      "[ResponseModal] useEffect triggered, hasScoring:",
-      hasScoring,
-      "currentPlayer:",
-      currentPlayer,
-    );
-
     // Always set a timeout to advance - either when data arrives or after max wait
     const advanceTimer = setTimeout(
       () => {
-        console.log(
-          "[ResponseModal] Timeout reached or data available, advancing to score modal. hasScoring:",
-          hasScoring,
-        );
         setShowScoreCard(true);
         setShowResponseModal(false);
       },

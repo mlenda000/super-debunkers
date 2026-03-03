@@ -127,7 +127,6 @@ const handleClick = async (name: string, room: string, avatarPath: string) => {
 
     // Fallback navigation after 2 seconds
     setTimeout(() => {
-      console.log(`[Lobby] Timeout reached, navigating to game anyway`);
       unsubscribe();
       navigate(`/game/${room}`);
     }, 2000);
@@ -197,13 +196,13 @@ useEffect(() => {
   // sendInfluencerReady auto-fetches socket
   sendInfluencerReady(
     currentInfluencer?.villain as ThemeStyle,
-    tactic as string[]
+    tactic as string[],
   );
 }, [currentInfluencer]);
 
 const handlePlayerReady = () => {
   const updatedPlayers = (gameRoom?.roomData?.players || []).map((p) =>
-    p?.name === name ? { ...p, isReady: true } : p
+    p?.name === name ? { ...p, isReady: true } : p,
   );
 
   const socket = getWebSocketInstance();
