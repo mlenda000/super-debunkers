@@ -189,25 +189,44 @@ GamePage renders with MainTable & GameTable components
 useEffect(() => {
   if (!currentInfluencer) return;
 
-  setThemeStyle(currentInfluencer?.villain as ThemeStyle);
+  setThemeStyle((currentInfluencer?.villain as ThemeStyle) || "all");
   const tactic = Array.isArray(currentInfluencer?.tacticUsed)
     ? currentInfluencer?.tacticUsed
     : [currentInfluencer?.tacticUsed];
+  const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
 
-  // sendInfluencerReady auto-fetches socket
+  // sendInfluencerReady auto-fetches socket, now includes newsCard and room
   sendInfluencerReady(
+    currentInfluencer,
     currentInfluencer?.villain as ThemeStyle,
-    tactic as string[]
+    tactic as string[],
+    roomName,
   );
 }, [currentInfluencer]);
 
 const handlePlayerReady = () => {
-  const updatedPlayers = (gameRoom?.roomData?.players || []).map((p) =>
-    p?.name === name ? { ...p, isReady: true } : p
-  );
+  // Prevent duplicate sends if already marked ready or if no cards placed
+  if (playerReady || !finishRound) return;
+
+  // Get the tactics placed on the table (by category name, e.g. "clickbait")
+  const tacticIds = mainTableItems
+    .filter((card) => String(card.id) !== "1")
+    .map((card) => card.category);
+
+  if (tacticIds.length === 0) return;
+
+  // Match player by ID OR by name (inclusive fallback)
+  const updatedPlayers = (gameRoom?.roomData?.players || []).map((p) => {
+    const isCurrentPlayer =
+      (currentPlayerId && p?.id === currentPlayerId) || p?.name === name;
+    return isCurrentPlayer ? { ...p, isReady: true, tacticUsed: tacticIds } : p;
+  });
 
   const socket = getWebSocketInstance();
-  sendPlayerReady(socket, updatedPlayers as any);
+  const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
+  sendPlayerReady(socket, updatedPlayers as any, roomName);
+
+  // Optimistically update local context
   setPlayers?.(updatedPlayers);
   setGameRoom?.({
     ...gameRoom,
@@ -216,6 +235,14 @@ const handlePlayerReady = () => {
   setPlayerReady(true);
 };
 ```
+
+**PlayArea (PlayArea.tsx)**
+
+- Renders empty card slots based on `tacticUsed.length`
+- Slot buttons are **enabled on desktop** (`onSelectCard` scrolls to hand) and **disabled on mobile** (`onSelectCard` is `undefined`)
+- Cards can be placed via drag-and-drop (desktop) or tap-to-select (mobile)
+- Played cards can be returned to hand via `handleReturnCard`
+- Returning all cards sends `playerNotReady` and resets the ready state
 
 **Server (server.ts)**
 
@@ -240,20 +267,69 @@ Case: "playerNotReady"
 **Client (GameTable.tsx)**
 
 ```typescript
-useEffect(() => {
-  if (allPlayersReady && !submitForScoring) {
-    setRoundHasEnded(true);
-    const players = gameRoom.roomData.players;
-    const player = players.find((p: Player) => p.name === playerName);
+// allPlayersReady is memoized from roomPlayers
+const allPlayersReady = useMemo(() => {
+  if (!Array.isArray(roomPlayers) || roomPlayers.length === 0) return false;
+  return roomPlayers.every(
+    (player) => player?.isReady === true && player?.tacticUsed?.length > 0,
+  );
+}, [roomPlayers]);
 
-    // sendEndOfRound now takes (players, round?, socket?) signature
-    sendEndOfRound([player], gameRound ?? 0);
+useEffect(() => {
+  // Only send endOfRound once per round (guarded by endOfRoundSentRef)
+  if (allPlayersReady && !submitForScoring && !endOfRoundSentRef.current) {
+    endOfRoundSentRef.current = true;
+    setRoundHasEnded(true);
+    const players = gameRoom?.roomData?.players || [];
+    const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
+    sendEndOfRound(players as any, gameRound ?? 0, roomName);
     setRoundEnd(true);
     setSubmitForScoring(true);
     setRoundHasEnded(false);
+    // Reset cards immediately so the table is clear before modals start
+    setResetKey((prev) => prev + 1);
   }
-}, [allPlayersReady, submitForScoring, gameRound, playerName, ...]);
+}, [allPlayersReady, submitForScoring, gameRound, ...]);
 ```
+
+**Card Reset via resetKey (MainTable.tsx)**
+
+```typescript
+// When resetKey increments, MainTable clears the play area immediately:
+useEffect(() => {
+  if (resetKey === 0 || resetKey === lastResetKeyRef.current) return;
+  lastResetKeyRef.current = resetKey;
+
+  setPlayersHandItems(originalItems); // Return all cards to hand
+  setPlayerReady(false);
+  setMainTableItems([]); // Clear the play area
+  setSubmitForScoring(false);
+  setFinishRound(false);
+}, [resetKey]);
+```
+
+**scoreUpdate Subscription (GameTable.tsx)**
+
+```typescript
+// The scoreUpdate handler avoids double-resetting when this client
+// already triggered the round end:
+if (
+  (message.type === "scoreUpdate" || message.type === "endOfRound") &&
+  message.room === currentRoom
+) {
+  setRoundEnd(true);
+  setSubmitForScoring(true);
+  setFinishRound(false);
+  // Only bump resetKey if this client didn't already reset via allPlayersReady
+  if (!endOfRoundSentRef.current) {
+    setResetKey((prev) => prev + 1);
+  }
+}
+```
+
+**Safety Net (GameTable.tsx)**
+
+- If `submitForScoring` remains true for 25 seconds without a scoreUpdate, a recovery timer force-resets the state to prevent permanent game lock.
 
 **Server (server.ts)**
 
@@ -270,9 +346,15 @@ Case: "endOfRound"
 ```
 All players mark ready
     ↓
-GameTable detects allPlayersReady condition
+GameTable detects allPlayersReady condition (memoized)
     ↓
-sendEndOfRound([player], round) called → auto-fetches socket
+endOfRoundSentRef prevents duplicate sends
+    ↓
+sendEndOfRound(players, round, room) called → auto-fetches socket
+    ↓
+resetKey incremented → MainTable clears play area IMMEDIATELY
+    ↓
+setRoundEnd(true) → modal sequence begins
     ↓
 Server receives endOfRound
     ↓
@@ -280,11 +362,11 @@ Server calculates scores
     ↓
 Server broadcasts scoreUpdate
     ↓
-Client receives scoreUpdate
+Client receives scoreUpdate (no double-reset thanks to endOfRoundSentRef guard)
     ↓
-ResultModal displays with scores
+Modal sequence: ResultModal (9s) → ResponseModal (3s) → ScoreModal (3s) → RoundModal (1.7s)
     ↓
-Next round begins or game ends (if round 5 or final)
+Next round begins or game ends (if isGameOver)
 ```
 
 ---
@@ -383,9 +465,10 @@ Client updates local context & UI
 
 **Client**
 
-- GlobalProvider: playerId, playerName, avatar, auth
-- GameProvider: players, gameRoom, currentPlayer, messages, customState, etc.
+- GlobalProvider: playerId, playerName, avatar, auth, sfxVolume, sfxMuted, themeStyle
+- GameProvider: players, gameRoom, currentPlayer, gameRound, activeNewsCard, previousNewsCard, lastScoreUpdatePlayers, endGame, etc.
 - localStorage: playerId, playerIdTimestamp, playerName, avatarImage, authToken
+- sessionStorage: currentRoom (for reconnection after page refresh)
 
 **Server**
 
@@ -426,11 +509,15 @@ Client updates local context & UI
 
 - `sendGetPlayerId(socket?)` - Auto-fetches socket if not provided
 - `sendEnteredLobby(socket?, room, avatar?, name?)` - Auto-fetches socket if not provided
-- `sendPlayerEnters(socket?, player, room)` - Takes socket or uses connection
-- `sendInfluencerReady(villain, tactic)` - Auto-fetches socket
-- `sendPlayerReady(socket?, players)` - Takes socket
-- `sendPlayerNotReady(socket?, players)` - Takes socket
-- `sendEndOfRound(players, round?, socket?)` - Auto-fetches socket if not provided
+- `sendPlayerEnters(socket, player, room)` - Takes socket, sends playerEnters with player data
+- `sendInfluencerReady(newsCard, villain?, tactic?, room?)` - Auto-fetches socket; sends full newsCard + villain + tactic + room
+- `sendPlayerReady(socket, players, room?)` - Takes socket; sends updated players array with room
+- `sendPlayerNotReady(socket, players, room?)` - Takes socket; sends players with isReady=false
+- `sendPlayerLeaves(socket, room?)` - Takes socket; notifies server player left
+- `sendEndOfRound(players, round?, room?, socket?)` - Auto-fetches socket; sends only scoring-relevant player data (id, name, avatar, tacticUsed)
+- `sendCreateRoom(socket?, roomName)` - Auto-fetches socket; creates a new room
+- `sendGetAvailableRooms(socket?)` - Auto-fetches socket; requests room list
+- `sendEndGame(socket?, room)` - Auto-fetches socket; ends the game
 
 ### webSocketService.ts
 
@@ -442,14 +529,96 @@ Client updates local context & UI
 
 ---
 
+## Component Hierarchy (Game Page)
+
+```
+GamePage
+├── RotateScreen
+├── GameTable (DndContext wrapper)
+│   ├── Scoreboard
+│   ├── MainTable (wrapped in Droppable)
+│   │   ├── NewsCard (current influencer card)
+│   │   └── PlayArea
+│   │       ├── PlayedCard (for each placed tactic)
+│   │       ├── Slot buttons (empty card slots, enabled on desktop)
+│   │       └── Ready button (finish round)
+│   ├── PlayersHand (tactic cards to choose from)
+│   ├── Toggle button (mobile only, "← Table")
+│   └── DragOverlay (renders dragged card above all content)
+├── Modal backdrop (shared dark overlay)
+├── RoundModal → ResultModal → ResponseModal → ScoreModal → EndGameModal
+└── InfoModal
+```
+
+---
+
+## End-of-Round Modal Sequence
+
+All modals use `useModalFade` (150ms CSS fade-out before dismiss callback).
+
+| Step | Modal             | Display Time                    | Trigger to Next              |
+| ---- | ----------------- | ------------------------------- | ---------------------------- |
+| 1    | **RoundModal**    | 1.7s (auto-close)               | Game resumes                 |
+| 2    | **ResultModal**   | 9s (with data) / 15s (max)      | → ResponseModal              |
+| 3    | **ResponseModal** | 3s (with data) / 10s (fallback) | → ScoreModal                 |
+| 4    | **ScoreModal**    | 3s                              | → RoundModal or EndGameModal |
+| 5    | **EndGameModal**  | User-driven                     | —                            |
+
+**Cards are cleared from the play area BEFORE the modal sequence starts** (resetKey is incremented in the allPlayersReady effect, not deferred to scoreUpdate).
+
+---
+
+## Reconnection Flow (Page Refresh / Disconnect)
+
+**GamePage.tsx** handles reconnection when the WebSocket is not connected:
+
+```
+Page loads without active WebSocket
+    ↓
+Check sessionStorage for currentRoom
+    ↓
+Verify room still exists via HTTP fetch to server
+    ↓
+switchRoom({ roomId }) → establishes WebSocket connection
+    ↓
+subscribeToMessages() for handleMessage
+    ↓
+sendPlayerEnters() with stored player data (name, id, avatar)
+    ↓
+Server detects returning player → sends "reconnectState" message
+    ↓
+Client restores: gameRoom, players, deck, round, theme, newsCard
+    ↓
+Skip RoundModal (isReconnectRef = true)
+    ↓
+Game resumes from current state
+```
+
+**Key reconnection details:**
+
+- `sessionStorage.currentRoom` persists across page refreshes but not tab close
+- `previousNewsCard` is snapshotted before roomUpdate overwrites the active card
+- If room doesn't exist or game is over, player is redirected to lobby
+- `joinRejected` message from server also triggers lobby redirect
+
+---
+
 ## Key Improvements Made
 
-1. **sendGetPlayerId**: Now auto-fetches socket via `getWebSocketInstance()` if not passed
-2. **sendEnteredLobby**: Now auto-fetches socket if not passed (accepts `undefined`)
-3. **sendEndOfRound**: Signature changed to `(players, round?, socket?)` to match usage in GameTable
-4. **GlobalProvider**: Added logging and proper socket initialization before sending playerId request
-5. **Scoreboard**: "Home" button → "Lobby" button that calls `returnToLobby()` instead of navigating to home
-6. **returnToLobby**: New exported helper from webSocketService for clean room-switching
+1. **sendGetPlayerId**: Auto-fetches socket via `getWebSocketInstance()` if not passed
+2. **sendEnteredLobby**: Auto-fetches socket if not passed (accepts `undefined`)
+3. **sendEndOfRound**: Signature `(players, round?, room?, socket?)` — sends only scoring-relevant data (id, name, avatar, tacticUsed), not scores
+4. **sendInfluencerReady**: Now sends full newsCard object + villain + tactic + room
+5. **sendPlayerReady**: Sends room parameter; matches player by ID OR name (inclusive)
+6. **Scoreboard**: "Home" button → "Lobby" button that calls `returnToLobby()`
+7. **returnToLobby**: Exported helper from webSocketService for clean room-switching
+8. **Immediate card reset**: `resetKey` incremented in `allPlayersReady` effect, not deferred to `scoreUpdate` — cards clear before modals appear
+9. **endOfRoundSentRef guard**: Prevents double-increment of `resetKey` when `scoreUpdate` arrives after local allPlayersReady already fired
+10. **25s scoring timeout**: Safety net recovers from stuck scoring state
+11. **Reconnection support**: GamePage detects missing WebSocket and reconnects with full state restoration
+12. **Mobile/Desktop slot behavior**: PlayArea slots enabled on desktop (scroll to hand), disabled on mobile (use toggle button)
+13. **SFX support**: Card placement plays audio via `placeSound` ref, respecting sfxVolume/sfxMuted from GlobalContext
+14. **previousNewsCard**: Snapshotted before roomUpdate so ResultModal shows the correct card
 
 ---
 
@@ -459,6 +628,10 @@ Client updates local context & UI
 - Client-side fallback: 2-second timeout for room switch before force-navigating
 - Server-side cleanup: onClose() removes players from rooms and cleans up empty rooms
 - Try-catch in all async handlers with navigate fallback
+- 25-second scoring timeout prevents permanent game lock
+- Reconnection verifies room existence via HTTP before attempting WebSocket join
+- `joinRejected` server message redirects to lobby
+- React StrictMode guard: `setupTimeRef` prevents cleanup from firing playerLeaves on immediate unmount
 
 ---
 
@@ -468,8 +641,14 @@ Client updates local context & UI
 ✅ Lobby loads → socket initialized, enteredLobby sent
 ✅ Click room → room switch works, playerEnters sent, navigate works
 ✅ Place cards → influencerReady and playerReady messages sent
-✅ All ready → endOfRound sent, scores calculated
+✅ All ready → endOfRound sent, cards cleared immediately, scores calculated
+✅ Modal sequence plays in correct order with proper timing
+✅ Cards are cleared from play area before modals appear
 ✅ Click Lobby → returnToLobby() called, socket switches rooms, UI updates
 ✅ GameTable receives roomUpdate messages and updates state
 ✅ Multiple rounds work without issues
 ✅ Disconnect handling works properly
+✅ Page refresh → reconnects to game room with full state restoration
+✅ Desktop slots are clickable (scroll to hand), mobile slots are disabled
+✅ Card placement SFX plays at correct volume
+✅ Scoring timeout recovers stuck game after 25s
