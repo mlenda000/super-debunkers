@@ -163,7 +163,11 @@ const GameTable: React.FC<GameTableProps> = ({
         // Prevent re-triggering endOfRound loop
         setSubmitForScoring(true);
         setFinishRound(false);
-        setResetKey((prev) => prev + 1);
+        // Only bump resetKey if it wasn't already bumped by the allPlayersReady effect
+        // (i.e. this client wasn't in the room when allPlayersReady fired)
+        if (!endOfRoundSentRef.current) {
+          setResetKey((prev) => prev + 1);
+        }
       }
     });
 
@@ -224,8 +228,8 @@ const GameTable: React.FC<GameTableProps> = ({
       setRoundEnd(true);
       setSubmitForScoring(true);
       setRoundHasEnded(false);
-      // Don't increment resetKey here - let the scoreUpdate message handler do it
-      // This prevents double-incrementing which cancels the card dealing timeout
+      // Reset cards immediately so the table is clear before modals start
+      setResetKey((prev) => prev + 1);
     }
   }, [
     allPlayersReady,
