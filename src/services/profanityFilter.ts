@@ -43,6 +43,7 @@ filter.addWords(
   "prick",
   "screwyou",
   "shite",
+  "shitt",
   "sisterfuck",
   "sisterfucker",
   "sod",

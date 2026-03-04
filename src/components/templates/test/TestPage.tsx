@@ -1,6 +1,8 @@
+import RoomTab from "@/components/atoms/roomTab/RoomTab";
 import "./styles/test.css";
 // import type { ThemeStyle } from "@/types/gameTypes";
 import Tool from "@/components/molecules/tool/Tool";
+import ButtonStyle from "@/components/atoms/buttonStyle/ButtonStyle";
 // import ScoreModal from "@/components/organisms/modals/scoreModal/ScoreModal";
 // import EndGameModal from "@/components/organisms/modals/endGameModal/EndGameModal";
 // import PlayedCard from "@/components/molecules/playedCard/PlayedCard";
@@ -39,7 +41,21 @@ const TestPage = () => {
           throw new Error("Function not implemented.");
         }}
       /> */}
-      <Tool currentInfluencer={mockInfluencer} showResults />
+      {/* type?: "default" | "glass" | "glowing" | "outline" | "hover"; */}
+      <ButtonStyle type="glass" theme="all">
+        <RoomTab
+          room={"Create Room"}
+          avatar={""}
+          onClick={function (
+            playerName: string,
+            room: string,
+            avatar: string,
+          ): void {
+            throw new Error("Function not implemented.");
+          }}
+        />
+      </ButtonStyle>
+      {/* <Tool currentInfluencer={mockInfluencer} showResults /> */}
       {/* <PlayedCard
         name={"test"}
         image={"/images/tactics/cherry-picking.webp"}

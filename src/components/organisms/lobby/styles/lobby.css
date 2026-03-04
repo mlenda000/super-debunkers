@@ -35,9 +35,10 @@
     width: var(--width-full);
     gap: var(--spacing-md);
     margin-block: var(--spacing-xl);
-    padding-top: 8px;
+    padding-top: 12px;
     padding-bottom: max(var(--spacing-3xl), 60px);
     box-sizing: border-box;
+    overflow-x: hidden;
     overflow-y: auto;
     max-height: 80vh;
 

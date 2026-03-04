@@ -102,6 +102,7 @@ export interface InputProps {
   "aria-describedby"?: string;
   required?: boolean;
   autoComplete?: string;
+  autoFocus?: boolean;
 }
 
 // Button Types

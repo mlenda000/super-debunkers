@@ -99,6 +99,7 @@ const CreateRoom = ({
               name="roomName"
               aria-label="Enter room name"
               required
+              autoFocus
             />
           </div>
         </form>

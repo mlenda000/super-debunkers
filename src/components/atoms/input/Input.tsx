@@ -12,6 +12,7 @@ const Input = ({
   "aria-describedby": ariaDescribedBy,
   required = false,
   autoComplete,
+  autoFocus,
 }: InputProps) => {
   const inputId =
     id ||
@@ -39,6 +40,7 @@ const Input = ({
         aria-describedby={ariaDescribedBy}
         aria-required={required}
         autoComplete={autoComplete}
+        autoFocus={autoFocus}
       />
     </div>
   );

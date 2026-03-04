@@ -33,9 +33,9 @@
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 1) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
     opacity: 1 !important;
-    -webkit-text-fill-color: rgba(255, 255, 255, 1);
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
   }
 
   &:focus {
@@ -47,9 +47,9 @@
     font-size: 56px;
     padding: var(--spacing-sm) var(--spacing-3xl);
     &::placeholder {
-      color: rgba(255, 255, 255, 1) !important;
+      color: rgba(255, 255, 255, 0.5) !important;
       opacity: 1 !important;
-      -webkit-text-fill-color: rgba(255, 255, 255, 1);
+      -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
       -webkit-text-stroke: black 2px;
       paint-order: stroke fill;
     }
@@ -60,9 +60,9 @@
     padding: var(--spacing-xl) var(--spacing-2xl);
     -webkit-text-stroke: 2px black;
     &::placeholder {
-      color: rgba(255, 255, 255, 1) !important;
+      color: rgba(255, 255, 255, 0.5) !important;
       opacity: 1 !important;
-      -webkit-text-fill-color: rgba(255, 255, 255, 1);
+      -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
       -webkit-text-stroke: black 2px;
       paint-order: stroke fill;
     }
@@ -76,9 +76,9 @@
       paint-order: stroke fill;
 
       &::placeholder {
-        color: rgba(255, 255, 255, 1) !important;
+        color: rgba(255, 255, 255, 0.5) !important;
         opacity: 1 !important;
-        -webkit-text-fill-color: rgba(255, 255, 255, 1);
+        -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
         -webkit-text-stroke: black 1px;
         paint-order: stroke fill;
       }
@@ -93,9 +93,9 @@
       paint-order: stroke fill;
 
       &::placeholder {
-        color: rgba(255, 255, 255, 1) !important;
+        color: rgba(255, 255, 255, 0.5) !important;
         opacity: 1 !important;
-        -webkit-text-fill-color: rgba(255, 255, 255, 1);
+        -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
         -webkit-text-stroke: black 1px;
         paint-order: stroke fill;
       }
