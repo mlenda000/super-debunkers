@@ -16,7 +16,7 @@ import "@/components/atoms/skipLink/styles/skip-link.css";
 import "./App.css";
 
 function App() {
-  const [rooms, setRooms] = useState<string[]>(["Create room"]);
+  const [rooms, setRooms] = useState<string[]>([]);
   return (
     <React.Fragment>
       <BrowserRouter>

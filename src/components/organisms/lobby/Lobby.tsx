@@ -14,6 +14,7 @@ import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { useGameContext } from "@/hooks/useGameContext";
 
 import RoomTab from "@/components/atoms/roomTab/RoomTab";
+import ButtonStyle from "@/components/atoms/buttonStyle/ButtonStyle";
 
 interface LobbyProps {
   rooms: string[];
@@ -398,7 +399,18 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
             role="list"
             aria-label="Available game rooms"
           >
+            <ButtonStyle type="glass" theme="all">
+              <RoomTab
+                room={"Create room"}
+                onClick={() =>
+                  handleClick(playerName || "", "Create room", avatar || "")
+                }
+                key={"create-room"}
+                avatar={avatar || ""}
+              />
+            </ButtonStyle>
             {rooms &&
+              rooms.length > 0 &&
               rooms.map((room: string) => {
                 const status = roomStatus[room];
                 const canReconnect =
