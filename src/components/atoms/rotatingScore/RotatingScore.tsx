@@ -53,7 +53,7 @@ const RotatingScore = ({ player }: { player: Player }) => {
         className={`scoreboard__names scoring-content ${fadeClass} ${!showName ? "active" : ""}`}
         aria-hidden="true"
       >
-        {displayScore}
+        {displayScore} pts
       </span>
     </span>
   );
