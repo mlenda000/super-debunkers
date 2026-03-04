@@ -6,21 +6,6 @@ const HomePage = () => {
   const [hasScrolled, setHasScrolled] = useState(false);
   const homepageRef = useRef<HTMLDivElement>(null);
 
-  const scrollToNextContent = () => {
-    const container = homepageRef.current;
-    if (!container) return;
-
-    const nextScrollPosition = Math.min(
-      container.scrollTop + container.clientHeight,
-      container.scrollHeight,
-    );
-
-    container.scrollTo({
-      top: nextScrollPosition,
-      behavior: "smooth",
-    });
-  };
-
   useEffect(() => {
     const container = homepageRef.current;
     if (!container) return;
@@ -43,20 +28,11 @@ const HomePage = () => {
       <div className="homepage" ref={homepageRef}>
         <h1 className="home-title">Super Debunkers</h1>
         {!hasScrolled && (
-          <button
+          <img
+            src="/images/buttons/down.webp"
+            alt="Scroll down"
             className="scroll-indicator"
-            type="button"
-            aria-label="Scroll to the next section"
-            onClick={scrollToNextContent}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                scrollToNextContent();
-              }
-            }}
-          >
-            <img src="/images/buttons/down.webp" alt="Scroll down" />
-          </button>
+          />
         )}
         <img
           src="/images/home/allvillains.webp"
