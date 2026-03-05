@@ -3,6 +3,7 @@ import "./styles/test.css";
 // import type { ThemeStyle } from "@/types/gameTypes";
 import Tool from "@/components/molecules/tool/Tool";
 import ButtonStyle from "@/components/atoms/buttonStyle/ButtonStyle";
+import Footer from "@/components/atoms/footer/Footer";
 // import ScoreModal from "@/components/organisms/modals/scoreModal/ScoreModal";
 // import EndGameModal from "@/components/organisms/modals/endGameModal/EndGameModal";
 // import PlayedCard from "@/components/molecules/playedCard/PlayedCard";
@@ -76,6 +77,7 @@ const TestPage = () => {
         image={"celeb_influencers.webp"}
       /> */}
       <p className="test-text">Next next</p>
+      <Footer />
     </div>
   );
 };

@@ -1,0 +1,124 @@
+.footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-inline: 16px;
+  gap: 0;
+  padding-block: 16px;
+  box-sizing: border-box;
+  margin-top: 40px;
+
+  & hr {
+    width: 100%;
+    border: none;
+    border-top: 1px solid white;
+    margin: 0;
+  }
+}
+
+.footer--fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  margin-top: 0;
+  z-index: 0;
+  padding-block: 12px;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+  padding-bottom: 0;
+  margin-bottom: 8px;
+}
+
+.footer-top .footer-main-text {
+  margin-block: 0;
+  padding-block: 0;
+}
+
+.footer-top .footer-links,
+.footer-top .footer-companies {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.footer-companies {
+  flex-direction: column;
+}
+
+.footer-main-text {
+  font-size: clamp(8px, calc(4vw - 2dvh), 10px);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.footer-secondary-text {
+  font-size: clamp(8px, calc(3vw - 1dvh), 10px);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  line-height: 1.1;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0;
+}
+.footer-links {
+  max-width: 30%;
+  text-align: left;
+  margin-right: 24px;
+}
+
+.footer-more-info {
+  font-size: clamp(8px, calc(4vw - 2dvh), 10px);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  text-wrap: balance;
+  text-align: left;
+  line-height: 1.4;
+  margin-block: 0;
+
+  & a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: underline;
+    font-weight: 600;
+
+    &:visited {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &:hover {
+      text-decoration: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid white;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+}
+.footer--mini {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  margin-top: 0;
+  z-index: 0;
+  padding-block: 8px;
+
+  & .footer-top {
+    display: none;
+  }
+
+  & hr {
+    display: none;
+  }
+}
+
+@media (max-height: 600px) {
+  .footer--fixed .footer-top {
+    display: none;
+  }
+  .footer--fixed hr {
+    display: none;
+  }
+}

@@ -21,6 +21,7 @@ import categoryCards from "@/data/tacticsCards.json";
 import Scoreboard from "@/components/molecules/scoreBoard/ScoreBoard";
 
 import type { GameTableProps } from "@/types/types";
+import Footer from "@/components/atoms/footer/Footer";
 
 const GameTable: React.FC<GameTableProps> = ({
   setRoundEnd,
@@ -385,6 +386,7 @@ const GameTable: React.FC<GameTableProps> = ({
             })()
           : null}
       </DragOverlay>
+      <Footer type="mini" />
     </DndContext>
   );
 };

@@ -1,6 +1,7 @@
 import Header from "@/components/molecules/header/Header";
 import CreateRoom from "@/components/organisms/createRoom/CreateRoom";
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
+import Footer from "@/components/atoms/footer/Footer";
 
 const CreateRoomPage = ({
   rooms,
@@ -14,6 +15,7 @@ const CreateRoomPage = ({
       <RotateScreen />
       <Header />
       <CreateRoom rooms={rooms} setRooms={setRooms} />
+      <Footer type="fixed" />
     </>
   );
 };

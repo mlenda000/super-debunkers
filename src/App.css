@@ -8,6 +8,7 @@
 @import "./components/atoms/avatarImage/styles/avatar-image.css";
 @import "./components/atoms/background/styles/background.css";
 @import "./components/atoms/button/styles/button.css";
+@import "./components/atoms/footer/styles/footer.css";
 @import "./components/atoms/input/styles/input.css";
 @import "./components/atoms/roomTab/styles/room-tab.css";
 @import "./components/atoms/rotateScreen/styles/rotate-screen.css";

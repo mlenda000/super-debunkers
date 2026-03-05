@@ -1,6 +1,7 @@
 import Header from "@/components/molecules/header/Header";
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
 import Lobby from "@/components/organisms/lobby/Lobby";
+import Footer from "@/components/atoms/footer/Footer";
 
 interface LobbyPageProps {
   rooms: string[];
@@ -13,6 +14,7 @@ const LobbyPage = ({ rooms, setRooms }: LobbyPageProps) => {
       <Header />
       <RotateScreen />
       <Lobby rooms={rooms} setRooms={setRooms} />
+      <Footer type="fixed" />
     </>
   );
 };
