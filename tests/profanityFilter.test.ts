@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { isProfane, cleanText } from "@/services/profanityFilter";
+import { isProfane, cleanText } from "../src/services/profanityFilter";
 
 describe("isProfane", () => {
   it("should detect common profanity", () => {

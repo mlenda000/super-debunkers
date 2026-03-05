@@ -6,11 +6,11 @@
  * message serialisation and socket-readiness guards.
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 // We need to mock the webSocketService module BEFORE importing gameMessageUtils,
 // because several senders fall back to getWebSocketInstance().
-vi.mock("@/services/webSocketService", () => ({
+vi.mock("../src/services/webSocketService", () => ({
   getWebSocketInstance: vi.fn(() => null),
 }));
 
@@ -28,8 +28,8 @@ import {
   sendCheckAllReady,
   sendStartingDeck,
   sendEndOfRound,
-} from "@/utils/gameMessageUtils";
-import { getWebSocketInstance } from "@/services/webSocketService";
+} from "../src/utils/gameMessageUtils";
+import { getWebSocketInstance } from "../src/services/webSocketService";
 
 // Build a minimal mock socket
 function createMockSocket(readyState = 1): any {
@@ -60,9 +60,7 @@ describe("sendMessage (base helper)", () => {
 
   it("should not send when socket is null", () => {
     // No throw expected
-    expect(() =>
-      sendMessage(null, "JOIN_ROOM" as any, {}, "u1"),
-    ).not.toThrow();
+    expect(() => sendMessage(null, "JOIN_ROOM" as any, {}, "u1")).not.toThrow();
   });
 
   it("should not send when socket is not OPEN", () => {
@@ -143,7 +141,11 @@ describe("sendEndGame", () => {
 describe("sendPlayerEnters", () => {
   it("should send player and room", () => {
     const socket = createMockSocket(OPEN);
-    sendPlayerEnters(socket, { id: "p1", name: "Alice", avatar: "a.png" }, "room-1");
+    sendPlayerEnters(
+      socket,
+      { id: "p1", name: "Alice", avatar: "a.png" },
+      "room-1",
+    );
     const sent = JSON.parse(socket.send.mock.calls[0][0]);
     expect(sent.type).toBe("playerEnters");
     expect(sent.player.id).toBe("p1");
@@ -151,9 +153,7 @@ describe("sendPlayerEnters", () => {
   });
 
   it("should not send when socket is null", () => {
-    expect(() =>
-      sendPlayerEnters(null, { id: "p1" }, "room"),
-    ).not.toThrow();
+    expect(() => sendPlayerEnters(null, { id: "p1" }, "room")).not.toThrow();
   });
 });
 
@@ -241,8 +241,6 @@ describe("sendEndOfRound", () => {
 
   it("should not throw when socket is unavailable", () => {
     (getWebSocketInstance as any).mockReturnValueOnce(null);
-    expect(() =>
-      sendEndOfRound([], 1, "room"),
-    ).not.toThrow();
+    expect(() => sendEndOfRound([], 1, "room")).not.toThrow();
   });
 });

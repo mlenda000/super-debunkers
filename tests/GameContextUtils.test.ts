@@ -6,8 +6,8 @@
  */
 
 import { describe, it, expect, vi } from "vitest";
-import { handleGameMessage } from "@/context/GameContextUtils";
-import type { GameContextType, Player, Message } from "@/types/gameTypes";
+import { handleGameMessage } from "../src/context/GameContextUtils";
+import type { GameContextType, Player, Message } from "../src/types/gameTypes";
 
 /** Build a partial setters object with vitest mocks */
 function createSetters(): Partial<GameContextType> & { [k: string]: any } {
@@ -234,23 +234,20 @@ describe("handleGameMessage - endOfRound", () => {
 describe("handleGameMessage - Guards", () => {
   it("should return early for null message", () => {
     const setters = createSetters();
-    // @ts-expect-error testing runtime guard
-    handleGameMessage(null, setters);
+    handleGameMessage(null as any, setters);
     expect(setters.setCurrentPlayer).not.toHaveBeenCalled();
     expect(setters.setPlayers).not.toHaveBeenCalled();
   });
 
   it("should return early for undefined message", () => {
     const setters = createSetters();
-    // @ts-expect-error testing runtime guard
-    handleGameMessage(undefined, setters);
+    handleGameMessage(undefined as any, setters);
     expect(setters.setCurrentPlayer).not.toHaveBeenCalled();
   });
 
   it("should return early for non-object message", () => {
     const setters = createSetters();
-    // @ts-expect-error testing runtime guard
-    handleGameMessage("not-an-object", setters);
+    handleGameMessage("not-an-object" as any, setters);
     expect(setters.setCurrentPlayer).not.toHaveBeenCalled();
   });
 
