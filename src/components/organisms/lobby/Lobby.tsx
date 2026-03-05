@@ -15,6 +15,7 @@ import { useGameContext } from "@/hooks/useGameContext";
 
 import RoomTab from "@/components/atoms/roomTab/RoomTab";
 import ButtonStyle from "@/components/atoms/buttonStyle/ButtonStyle";
+import Footer from "@/components/atoms/footer/Footer";
 
 interface LobbyProps {
   rooms: string[];
@@ -388,56 +389,52 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
   }, [avatar, playerName, resetGameState]);
 
   return (
-    <>
-      <>
-        <div className="lobby" role="region" aria-labelledby="lobby-title">
-          <h1 id="lobby-title" className="lobby-title">
-            Join Game
-          </h1>
-          <div
-            className="lobby__rooms"
-            role="list"
-            aria-label="Available game rooms"
-          >
-            <ButtonStyle type="glass" theme="all">
+    <div className="lobby" role="region" aria-labelledby="lobby-title">
+      <h1 id="lobby-title" className="lobby-title">
+        Join Game
+      </h1>
+      <div
+        className="lobby__rooms"
+        role="list"
+        aria-label="Available game rooms"
+      >
+        <ButtonStyle type="glass" theme="all">
+          <RoomTab
+            room={"Create room"}
+            onClick={() =>
+              handleClick(playerName || "", "Create room", avatar || "")
+            }
+            key={"create-room"}
+            avatar={avatar || ""}
+          />
+        </ButtonStyle>
+        {rooms &&
+          rooms.length > 0 &&
+          rooms.map((room: string) => {
+            const status = roomStatus[room];
+            const canReconnect =
+              !!status?.isInProgress &&
+              !!playerName &&
+              (status.disconnectedPlayerNames || []).includes(playerName);
+            return (
               <RoomTab
-                room={"Create room"}
+                room={room}
                 onClick={() =>
-                  handleClick(playerName || "", "Create room", avatar || "")
+                  handleClick(playerName || "", room, avatar || "")
                 }
-                key={"create-room"}
+                key={room}
                 avatar={avatar || ""}
+                roomPlayers={roomPlayers[room] || []}
+                isFull={status?.isFull}
+                isInProgress={status?.isInProgress}
+                isGameOver={status?.isGameOver}
+                joiningRoom={joiningRoom === room}
+                canReconnect={canReconnect}
               />
-            </ButtonStyle>
-            {rooms &&
-              rooms.length > 0 &&
-              rooms.map((room: string) => {
-                const status = roomStatus[room];
-                const canReconnect =
-                  !!status?.isInProgress &&
-                  !!playerName &&
-                  (status.disconnectedPlayerNames || []).includes(playerName);
-                return (
-                  <RoomTab
-                    room={room}
-                    onClick={() =>
-                      handleClick(playerName || "", room, avatar || "")
-                    }
-                    key={room}
-                    avatar={avatar || ""}
-                    roomPlayers={roomPlayers[room] || []}
-                    isFull={status?.isFull}
-                    isInProgress={status?.isInProgress}
-                    isGameOver={status?.isGameOver}
-                    joiningRoom={joiningRoom === room}
-                    canReconnect={canReconnect}
-                  />
-                );
-              })}
-          </div>
-        </div>
-      </>
-    </>
+            );
+          })}
+      </div>
+    </div>
   );
 };
 

@@ -189,7 +189,6 @@
 }
 .home-button-group {
   width: 100%;
-  height: 100%;
   max-width: clamp(100svw, 100dvw, 100lvw);
   max-height: clamp(100svh, 100dvh, 100lvh);
 }

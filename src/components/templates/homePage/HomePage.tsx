@@ -1,3 +1,4 @@
+import Footer from "@/components/atoms/footer/Footer";
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
 import BottomNav from "@/components/molecules/bottomNav/BottomNav";
 import { useState, useEffect, useRef } from "react";
@@ -86,6 +87,7 @@ const HomePage = () => {
         >
           <BottomNav />
         </div>
+        <Footer />
       </div>
     </>
   );

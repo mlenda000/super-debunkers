@@ -3,6 +3,7 @@ import Carousel from "@/components/organisms/carousel/Carousel";
 import Header from "@/components/molecules/header/Header";
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
 import villainSlides from "@/data/villainsData.json";
+import Footer from "@/components/atoms/footer/Footer";
 
 const VillainsPage = () => {
   const [isOnLastSlide, setIsOnLastSlide] = useState(false);
@@ -12,6 +13,7 @@ const VillainsPage = () => {
       <RotateScreen />
       <Header showPlayButton={isOnLastSlide} />
       <Carousel slides={villainSlides} onSlideChange={setIsOnLastSlide} />
+      <Footer type="fixed" />
     </>
   );
 };

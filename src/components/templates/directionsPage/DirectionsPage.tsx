@@ -4,6 +4,7 @@ import Header from "@/components/molecules/header/Header";
 import RotateScreen from "@/components/atoms/rotateScreen/RotateScreen";
 import directionsDataRaw from "@/data/directionsData.json";
 import type { SlideData } from "@/types/types";
+import Footer from "@/components/atoms/footer/Footer";
 
 const directionsData = directionsDataRaw as SlideData[];
 
@@ -15,6 +16,7 @@ const DirectionsPage = () => {
       <RotateScreen />
       <Header showPlayButton={isOnLastSlide} />
       <Carousel slides={directionsData} onSlideChange={setIsOnLastSlide} />
+      <Footer type="fixed" />
     </>
   );
 };
