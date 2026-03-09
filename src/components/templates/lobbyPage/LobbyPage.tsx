@@ -14,7 +14,7 @@ const LobbyPage = ({ rooms, setRooms }: LobbyPageProps) => {
       <Header />
       <RotateScreen />
       <Lobby rooms={rooms} setRooms={setRooms} />
-      <Footer type="fixed" />
+      <Footer type="mini" />
     </>
   );
 };

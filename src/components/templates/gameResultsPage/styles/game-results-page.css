@@ -1,0 +1,231 @@
+.game-results-page {
+  max-width: 900px;
+  margin: calc(var(--spacing-4xl) * 0.8) auto 0;
+  padding: 0 1.5rem;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 60px);
+  padding-bottom: 4rem;
+}
+
+.game-results-page__title {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Login gate (mirrors admin page) */
+.game-results-page__login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+}
+
+.game-results-page__pin-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 280px;
+}
+
+.game-results-page__pin-label {
+  font-size: 0.95rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.game-results-page__pin-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1.5rem;
+  text-align: center;
+  letter-spacing: 0.5em;
+}
+
+.game-results-page__pin-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: normal;
+  font-size: 1rem;
+}
+
+.game-results-page__pin-error {
+  color: #fca5a5;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Header row with title + actions */
+.game-results-page__header-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.game-results-page__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Buttons */
+.game-results-page__btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.game-results-page__btn:hover {
+  opacity: 0.85;
+}
+
+.game-results-page__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.game-results-page__btn--primary {
+  background: #fbbf24;
+  color: #000;
+}
+
+.game-results-page__btn--secondary {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Empty state */
+.game-results-page__empty {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 3rem 1rem;
+  font-style: italic;
+}
+
+.game-results-page__empty p {
+  margin: 0.5rem 0;
+}
+
+/* Results grid */
+.game-results-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Individual result card */
+.game-results-page__card {
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 12px;
+  padding: 1.25rem;
+  overflow: hidden;
+}
+
+.game-results-page__card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.game-results-page__room-name {
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.game-results-page__time {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Table */
+.game-results-page__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.game-results-page__th {
+  text-align: left;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.game-results-page__th--score {
+  text-align: right;
+}
+
+.game-results-page__row {
+  transition: background 0.15s;
+}
+
+.game-results-page__row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.game-results-page__row--first {
+  background: rgba(251, 191, 36, 0.1);
+}
+
+.game-results-page__row--first:hover {
+  background: rgba(251, 191, 36, 0.15);
+}
+
+.game-results-page__td {
+  padding: 0.6rem 0.5rem;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.game-results-page__td--rank {
+  width: 3rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.game-results-page__td--player {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.game-results-page__td--score {
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.game-results-page__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 640px) {
+  .game-results-page__grid {
+    grid-template-columns: 1fr;
+  }
+}

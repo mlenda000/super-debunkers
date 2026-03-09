@@ -41,7 +41,10 @@ export type MessageType =
   | "endOfRound"
   | "createRoom"
   | "getAvailableRooms"
+  | "observeRoom"
   | "endGame"
+  | "forceReady"
+  | "readyCountdown"
   // Server -> Client messages
   | "playerId"
   | "lobbyUpdate"
@@ -57,6 +60,7 @@ export type MessageType =
   | "gameEnded"
   | "joinRejected"
   | "reconnectState"
+  | "gameResultsUpdated"
   // Legacy types (if needed)
   | "USER_JOINED"
   | "USER_LEFT"

@@ -48,6 +48,15 @@ export interface GlobalContextType {
   setSfxVolume: (volume: number) => void;
   sfxMuted: boolean;
   setSfxMuted: (muted: boolean) => void;
+  musicMuted: boolean;
+  setMusicMuted: (muted: boolean) => void;
+  volumeLocked: boolean;
+  setVolumeLocked: (locked: boolean) => void;
+  teacherRooms: string[];
+  setTeacherRooms: (rooms: string[] | ((prev: string[]) => string[])) => void;
+  teacherId: string;
+  isTeacherAuthenticated: boolean;
+  setIsTeacherAuthenticated: (auth: boolean) => void;
 }
 
 export interface GlobalProviderProps {

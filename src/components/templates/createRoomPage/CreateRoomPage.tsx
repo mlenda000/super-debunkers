@@ -15,7 +15,7 @@ const CreateRoomPage = ({
       <RotateScreen />
       <Header />
       <CreateRoom rooms={rooms} setRooms={setRooms} />
-      <Footer type="fixed" />
+      <Footer type="mini" />
     </>
   );
 };

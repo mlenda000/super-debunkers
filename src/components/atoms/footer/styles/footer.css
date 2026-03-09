@@ -45,6 +45,12 @@
   justify-content: flex-end;
 }
 
+.footer-top .footer-links {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
 .footer-companies {
   flex-direction: column;
 }
@@ -67,6 +73,32 @@
   max-width: 30%;
   text-align: left;
   margin-right: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.footer-teacher-login {
+  font-size: clamp(8px, calc(4vw - 2dvh), 10px);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: underline;
+  font-weight: 600;
+  margin-top: 4px;
+
+  &:visited {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
 }
 
 .footer-more-info {

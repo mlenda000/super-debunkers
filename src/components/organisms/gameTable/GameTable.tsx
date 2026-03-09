@@ -12,8 +12,11 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { sendEndOfRound } from "@/utils/gameMessageUtils";
-import { subscribeToMessages } from "@/services/webSocketService";
+import { sendEndOfRound, sendSyncTactics } from "@/utils/gameMessageUtils";
+import {
+  subscribeToMessages,
+  getWebSocketInstance,
+} from "@/services/webSocketService";
 import MainTable from "../mainTable/MainTable";
 import PlayersHand from "@/components/organisms/playersHand/PlayersHand";
 import TacticCard from "@/components/organisms/tacticCard/TacticCard";
@@ -150,6 +153,18 @@ const GameTable: React.FC<GameTableProps> = ({
     setFinishRound(mainTableItems.length > 0);
   }, [mainTableItems]);
 
+  // Sync placed cards to the server so force-ready can score them correctly
+  useEffect(() => {
+    const tacticIds = mainTableItems
+      .filter((card) => String(card.id) !== "1")
+      .map((card) => card.category);
+    const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
+    if (roomName) {
+      const socket = getWebSocketInstance();
+      sendSyncTactics(socket, roomName, tacticIds);
+    }
+  }, [mainTableItems, gameRoom?.room, gameRoom?.roomData?.name]);
+
   // Listen for server score/end-of-round messages to reset UI for all players
   useEffect(() => {
     const unsubscribe = subscribeToMessages((message) => {
@@ -161,12 +176,14 @@ const GameTable: React.FC<GameTableProps> = ({
       ) {
         // Show result modal (which will display the influencer info and scoring details)
         setRoundEnd(true);
-        // Prevent re-triggering endOfRound loop
-        setSubmitForScoring(true);
         setFinishRound(false);
-        // Only bump resetKey if it wasn't already bumped by the allPlayersReady effect
-        // (i.e. this client wasn't in the room when allPlayersReady fired)
+        // Only reset UI if this client didn't already handle the round end locally.
+        // When endOfRoundSentRef is true, the allPlayersReady effect already bumped
+        // resetKey and the ref guards against re-entry, so we don't need to re-arm
+        // submitForScoring (which would start a recovery timer with no resetKey to
+        // clear it, causing cards to reset 25s later).
         if (!endOfRoundSentRef.current) {
+          setSubmitForScoring(true);
           setResetKey((prev) => prev + 1);
         }
       }

@@ -9,7 +9,7 @@ const CharacterCreationPage = () => {
       <RotateScreen />
       <Header />
       <PlayerSelection />
-      <Footer type="fixed" />
+      <Footer type="mini" />
     </>
   );
 };

@@ -88,6 +88,14 @@ export interface RoundResult {
   // Add more fields as needed
 }
 
+// Game result from a completed teacher-created room
+export interface GameResult {
+  roomName: string;
+  teacherId: string;
+  players: { name: string; score: number; avatar: string }[];
+  completedAt: number;
+}
+
 // ModalContent type
 export type ModalContent = string | null | Record<string, unknown>;
 
@@ -114,6 +122,11 @@ export interface GameRoom {
   cardIndex?: number;
   isGameOver?: boolean;
   maxRounds?: number;
+  volumeLocked?: boolean;
+  musicMuted?: boolean;
+  sfxMuted?: boolean;
+  musicVolume?: number;
+  sfxVolume?: number;
 }
 
 export type GameContextType = {

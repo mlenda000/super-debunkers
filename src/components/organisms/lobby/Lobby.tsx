@@ -288,6 +288,11 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
                 cardIndex: message.cardIndex,
                 isGameOver: message.isGameOver,
                 maxRounds: message.maxRounds,
+                volumeLocked: message.volumeLocked,
+                musicMuted: message.musicMuted,
+                sfxMuted: message.sfxMuted,
+                musicVolume: message.musicVolume,
+                sfxVolume: message.sfxVolume,
                 roomData: {
                   count: message.count || 0,
                   players: message.players || [],

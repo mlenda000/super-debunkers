@@ -64,6 +64,27 @@ export const sendCreateRoom = (
   sock.send(JSON.stringify({ type: "createRoom", roomName }));
 };
 
+export const sendUpdateAudioSettings = (
+  socket: PartySocket | null | undefined,
+  room: string,
+  settings: {
+    volumeLocked: boolean;
+    musicMuted: boolean;
+    sfxMuted: boolean;
+    musicVolume?: number;
+    sfxVolume?: number;
+  },
+): void => {
+  const sock = socket || getWebSocketInstance();
+  if (!sock || sock.readyState !== PartySocket.OPEN) {
+    console.warn("Socket not ready - updateAudioSettings not sent");
+    return;
+  }
+  sock.send(
+    JSON.stringify({ type: "updateAudioSettings", room, ...settings }),
+  );
+};
+
 export const sendGetAvailableRooms = (socket?: PartySocket | null): void => {
   const sock = socket || getWebSocketInstance();
   if (!sock || sock.readyState !== PartySocket.OPEN) {
@@ -73,6 +94,18 @@ export const sendGetAvailableRooms = (socket?: PartySocket | null): void => {
     return;
   }
   sock.send(JSON.stringify({ type: "getAvailableRooms" }));
+};
+
+export const sendObserveRoom = (
+  socket: PartySocket | null | undefined,
+  roomName: string,
+): void => {
+  const sock = socket || getWebSocketInstance();
+  if (!sock || sock.readyState !== PartySocket.OPEN) {
+    console.warn("Socket not ready - observeRoom will retry on connection");
+    return;
+  }
+  sock.send(JSON.stringify({ type: "observeRoom", roomName }));
 };
 
 export const sendEndGame = (
@@ -284,4 +317,43 @@ export const sendGameAction = (
   roomId: string,
 ): void => {
   sendMessage(socket, "GAME_STATE_UPDATE", action, userId, roomId);
+};
+
+export const sendForceReady = (
+  socket: PartySocket | null | undefined,
+  room: string,
+  playerId: string,
+): void => {
+  const sock = socket || getWebSocketInstance();
+  if (!sock || sock.readyState !== PartySocket.OPEN) {
+    console.warn("Socket not ready - forceReady will retry on connection");
+    return;
+  }
+  sock.send(JSON.stringify({ type: "forceReady", room, playerId }));
+};
+
+export const sendSyncTactics = (
+  socket: PartySocket | null | undefined,
+  room: string,
+  tacticUsed: string[],
+): void => {
+  const sock = socket || getWebSocketInstance();
+  if (!sock || sock.readyState !== PartySocket.OPEN) return;
+  sock.send(JSON.stringify({ type: "syncTactics", room, tacticUsed }));
+};
+
+export const sendReadyCountdown = (
+  socket: PartySocket | null | undefined,
+  room: string,
+  playerId: string,
+  seconds: number = 30,
+): void => {
+  const sock = socket || getWebSocketInstance();
+  if (!sock || sock.readyState !== PartySocket.OPEN) {
+    console.warn("Socket not ready - readyCountdown will retry on connection");
+    return;
+  }
+  sock.send(
+    JSON.stringify({ type: "readyCountdown", room, playerId, seconds }),
+  );
 };

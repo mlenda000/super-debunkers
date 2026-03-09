@@ -16,6 +16,8 @@ interface SoundControlProps {
   setIsSfxMuted: (muted: boolean) => void;
   // Layout
   position?: { top: number; right: number };
+  // Admin lock
+  disabled?: boolean;
 }
 
 const SoundControl = ({
@@ -30,11 +32,21 @@ const SoundControl = ({
   isSfxMuted,
   setIsSfxMuted,
   position,
+  disabled = false,
 }: SoundControlProps) => {
   const [musicVolume, setMusicVolume] = useState(initialMusicVolume);
   const [sfxVolume, setSfxVolume] = useState(initialSfxVolume);
   const controlRef = useRef<HTMLDivElement>(null);
   const musicMuteRef = useRef<HTMLButtonElement>(null);
+
+  // Keep internal state in sync when parent updates (e.g. server audio sync)
+  useEffect(() => {
+    setMusicVolume(initialMusicVolume);
+  }, [initialMusicVolume]);
+
+  useEffect(() => {
+    setSfxVolume(initialSfxVolume);
+  }, [initialSfxVolume]);
 
   // Focus the first mute button when the control opens
   useEffect(() => {
@@ -183,6 +195,7 @@ const SoundControl = ({
           aria-label={isMusicPlaying ? "Mute music" : "Unmute music"}
           aria-pressed={isMusicPlaying}
           tabIndex={0}
+          disabled={disabled}
         >
           <img
             src={
@@ -209,6 +222,7 @@ const SoundControl = ({
           aria-valuenow={musicVolume}
           aria-valuetext={`${musicVolume} percent`}
           tabIndex={0}
+          disabled={disabled}
         />
       </div>
 
@@ -223,6 +237,7 @@ const SoundControl = ({
           }
           aria-pressed={!isSfxMuted}
           tabIndex={0}
+          disabled={disabled}
         >
           <img
             src={
@@ -249,6 +264,7 @@ const SoundControl = ({
           aria-valuenow={sfxVolume}
           aria-valuetext={`${sfxVolume} percent`}
           tabIndex={0}
+          disabled={disabled}
         />
       </div>
     </div>
