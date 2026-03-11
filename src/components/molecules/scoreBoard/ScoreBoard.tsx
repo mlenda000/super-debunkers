@@ -27,7 +27,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
     resetGameState,
   } = useGameContext();
   const navigate = useNavigate();
-  const [isSoundPlaying, setIsSoundPlaying] = useState(true);
+  const [isSoundPlaying, setIsSoundPlaying] = useState(false);
   const [isVolumeControlOpen, setIsVolumeControlOpen] = useState(false);
   const [volume, setVolume] = useState(20);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -66,14 +66,10 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {}, [JSON.stringify(gameRoom?.roomData)]);
 
-  // Auto-play music when component mounts
+  // Sync audio element volume when volume state changes
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume / 100;
-      audioRef.current.play().catch(() => {
-        // Auto-play blocked by browser, user needs to interact first
-        setIsSoundPlaying(false);
-      });
     }
   }, [volume]);
 
@@ -87,6 +83,87 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
       }
     }
   }, [isSoundPlaying]);
+
+  const isVolumeLocked = gameRoom?.volumeLocked === true;
+  const serverMusicMuted = gameRoom?.musicMuted === true;
+  const serverSfxMuted = gameRoom?.sfxMuted === true;
+  const serverMusicVolume = gameRoom?.musicVolume;
+  const serverSfxVolume = gameRoom?.sfxVolume;
+
+  // One-time initialization: apply server audio settings and start music
+  const initialAudioSyncedRef = useRef(false);
+  useEffect(() => {
+    if (initialAudioSyncedRef.current) return;
+    // Wait until gameRoom has been set (audio fields are defined)
+    if (gameRoom === undefined || gameRoom === null) return;
+
+    initialAudioSyncedRef.current = true;
+
+    // Apply server volume levels
+    if (serverMusicVolume !== undefined) {
+      setVolume(serverMusicVolume);
+      if (audioRef.current) audioRef.current.volume = serverMusicVolume / 100;
+    }
+    if (serverSfxVolume !== undefined) {
+      setSfxVolume(serverSfxVolume);
+    }
+
+    // Apply mute states
+    if (serverSfxMuted) {
+      setSfxMuted(true);
+    }
+
+    // Start playing music only if admin hasn't muted it
+    if (!serverMusicMuted) {
+      setIsSoundPlaying(true);
+      if (audioRef.current) {
+        audioRef.current.play().catch(() => {
+          // Don't revert isSoundPlaying — icon should reflect admin's intent.
+          // Playback will start on the user's first interaction with the page.
+        });
+      }
+    }
+  }, [
+    gameRoom,
+    serverMusicVolume,
+    serverSfxVolume,
+    serverMusicMuted,
+    serverSfxMuted,
+    setSfxVolume,
+    setSfxMuted,
+  ]);
+
+  // Respect live admin musicMuted changes (after initial sync)
+  useEffect(() => {
+    if (!initialAudioSyncedRef.current) return;
+    if (serverMusicMuted) {
+      setIsSoundPlaying(false);
+    } else {
+      setIsSoundPlaying(true);
+    }
+  }, [serverMusicMuted]);
+
+  // Respect live admin sfxMuted changes (after initial sync)
+  useEffect(() => {
+    if (!initialAudioSyncedRef.current) return;
+    setSfxMuted(serverSfxMuted);
+  }, [serverSfxMuted, setSfxMuted]);
+
+  // Respect live admin volume level changes (after initial sync)
+  useEffect(() => {
+    if (!initialAudioSyncedRef.current) return;
+    if (serverMusicVolume !== undefined) {
+      setVolume(serverMusicVolume);
+      if (audioRef.current) audioRef.current.volume = serverMusicVolume / 100;
+    }
+  }, [serverMusicVolume]);
+
+  useEffect(() => {
+    if (!initialAudioSyncedRef.current) return;
+    if (serverSfxVolume !== undefined) {
+      setSfxVolume(serverSfxVolume);
+    }
+  }, [serverSfxVolume, setSfxVolume]);
 
   // Handle volume changes from VolumeControl
   const handleVolumeChange = (newVolume: number) => {
@@ -199,12 +276,26 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
         </button>
         <button
           className="scoreboard-audio__button"
-          onClick={() => setIsVolumeControlOpen(!isVolumeControlOpen)}
+          onClick={() => {
+            if (!isVolumeLocked) {
+              setIsVolumeControlOpen(!isVolumeControlOpen);
+              // Resume audio on user interaction if autoplay was blocked
+              if (isSoundPlaying && audioRef.current?.paused) {
+                audioRef.current.play().catch(() => {});
+              }
+            }
+          }}
           aria-label={
-            isSoundPlaying ? "Mute background music" : "Unmute background music"
+            isVolumeLocked
+              ? "Volume controls locked by teacher"
+              : isSoundPlaying
+                ? "Mute background music"
+                : "Unmute background music"
           }
           aria-pressed={isSoundPlaying}
+          aria-disabled={isVolumeLocked}
           tabIndex={0}
+          style={isVolumeLocked ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
           <img
             src={
@@ -231,6 +322,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
         initialSfxVolume={sfxVolume}
         isSfxMuted={sfxMuted}
         setIsSfxMuted={setSfxMuted}
+        disabled={isVolumeLocked}
       />
     </div>
   );

@@ -55,9 +55,42 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
     return localStorage.getItem("avatarImage") || "";
   });
 
-  // SFX audio state
-  const [sfxVolume, setSfxVolume] = useState<number>(20);
-  const [sfxMuted, setSfxMuted] = useState<boolean>(false);
+  // Audio state
+  const [sfxVolume, setSfxVolume] = useState<number>(() => {
+    const saved = localStorage.getItem("adminSfxVolume");
+    return saved !== null ? Number(saved) : 20;
+  });
+  const [sfxMuted, setSfxMuted] = useState<boolean>(() => {
+    return localStorage.getItem("adminSfxMuted") === "true";
+  });
+  const [musicMuted, setMusicMuted] = useState<boolean>(() => {
+    return localStorage.getItem("adminMusicMuted") === "true";
+  });
+  const [volumeLocked, setVolumeLocked] = useState<boolean>(() => {
+    return localStorage.getItem("adminVolumeLocked") === "true";
+  });
+
+  // Teacher-created rooms (volume lock only applies to these)
+  const [teacherRooms, setTeacherRooms] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem("teacherRooms");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Unique teacher session ID (generated once per browser, persisted in localStorage)
+  const [teacherId] = useState<string>(() => {
+    const existing = localStorage.getItem("teacherId");
+    if (existing) return existing;
+    const id = `teacher_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
+    localStorage.setItem("teacherId", id);
+    return id;
+  });
+
+  // Shared teacher/admin authentication state
+  const [isTeacherAuthenticated, setIsTeacherAuthenticated] = useState(false);
 
   // Fetch playerId from server if not valid in localStorage
   useEffect(() => {
@@ -164,6 +197,15 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
     setSfxVolume,
     sfxMuted,
     setSfxMuted,
+    musicMuted,
+    setMusicMuted,
+    volumeLocked,
+    setVolumeLocked,
+    teacherRooms,
+    setTeacherRooms,
+    teacherId,
+    isTeacherAuthenticated,
+    setIsTeacherAuthenticated,
   };
 
   return (

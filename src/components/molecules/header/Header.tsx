@@ -21,6 +21,12 @@ const Header = ({ showPlayButton = false }: HeaderProps) => {
     } else if (path === "/character-creation") {
       // From character creation, go home
       navigate("/");
+    } else if (path === "/admin/results") {
+      // From results, go back to admin panel
+      navigate("/admin");
+    } else if (path === "/admin") {
+      // From admin panel, go home
+      navigate("/");
     } else {
       // Default: use browser history
       navigate(-1);

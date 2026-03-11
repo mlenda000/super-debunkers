@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 interface FooterProps {
   type?: "default" | "fixed" | "mini";
 }
@@ -21,6 +23,9 @@ const Footer = ({ type = "default" }: FooterProps) => {
               Project Real
             </a>
           </p>
+          <Link to="/admin" className="footer-teacher-login">
+            Teacher Login
+          </Link>
         </div>
         <div className="footer-companies">
           <p className="footer-main-text footer-spaced">

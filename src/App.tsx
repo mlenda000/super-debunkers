@@ -10,6 +10,8 @@ import LobbyPage from "@/components/templates/lobbyPage/LobbyPage";
 import CharacterCreationPage from "@/components/templates/characterCreationPage/CharacterCreationPage";
 import NamePage from "@/components/templates/namePage/NamePage";
 import CreateRoomPage from "@/components/templates/createRoomPage/CreateRoomPage";
+import AdminPage from "@/components/templates/adminPage/AdminPage";
+import GameResultsPage from "@/components/templates/gameResultsPage/GameResultsPage";
 import TestPage from "./components/templates/test/TestPage";
 
 import "@/components/atoms/skipLink/styles/skip-link.css";
@@ -25,6 +27,8 @@ function App() {
         <main id="main-content">
           <Routes>
             <Route path="/test" element={<TestPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/admin/results" element={<GameResultsPage />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/villains" element={<VillainsPage />} />
             <Route path="/directions" element={<DirectionsPage />} />

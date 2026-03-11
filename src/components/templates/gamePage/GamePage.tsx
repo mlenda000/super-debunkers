@@ -18,6 +18,7 @@ import ResponseModal from "@/components/organisms/modals/responseModal/ResponseM
 import ScoreModal from "@/components/organisms/modals/scoreModal/ScoreModal";
 import EndGameModal from "@/components/organisms/modals/endGameModal/EndGameModal";
 import InfoModal from "@/components/organisms/modals/infoModal/InfoModal";
+import ObserverOverlay from "@/components/organisms/observerOverlay/ObserverOverlay";
 import type { GameDeck } from "@/types/gameTypes";
 
 const GamePage = () => {
@@ -35,11 +36,13 @@ const GamePage = () => {
     setActiveNewsCard,
     setPreviousNewsCard,
     setEndGame,
+    resetGameState,
   } = useGameContext();
-  const { setThemeStyle } = useGlobalContext();
+  const { setThemeStyle, playerId: currentPlayerId } = useGlobalContext();
   const hasJoinedRef = useRef(false);
   const setupTimeRef = useRef<number>(0);
   const isReconnectRef = useRef(false);
+  const isObserverRef = useRef(false);
   // Track active card in a ref so the subscription callback can snapshot it
   const activeNewsCardRef = useRef(activeNewsCard);
 
@@ -50,6 +53,14 @@ const GamePage = () => {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState<boolean>(false);
   const [showResponseModal, setShowResponseModal] = useState<boolean>(false);
   const [showScoreCard, setShowScoreCard] = useState<boolean>(false);
+  const [isObserver, setIsObserver] = useState<boolean>(false);
+  const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
+  const [playerCountdowns, setPlayerCountdowns] = useState<
+    Record<string, number>
+  >({});
+  const countdownIntervalsRef = useRef<
+    Record<string, ReturnType<typeof setInterval>>
+  >({});
 
   // Keep the ref in sync with the latest activeNewsCard
   useEffect(() => {
@@ -81,7 +92,17 @@ const GamePage = () => {
       themeStyle?: string;
       newsCard?: any;
       cardIndex?: number;
+      observer?: boolean;
     };
+
+    if (state?.observer) {
+      isObserverRef.current = true;
+      setIsObserver(true);
+      // Clear all stale game data from previous sessions so the overlay
+      // starts empty and only shows data from the server's roomUpdate.
+      resetGameState?.();
+    }
+
     if (state?.gameRoom) {
       setGameRoom?.(state.gameRoom);
 
@@ -173,6 +194,12 @@ const GamePage = () => {
           },
           isGameOver: message.isGameOver ?? prev?.isGameOver,
           maxRounds: message.maxRounds ?? prev?.maxRounds,
+          volumeLocked: message.volumeLocked ?? prev?.volumeLocked,
+          musicMuted: message.musicMuted ?? prev?.musicMuted,
+          sfxMuted: message.sfxMuted ?? prev?.sfxMuted,
+          musicVolume: message.musicVolume ?? prev?.musicVolume,
+          sfxVolume: message.sfxVolume ?? prev?.sfxVolume,
+          teacherCreated: message.teacherCreated ?? prev?.teacherCreated,
         }));
 
         if (message.players) {
@@ -216,6 +243,18 @@ const GamePage = () => {
               players: message.roomData,
             },
           }));
+
+          // If the server cancelled a countdown for this player, clear the UI
+          const cancelId = message.cancelledCountdownPlayerId;
+          if (cancelId && countdownIntervalsRef.current[cancelId]) {
+            clearInterval(countdownIntervalsRef.current[cancelId]);
+            delete countdownIntervalsRef.current[cancelId];
+            setPlayerCountdowns((prev) => {
+              const next = { ...prev };
+              delete next[cancelId];
+              return next;
+            });
+          }
         }
       }
 
@@ -233,6 +272,11 @@ const GamePage = () => {
             },
             isGameOver: message.isGameOver ?? prev.isGameOver,
             maxRounds: message.maxRounds ?? prev.maxRounds,
+            volumeLocked: message.volumeLocked ?? prev.volumeLocked,
+            musicMuted: message.musicMuted ?? prev.musicMuted,
+            sfxMuted: message.sfxMuted ?? prev.sfxMuted,
+            musicVolume: message.musicVolume ?? prev.musicVolume,
+            sfxVolume: message.sfxVolume ?? prev.sfxVolume,
           }));
 
           // Set endGame from server signal
@@ -240,6 +284,47 @@ const GamePage = () => {
             setEndGame?.(true);
           }
         }
+      }
+
+      // Handle ready countdown broadcast from server (player-specific)
+      if (
+        message.type === "readyCountdown" &&
+        message.room === roomId &&
+        message.playerId
+      ) {
+        const targetId = message.playerId as string;
+        const totalSeconds = message.seconds ?? 30;
+
+        // Clear any existing interval for this player
+        if (countdownIntervalsRef.current[targetId]) {
+          clearInterval(countdownIntervalsRef.current[targetId]);
+        }
+
+        // Set initial countdown for this player
+        setPlayerCountdowns((prev) => ({ ...prev, [targetId]: totalSeconds }));
+
+        let remaining = totalSeconds;
+        countdownIntervalsRef.current[targetId] = setInterval(() => {
+          remaining -= 1;
+          if (remaining <= 0) {
+            setPlayerCountdowns((prev) => {
+              const next = { ...prev };
+              delete next[targetId];
+              return next;
+            });
+            clearInterval(countdownIntervalsRef.current[targetId]);
+            delete countdownIntervalsRef.current[targetId];
+          } else {
+            setPlayerCountdowns((prev) => ({ ...prev, [targetId]: remaining }));
+          }
+        }, 1000);
+      }
+
+      // Admin unlocked the room — re-enable the home button for teacher rooms
+      if (message.type === "roomUnlocked" && message.room === roomId) {
+        setGameRoom?.((prev) =>
+          prev ? { ...prev, teacherCreated: false } : prev,
+        );
       }
 
       // Handle reconnection state — server sends this ONLY to a reconnecting
@@ -255,6 +340,12 @@ const GamePage = () => {
           cardIndex: message.cardIndex,
           isGameOver: message.isGameOver ?? prev?.isGameOver,
           maxRounds: message.maxRounds ?? prev?.maxRounds,
+          volumeLocked: message.volumeLocked ?? prev?.volumeLocked,
+          musicMuted: message.musicMuted ?? prev?.musicMuted,
+          sfxMuted: message.sfxMuted ?? prev?.sfxMuted,
+          musicVolume: message.musicVolume ?? prev?.musicVolume,
+          sfxVolume: message.sfxVolume ?? prev?.sfxVolume,
+          teacherCreated: message.teacherCreated ?? prev?.teacherCreated,
           roomData: {
             count: message.count || prev?.roomData?.count || 0,
             players: message.players || prev?.roomData?.players || [],
@@ -309,6 +400,35 @@ const GamePage = () => {
 
     // Async init — handles reconnection on page refresh
     const init = async () => {
+      // Observer mode: connect to room WebSocket and subscribe, but never join as a player
+      if (isObserverRef.current && roomId) {
+        try {
+          const token = localStorage.getItem("authToken") || undefined;
+          await switchRoom({ roomId, token });
+          if (cancelled) return;
+          unsubscribe = subscribeToMessages(handleMessage);
+          // Send observeRoom to get current state without joining
+          const socket = getWebSocketInstance();
+          if (socket) {
+            const sendObserve = () => {
+              if (cancelled) return;
+              socket.send(
+                JSON.stringify({ type: "observeRoom", roomName: roomId }),
+              );
+            };
+            if (socket.readyState === PartySocket.OPEN) {
+              sendObserve();
+            } else {
+              socket.addEventListener("open", sendObserve, { once: true });
+            }
+          }
+        } catch (error) {
+          console.error("[GamePage] Observer connection failed:", error);
+          if (!cancelled) navigate("/admin");
+        }
+        return;
+      }
+
       const existingSocket = getWebSocketInstance();
       const needsReconnect =
         !existingSocket || existingSocket.readyState !== PartySocket.OPEN;
@@ -393,7 +513,7 @@ const GamePage = () => {
       // Only send playerLeaves if we've been in the room for a real amount of time
       // (protects against React StrictMode cleanup which happens immediately on setup)
       const timeInRoom = Date.now() - setupTimeRef.current;
-      if (hasJoinedRef.current && timeInRoom > 500) {
+      if (hasJoinedRef.current && !isObserverRef.current && timeInRoom > 500) {
         const socket = getWebSocketInstance();
         if (socket && roomId) {
           sendPlayerLeaves(socket, roomId);
@@ -402,6 +522,11 @@ const GamePage = () => {
         sessionStorage.removeItem("currentRoom");
       }
       unsubscribe();
+      // Clear all countdown timers on unmount
+      for (const key of Object.keys(countdownIntervalsRef.current)) {
+        clearInterval(countdownIntervalsRef.current[key]);
+      }
+      countdownIntervalsRef.current = {};
     };
   }, [roomId]);
 
@@ -409,7 +534,7 @@ const GamePage = () => {
   // NOTE: We do NOT clear sessionStorage here so the player can rejoin on refresh
   useEffect(() => {
     const handleBeforeUnload = () => {
-      if (hasJoinedRef.current) {
+      if (hasJoinedRef.current && !isObserverRef.current) {
         const socket = getWebSocketInstance();
         if (socket && roomId) {
           sendPlayerLeaves(socket, roomId);
@@ -421,11 +546,12 @@ const GamePage = () => {
   }, [roomId]);
 
   const showModalBackdrop =
-    showRoundModal ||
-    roundEnd ||
-    showResponseModal ||
-    showScoreCard ||
-    isEndGame;
+    !isObserver &&
+    (showRoundModal ||
+      roundEnd ||
+      showResponseModal ||
+      showScoreCard ||
+      isEndGame);
 
   return (
     <div className="game-page">
@@ -440,31 +566,51 @@ const GamePage = () => {
         setIsInfoModalOpen={setIsInfoModalOpen}
       />
       {showModalBackdrop && <div className="modal-backdrop" />}
-      {showRoundModal && (
+      {!isObserver && showRoundModal && (
         <RoundModal onClose={() => setShowRoundModal(false)} />
       )}
-      {roundEnd && (
+      {!isObserver && roundEnd && (
         <ResultModal
           setRoundEnd={setRoundEndWithLog}
           setShowResponseModal={setShowResponseModalWithLog}
         />
       )}
-      {showResponseModal && (
+      {!isObserver && showResponseModal && (
         <ResponseModal
           setShowScoreCard={setShowScoreCardWithLog}
           setShowResponseModal={setShowResponseModalWithLog}
         />
       )}
-      {showScoreCard && (
+      {!isObserver && showScoreCard && (
         <ScoreModal
           setIsEndGame={setIsEndGame}
           setShowRoundModal={setShowRoundModalWithLog}
           setShowScoreCard={setShowScoreCardWithLog}
         />
       )}
-      {isEndGame && <EndGameModal setIsEndGame={setIsEndGame} />}
+      {!isObserver && isEndGame && <EndGameModal setIsEndGame={setIsEndGame} />}
+      {!isObserver &&
+        currentPlayerId &&
+        playerCountdowns[currentPlayerId] != null && (
+          <div className="ready-countdown-banner">
+            <span className="ready-countdown-banner__text">
+              ⏱ You have <strong>{playerCountdowns[currentPlayerId]}s</strong>{" "}
+              to click ready or it will happen for you!
+            </span>
+          </div>
+        )}
       {isInfoModalOpen && (
         <InfoModal isOpen={isInfoModalOpen} onClose={setIsInfoModalOpen} />
+      )}
+      {isObserver && (
+        <>
+          <div className="observer-scrim" />
+          <ObserverOverlay
+            selectedPlayerId={selectedPlayerId}
+            onSelectPlayer={setSelectedPlayerId}
+            playerCountdowns={playerCountdowns}
+          />
+        </>
       )}
     </div>
   );

@@ -45,7 +45,7 @@
     "example": "OMG! What this ROBOT can do will SHOCK you! → It’s just an ad for a toy car."
   },
   "tactic-6": {
-    "tactic": "conspiracy-theories",
+    "tactic": "conspiracy-theory",
     "title": "Crazy secret stories",
     "description": "Making up wild stories with no proof.",
     "image": "/images/tactics/conspiracy.webp",

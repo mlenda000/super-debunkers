@@ -12,8 +12,11 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { sendEndOfRound } from "@/utils/gameMessageUtils";
-import { subscribeToMessages } from "@/services/webSocketService";
+import { sendEndOfRound, sendSyncTactics } from "@/utils/gameMessageUtils";
+import {
+  subscribeToMessages,
+  getWebSocketInstance,
+} from "@/services/webSocketService";
 import MainTable from "../mainTable/MainTable";
 import PlayersHand from "@/components/organisms/playersHand/PlayersHand";
 import TacticCard from "@/components/organisms/tacticCard/TacticCard";
@@ -58,6 +61,7 @@ const GameTable: React.FC<GameTableProps> = ({
   const [resetKey, setResetKey] = useState(0); // increments to signal table reset
   const [isMobile, setIsMobile] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [playAreaFullWarning, setPlayAreaFullWarning] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const playersHandRef = useRef<HTMLDivElement>(null);
 
@@ -115,6 +119,15 @@ const GameTable: React.FC<GameTableProps> = ({
       const activeCard = playersHandItems.find((item) => item.id === active.id);
       if (!activeCard) return;
 
+      const maxSlots = currentInfluencer?.tacticUsed?.length || 1;
+      const filledSlots = mainTableItems.filter(
+        (card) => String(card.id) !== "1",
+      ).length;
+      if (filledSlots >= maxSlots) {
+        setPlayAreaFullWarning(true);
+        return;
+      }
+
       setPlayersHandItems((items) =>
         items.filter((item) => item.id !== active.id),
       );
@@ -128,6 +141,15 @@ const GameTable: React.FC<GameTableProps> = ({
 
   const handleMoveCardToTable = useCallback(
     (cardId: string) => {
+      const maxSlots = currentInfluencer?.tacticUsed?.length || 1;
+      const filledSlots = mainTableItems.filter(
+        (card) => String(card.id) !== "1",
+      ).length;
+      if (filledSlots >= maxSlots) {
+        setPlayAreaFullWarning(true);
+        return;
+      }
+
       const cardToMove = playersHandItems.find((item) => item.id === cardId);
       if (!cardToMove) return;
 
@@ -143,12 +165,29 @@ const GameTable: React.FC<GameTableProps> = ({
       setMainTableItems([...removeStartingText, cardToMove]);
       playPlaceSound();
     },
-    [playersHandItems, mainTableItems, playPlaceSound],
+    [
+      currentInfluencer?.tacticUsed?.length,
+      playersHandItems,
+      mainTableItems,
+      playPlaceSound,
+    ],
   );
 
   useEffect(() => {
     setFinishRound(mainTableItems.length > 0);
   }, [mainTableItems]);
+
+  // Sync placed cards to the server so force-ready can score them correctly
+  useEffect(() => {
+    const tacticIds = mainTableItems
+      .filter((card) => String(card.id) !== "1")
+      .map((card) => card.category);
+    const roomName = gameRoom?.room || gameRoom?.roomData?.name || "";
+    if (roomName) {
+      const socket = getWebSocketInstance();
+      sendSyncTactics(socket, roomName, tacticIds);
+    }
+  }, [mainTableItems, gameRoom?.room, gameRoom?.roomData?.name]);
 
   // Listen for server score/end-of-round messages to reset UI for all players
   useEffect(() => {
@@ -161,12 +200,14 @@ const GameTable: React.FC<GameTableProps> = ({
       ) {
         // Show result modal (which will display the influencer info and scoring details)
         setRoundEnd(true);
-        // Prevent re-triggering endOfRound loop
-        setSubmitForScoring(true);
         setFinishRound(false);
-        // Only bump resetKey if it wasn't already bumped by the allPlayersReady effect
-        // (i.e. this client wasn't in the room when allPlayersReady fired)
+        // Only reset UI if this client didn't already handle the round end locally.
+        // When endOfRoundSentRef is true, the allPlayersReady effect already bumped
+        // resetKey and the ref guards against re-entry, so we don't need to re-arm
+        // submitForScoring (which would start a recovery timer with no resetKey to
+        // clear it, causing cards to reset 25s later).
         if (!endOfRoundSentRef.current) {
+          setSubmitForScoring(true);
           setResetKey((prev) => prev + 1);
         }
       }
@@ -242,6 +283,13 @@ const GameTable: React.FC<GameTableProps> = ({
     setRoundEnd,
     setRoundHasEnded,
   ]);
+
+  // Auto-dismiss play-area-full warning after 3 seconds
+  useEffect(() => {
+    if (!playAreaFullWarning) return;
+    const timer = setTimeout(() => setPlayAreaFullWarning(false), 3000);
+    return () => clearTimeout(timer);
+  }, [playAreaFullWarning]);
 
   // Safety net: recover from stuck scoring state
   // If submitForScoring has been true for 25s without a scoreUpdate resetting it,
@@ -361,6 +409,17 @@ const GameTable: React.FC<GameTableProps> = ({
           </button>
         )}
       </>
+
+      {/* Play area full warning banner */}
+      {playAreaFullWarning && (
+        <div
+          className="play-area-full-warning"
+          role="alert"
+          aria-live="assertive"
+        >
+          Play area is full — remove a card to play a different one
+        </div>
+      )}
 
       {/* DragOverlay renders the dragged card at root level, above all other content */}
       <DragOverlay>
