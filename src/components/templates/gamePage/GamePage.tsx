@@ -199,6 +199,7 @@ const GamePage = () => {
           sfxMuted: message.sfxMuted ?? prev?.sfxMuted,
           musicVolume: message.musicVolume ?? prev?.musicVolume,
           sfxVolume: message.sfxVolume ?? prev?.sfxVolume,
+          teacherCreated: message.teacherCreated ?? prev?.teacherCreated,
         }));
 
         if (message.players) {
@@ -242,6 +243,18 @@ const GamePage = () => {
               players: message.roomData,
             },
           }));
+
+          // If the server cancelled a countdown for this player, clear the UI
+          const cancelId = message.cancelledCountdownPlayerId;
+          if (cancelId && countdownIntervalsRef.current[cancelId]) {
+            clearInterval(countdownIntervalsRef.current[cancelId]);
+            delete countdownIntervalsRef.current[cancelId];
+            setPlayerCountdowns((prev) => {
+              const next = { ...prev };
+              delete next[cancelId];
+              return next;
+            });
+          }
         }
       }
 
@@ -307,6 +320,13 @@ const GamePage = () => {
         }, 1000);
       }
 
+      // Admin unlocked the room — re-enable the home button for teacher rooms
+      if (message.type === "roomUnlocked" && message.room === roomId) {
+        setGameRoom?.((prev) =>
+          prev ? { ...prev, teacherCreated: false } : prev,
+        );
+      }
+
       // Handle reconnection state — server sends this ONLY to a reconnecting
       // player with their full preserved state (score, streak, round, card, etc.)
       if (message.type === "reconnectState" && message.room === roomId) {
@@ -325,6 +345,7 @@ const GamePage = () => {
           sfxMuted: message.sfxMuted ?? prev?.sfxMuted,
           musicVolume: message.musicVolume ?? prev?.musicVolume,
           sfxVolume: message.sfxVolume ?? prev?.sfxVolume,
+          teacherCreated: message.teacherCreated ?? prev?.teacherCreated,
           roomData: {
             count: message.count || prev?.roomData?.count || 0,
             players: message.players || prev?.roomData?.players || [],

@@ -8,7 +8,10 @@ import {
   initializeWebSocket,
   getWebSocketInstance,
 } from "@/services/webSocketService";
-import { sendCreateRoom, sendUpdateAudioSettings } from "@/utils/gameMessageUtils";
+import {
+  sendCreateRoom,
+  sendUpdateAudioSettings,
+} from "@/utils/gameMessageUtils";
 import { isProfane } from "@/services/profanityFilter";
 import "./styles/admin-page.css";
 
@@ -67,8 +70,8 @@ const AdminPage = () => {
     setVolumeLocked(false);
     setSfxVolume(20);
     setAdminMusicVolume(20);
-  // Run only once on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Run only once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Sync teacherRooms with server on mount — remove stale entries
@@ -189,13 +192,15 @@ const AdminPage = () => {
   };
 
   // Broadcast current audio settings to all teacher rooms on the server
-  const broadcastAudioSettings = async (overrides: {
-    volumeLocked?: boolean;
-    musicMuted?: boolean;
-    sfxMuted?: boolean;
-    musicVolume?: number;
-    sfxVolume?: number;
-  } = {}) => {
+  const broadcastAudioSettings = async (
+    overrides: {
+      volumeLocked?: boolean;
+      musicMuted?: boolean;
+      sfxMuted?: boolean;
+      musicVolume?: number;
+      sfxVolume?: number;
+    } = {},
+  ) => {
     const settings = {
       volumeLocked: overrides.volumeLocked ?? volumeLocked,
       musicMuted: overrides.musicMuted ?? musicMuted,
@@ -264,7 +269,12 @@ const AdminPage = () => {
     setMusicMuted(true);
     setSfxVolume(0);
     setAdminMusicVolume(0);
-    broadcastAudioSettings({ musicMuted: true, sfxMuted: true, musicVolume: 0, sfxVolume: 0 });
+    broadcastAudioSettings({
+      musicMuted: true,
+      sfxMuted: true,
+      musicVolume: 0,
+      sfxVolume: 0,
+    });
   };
 
   const handleUnmuteAll = () => {
@@ -272,7 +282,12 @@ const AdminPage = () => {
     setMusicMuted(false);
     setSfxVolume(20);
     setAdminMusicVolume(20);
-    broadcastAudioSettings({ musicMuted: false, sfxMuted: false, musicVolume: 20, sfxVolume: 20 });
+    broadcastAudioSettings({
+      musicMuted: false,
+      sfxMuted: false,
+      musicVolume: 20,
+      sfxVolume: 20,
+    });
   };
 
   const handleMuteMusicToggle = () => {

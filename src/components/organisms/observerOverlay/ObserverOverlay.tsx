@@ -2,7 +2,11 @@ import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "@/hooks/useGameContext";
 import { getWebSocketInstance } from "@/services/webSocketService";
-import { sendForceReady, sendReadyCountdown } from "@/utils/gameMessageUtils";
+import {
+  sendForceReady,
+  sendReadyCountdown,
+  sendUpdateAudioSettings,
+} from "@/utils/gameMessageUtils";
 import type { Player } from "@/types/gameTypes";
 import {
   resolveSourcePlayers,
@@ -91,6 +95,29 @@ const ObserverOverlay = ({
     [roomName],
   );
 
+  const isMuted = gameRoom?.musicMuted === true && gameRoom?.sfxMuted === true;
+
+  const handleToggleMute = useCallback(() => {
+    const socket = getWebSocketInstance();
+    if (isMuted) {
+      sendUpdateAudioSettings(socket, roomName, {
+        volumeLocked: gameRoom?.volumeLocked ?? false,
+        musicMuted: false,
+        sfxMuted: false,
+        musicVolume: 20,
+        sfxVolume: 20,
+      });
+    } else {
+      sendUpdateAudioSettings(socket, roomName, {
+        volumeLocked: gameRoom?.volumeLocked ?? false,
+        musicMuted: true,
+        sfxMuted: true,
+        musicVolume: 0,
+        sfxVolume: 0,
+      });
+    }
+  }, [roomName, isMuted, gameRoom?.volumeLocked]);
+
   return (
     <div className="observer-overlay">
       <div className="observer-overlay__header">
@@ -98,6 +125,15 @@ const ObserverOverlay = ({
           Observer — Round {gameRound ?? 1}
         </h2>
         <div className="observer-overlay__header-actions">
+          <button
+            className={`observer-overlay__mute-btn${
+              isMuted ? " observer-overlay__mute-btn--muted" : ""
+            }`}
+            onClick={handleToggleMute}
+            aria-label={isMuted ? "Unmute all players" : "Mute all players"}
+          >
+            {isMuted ? "🔇 Unmute All" : "🔊 Mute All"}
+          </button>
           <button
             className="observer-overlay__admin-btn"
             onClick={() => navigate("/admin")}

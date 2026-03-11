@@ -237,3 +237,15 @@
     height: clamp(16px, 3.5vh, 26px);
   }
 }
+
+.endgame-modal__teacher-notice {
+  font-family: "Subway Berlin", sans-serif;
+  font-size: clamp(14px, 2.5vh, 20px);
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}

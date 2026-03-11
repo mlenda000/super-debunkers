@@ -19,13 +19,8 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
   gameRoom: propGameRoom,
   gameRound: propGameRound,
 }) => {
-  const {
-    setThemeStyle,
-    sfxVolume,
-    setSfxVolume,
-    sfxMuted,
-    setSfxMuted,
-  } = useGlobalContext();
+  const { setThemeStyle, sfxVolume, setSfxVolume, sfxMuted, setSfxMuted } =
+    useGlobalContext();
   const {
     gameRoom: ctxGameRoom,
     gameRound: ctxGameRound,
@@ -128,7 +123,15 @@ const Scoreboard: React.FC<ScoreboardProps> = ({
         });
       }
     }
-  }, [gameRoom, serverMusicVolume, serverSfxVolume, serverMusicMuted, serverSfxMuted, setSfxVolume, setSfxMuted]);
+  }, [
+    gameRoom,
+    serverMusicVolume,
+    serverSfxVolume,
+    serverMusicMuted,
+    serverSfxMuted,
+    setSfxVolume,
+    setSfxMuted,
+  ]);
 
   // Respect live admin musicMuted changes (after initial sync)
   useEffect(() => {

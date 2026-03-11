@@ -45,6 +45,7 @@ export type MessageType =
   | "endGame"
   | "forceReady"
   | "readyCountdown"
+  | "unlockRoom"
   // Server -> Client messages
   | "playerId"
   | "lobbyUpdate"
@@ -61,6 +62,7 @@ export type MessageType =
   | "joinRejected"
   | "reconnectState"
   | "gameResultsUpdated"
+  | "roomUnlocked"
   // Legacy types (if needed)
   | "USER_JOINED"
   | "USER_LEFT"
@@ -107,6 +109,15 @@ export interface WebSocketMessage {
   newsCard?: any;
   themeStyle?: string;
   influencerCard?: any;
+  // Teacher room fields
+  teacherCreated?: boolean;
+  volumeLocked?: boolean;
+  musicMuted?: boolean;
+  sfxMuted?: boolean;
+  musicVolume?: number;
+  sfxVolume?: number;
+  // Force-ready countdown cancellation
+  cancelledCountdownPlayerId?: string;
 }
 
 export type MessageHandler = (message: WebSocketMessage) => void;

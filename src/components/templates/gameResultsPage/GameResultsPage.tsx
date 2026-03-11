@@ -20,6 +20,7 @@ const GameResultsPage = () => {
   const [pinError, setPinError] = useState(false);
   const [gameResults, setGameResults] = useState<GameResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [unlockedRooms, setUnlockedRooms] = useState<Set<string>>(new Set());
 
   const handlePinSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,6 +92,18 @@ const GameResultsPage = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const handleUnlockRoom = async (roomName: string) => {
+    try {
+      await fetch(
+        `${PARTYKIT_URL}/parties/main/${encodeURIComponent(roomName)}?unlockRoom=true`,
+        { method: "POST" },
+      );
+      setUnlockedRooms((prev) => new Set(prev).add(roomName));
+    } catch {
+      // Best-effort
+    }
   };
 
   return (
@@ -178,9 +191,24 @@ const GameResultsPage = () => {
                       <h2 className="game-results-page__room-name">
                         {result.roomName}
                       </h2>
-                      <span className="game-results-page__time">
-                        {formatTime(result.completedAt)}
-                      </span>
+                      <div className="game-results-page__card-meta">
+                        <span className="game-results-page__time">
+                          {formatTime(result.completedAt)}
+                        </span>
+                        {unlockedRooms.has(result.roomName) ? (
+                          <span className="game-results-page__unlocked-badge">
+                            ✓ Unlocked
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            className="game-results-page__unlock-btn"
+                            onClick={() => handleUnlockRoom(result.roomName)}
+                          >
+                            Unlock Room
+                          </button>
+                        )}
+                      </div>
                     </div>
                     <table className="game-results-page__table">
                       <thead>
@@ -210,7 +238,7 @@ const GameResultsPage = () => {
                               <td className="game-results-page__td game-results-page__td--player">
                                 {player.avatar && (
                                   <img
-                                    src={player.avatar}
+                                    src={`/images/avatars/${player.avatar}`}
                                     alt=""
                                     className="game-results-page__avatar"
                                   />

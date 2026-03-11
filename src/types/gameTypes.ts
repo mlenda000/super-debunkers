@@ -127,6 +127,7 @@ export interface GameRoom {
   sfxMuted?: boolean;
   musicVolume?: number;
   sfxVolume?: number;
+  teacherCreated?: boolean;
 }
 
 export type GameContextType = {

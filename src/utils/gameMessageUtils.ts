@@ -80,9 +80,7 @@ export const sendUpdateAudioSettings = (
     console.warn("Socket not ready - updateAudioSettings not sent");
     return;
   }
-  sock.send(
-    JSON.stringify({ type: "updateAudioSettings", room, ...settings }),
-  );
+  sock.send(JSON.stringify({ type: "updateAudioSettings", room, ...settings }));
 };
 
 export const sendGetAvailableRooms = (socket?: PartySocket | null): void => {
@@ -106,6 +104,18 @@ export const sendObserveRoom = (
     return;
   }
   sock.send(JSON.stringify({ type: "observeRoom", roomName }));
+};
+
+export const sendUnlockRoom = (
+  socket: PartySocket | null | undefined,
+  room: string,
+): void => {
+  const sock = socket || getWebSocketInstance();
+  if (!sock || sock.readyState !== PartySocket.OPEN) {
+    console.warn("Socket not ready - unlockRoom will retry on connection");
+    return;
+  }
+  sock.send(JSON.stringify({ type: "unlockRoom", room }));
 };
 
 export const sendEndGame = (

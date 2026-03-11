@@ -293,6 +293,7 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
                 sfxMuted: message.sfxMuted,
                 musicVolume: message.musicVolume,
                 sfxVolume: message.sfxVolume,
+                teacherCreated: message.teacherCreated,
                 roomData: {
                   count: message.count || 0,
                   players: message.players || [],

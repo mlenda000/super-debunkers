@@ -61,6 +61,7 @@ const GameTable: React.FC<GameTableProps> = ({
   const [resetKey, setResetKey] = useState(0); // increments to signal table reset
   const [isMobile, setIsMobile] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [playAreaFullWarning, setPlayAreaFullWarning] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const playersHandRef = useRef<HTMLDivElement>(null);
 
@@ -118,6 +119,15 @@ const GameTable: React.FC<GameTableProps> = ({
       const activeCard = playersHandItems.find((item) => item.id === active.id);
       if (!activeCard) return;
 
+      const maxSlots = currentInfluencer?.tacticUsed?.length || 1;
+      const filledSlots = mainTableItems.filter(
+        (card) => String(card.id) !== "1",
+      ).length;
+      if (filledSlots >= maxSlots) {
+        setPlayAreaFullWarning(true);
+        return;
+      }
+
       setPlayersHandItems((items) =>
         items.filter((item) => item.id !== active.id),
       );
@@ -131,6 +141,15 @@ const GameTable: React.FC<GameTableProps> = ({
 
   const handleMoveCardToTable = useCallback(
     (cardId: string) => {
+      const maxSlots = currentInfluencer?.tacticUsed?.length || 1;
+      const filledSlots = mainTableItems.filter(
+        (card) => String(card.id) !== "1",
+      ).length;
+      if (filledSlots >= maxSlots) {
+        setPlayAreaFullWarning(true);
+        return;
+      }
+
       const cardToMove = playersHandItems.find((item) => item.id === cardId);
       if (!cardToMove) return;
 
@@ -146,7 +165,12 @@ const GameTable: React.FC<GameTableProps> = ({
       setMainTableItems([...removeStartingText, cardToMove]);
       playPlaceSound();
     },
-    [playersHandItems, mainTableItems, playPlaceSound],
+    [
+      currentInfluencer?.tacticUsed?.length,
+      playersHandItems,
+      mainTableItems,
+      playPlaceSound,
+    ],
   );
 
   useEffect(() => {
@@ -259,6 +283,13 @@ const GameTable: React.FC<GameTableProps> = ({
     setRoundEnd,
     setRoundHasEnded,
   ]);
+
+  // Auto-dismiss play-area-full warning after 3 seconds
+  useEffect(() => {
+    if (!playAreaFullWarning) return;
+    const timer = setTimeout(() => setPlayAreaFullWarning(false), 3000);
+    return () => clearTimeout(timer);
+  }, [playAreaFullWarning]);
 
   // Safety net: recover from stuck scoring state
   // If submitForScoring has been true for 25s without a scoreUpdate resetting it,
@@ -378,6 +409,17 @@ const GameTable: React.FC<GameTableProps> = ({
           </button>
         )}
       </>
+
+      {/* Play area full warning banner */}
+      {playAreaFullWarning && (
+        <div
+          className="play-area-full-warning"
+          role="alert"
+          aria-live="assertive"
+        >
+          Play area is full — remove a card to play a different one
+        </div>
+      )}
 
       {/* DragOverlay renders the dragged card at root level, above all other content */}
       <DragOverlay>

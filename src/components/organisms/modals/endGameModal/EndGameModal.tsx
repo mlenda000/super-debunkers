@@ -13,6 +13,8 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
   const { gameRoom, lastScoreUpdatePlayers, players } = useGameContext();
   const { setThemeStyle } = useGlobalContext();
 
+  const isTeacherRoom = gameRoom?.teacherCreated === true;
+
   // Use the final scored snapshot, fallback to gameRoom, then context players
   const finalPlayers: Player[] =
     lastScoreUpdatePlayers && lastScoreUpdatePlayers.length > 0
@@ -139,19 +141,25 @@ const EndGameModal = ({ setIsEndGame }: EndGameModalProps) => {
           </div>
         </div>
         <div className="endgame-modal__button">
-          <button
-            className="endgame-modal__home-btn"
-            onClick={startClose}
-            aria-label="Return to home page"
-          >
-            <img
-              src="/images/buttons/home.webp"
-              alt=""
+          {isTeacherRoom ? (
+            <p className="endgame-modal__teacher-notice">
+              Notify your teacher the game is complete
+            </p>
+          ) : (
+            <button
               className="endgame-modal__home-btn"
-              aria-hidden="true"
-            />
-            <p className="endgame-modal__home-btn-text">Home</p>
-          </button>
+              onClick={startClose}
+              aria-label="Return to home page"
+            >
+              <img
+                src="/images/buttons/home.webp"
+                alt=""
+                className="endgame-modal__home-btn"
+                aria-hidden="true"
+              />
+              <p className="endgame-modal__home-btn-text">Home</p>
+            </button>
+          )}
         </div>
       </div>
     </div>
