@@ -61,6 +61,10 @@ const AdminPage = () => {
   // Music volume (admin-controlled default)
   const [adminMusicVolume, setAdminMusicVolume] = useState(20);
 
+  // Server capacity tracking
+  const [totalConnections, setTotalConnections] = useState(0);
+  const [maxConnections, setMaxConnections] = useState(100);
+
   // Reset audio state to defaults on admin page entry (before auth).
   // Once the teacher authenticates and clicks "Save Settings",
   // their choices are persisted to localStorage.
@@ -91,6 +95,13 @@ const AdminPage = () => {
           setTeacherRooms(valid);
           localStorage.setItem("teacherRooms", JSON.stringify(valid));
         }
+        // Capture server capacity from same fetch
+        if (typeof data.totalConnections === "number") {
+          setTotalConnections(data.totalConnections);
+        }
+        if (typeof data.maxConnections === "number") {
+          setMaxConnections(data.maxConnections);
+        }
       } catch {
         // Server unreachable — keep local list as-is
       }
@@ -98,6 +109,30 @@ const AdminPage = () => {
 
     syncRooms();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTeacherAuthenticated]);
+
+  // Poll server capacity every 10 s while the admin panel is open
+  useEffect(() => {
+    if (!isTeacherAuthenticated) return;
+
+    const fetchCapacity = async () => {
+      try {
+        const response = await fetch(`${PARTYKIT_URL}/parties/main/lobby`);
+        if (!response.ok) return;
+        const data = await response.json();
+        if (typeof data.totalConnections === "number") {
+          setTotalConnections(data.totalConnections);
+        }
+        if (typeof data.maxConnections === "number") {
+          setMaxConnections(data.maxConnections);
+        }
+      } catch {
+        // Best-effort — keep existing values
+      }
+    };
+
+    const intervalId = setInterval(fetchCapacity, 10000);
+    return () => clearInterval(intervalId);
   }, [isTeacherAuthenticated]);
 
   const showMessage = useCallback((text: string, type: "success" | "error") => {
@@ -342,6 +377,38 @@ const AdminPage = () => {
         ) : (
           <>
             <h1 className="admin-page__title">Admin Panel</h1>
+
+            {/* Server Capacity Widget */}
+            {(() => {
+              const available = maxConnections - totalConnections;
+              const pct =
+                maxConnections > 0
+                  ? (totalConnections / maxConnections) * 100
+                  : 0;
+              const statusClass =
+                pct > 85
+                  ? "admin-page__capacity--high"
+                  : pct > 60
+                    ? "admin-page__capacity--medium"
+                    : "admin-page__capacity--low";
+              return (
+                <div
+                  className={`admin-page__capacity ${statusClass}`}
+                  role="status"
+                  aria-live="polite"
+                >
+                  <span className="admin-page__capacity-label">
+                    Server Capacity:
+                  </span>
+                  <span className="admin-page__capacity-count">
+                    {totalConnections} / {maxConnections} users
+                  </span>
+                  <span className="admin-page__capacity-available">
+                    — Available space: {available}
+                  </span>
+                </div>
+              );
+            })()}
 
             <div className="admin-page__grid">
               {/* Left Column: Volume Controls + Results */}

@@ -36,6 +36,9 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
     };
   }>({});
   const [joiningRoom, setJoiningRoom] = useState<string | null>(null);
+  const [serverFull, setServerFull] = useState(false);
+  const [totalConnections, setTotalConnections] = useState(0);
+  const [maxConnections, setMaxConnections] = useState(100);
 
   // Get player data from context (preferred) and localStorage (fallback)
   const {
@@ -73,6 +76,17 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
           const serverRoomNames = data.rooms.map(
             (r: { name: string }) => r.name,
           );
+
+          // Update server capacity stats from the GET response
+          if (typeof data.totalConnections === "number") {
+            setTotalConnections(data.totalConnections);
+          }
+          if (typeof data.maxConnections === "number") {
+            setMaxConnections(data.maxConnections);
+          }
+          if (typeof data.serverFull === "boolean") {
+            setServerFull(data.serverFull);
+          }
 
           // Reconcile: keep only rooms that still exist on the server,
           // plus any special entries like "Create room", and add new ones.
@@ -212,6 +226,24 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
         ) {
           setRoomsRef.current(mergedRooms);
         }
+      }
+
+      // Real-time server capacity updates
+      if (message.type === "serverStats") {
+        if (typeof message.totalConnections === "number") {
+          setTotalConnections(message.totalConnections);
+        }
+        if (typeof message.maxConnections === "number") {
+          setMaxConnections(message.maxConnections);
+        }
+        if (typeof message.serverFull === "boolean") {
+          setServerFull(message.serverFull);
+        }
+      }
+
+      // Hard server-full signal (sent on initial lobby connect when at capacity)
+      if (message.type === "serverFull") {
+        setServerFull(true);
       }
     });
     unsubscribers.push(roomEventsUnsubscribe);
@@ -399,6 +431,21 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
       <h1 id="lobby-title" className="lobby-title">
         Join Game
       </h1>
+
+      {serverFull && (
+        <div
+          className="lobby__server-full-banner"
+          role="alert"
+          aria-live="assertive"
+        >
+          <p className="lobby__server-full-text">
+            🚫 The game floor is full ({totalConnections}/{maxConnections}{" "}
+            users). Please wait until a room becomes available before trying to
+            join.
+          </p>
+        </div>
+      )}
+
       <div
         className="lobby__rooms"
         role="list"
@@ -408,7 +455,9 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
           <RoomTab
             room={"Create room"}
             onClick={() =>
-              handleClick(playerName || "", "Create room", avatar || "")
+              !serverFull
+                ? handleClick(playerName || "", "Create room", avatar || "")
+                : undefined
             }
             key={"create-room"}
             avatar={avatar || ""}
@@ -426,7 +475,11 @@ const Lobby = ({ rooms, setRooms }: LobbyProps) => {
               <RoomTab
                 room={room}
                 onClick={() =>
-                  handleClick(playerName || "", room, avatar || "")
+                  // Always allow reconnection to a room the player was already in;
+                  // block new joins when the server is full
+                  !serverFull || canReconnect
+                    ? handleClick(playerName || "", room, avatar || "")
+                    : undefined
                 }
                 key={room}
                 avatar={avatar || ""}
