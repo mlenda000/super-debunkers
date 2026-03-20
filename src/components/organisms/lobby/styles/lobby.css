@@ -77,6 +77,24 @@
       gap: var(--spacing-2xl);
     }
   }
+
+  .lobby__server-full-banner {
+    width: 100%;
+    max-width: 600px;
+    background: rgba(220, 38, 38, 0.85);
+    border: 1px solid rgba(248, 113, 113, 0.6);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+  }
+
+  .lobby__server-full-text {
+    margin: 0;
+    color: #fff;
+    font-size: var(--font-size-responsive-sm);
+    line-height: 1.5;
+  }
 }
 
 .lobby-title {

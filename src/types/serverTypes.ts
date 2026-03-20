@@ -63,6 +63,8 @@ export type MessageType =
   | "reconnectState"
   | "gameResultsUpdated"
   | "roomUnlocked"
+  | "serverStats"
+  | "serverFull"
   // Legacy types (if needed)
   | "USER_JOINED"
   | "USER_LEFT"
@@ -118,6 +120,10 @@ export interface WebSocketMessage {
   sfxVolume?: number;
   // Force-ready countdown cancellation
   cancelledCountdownPlayerId?: string;
+  // Server capacity fields
+  totalConnections?: number;
+  maxConnections?: number;
+  serverFull?: boolean;
 }
 
 export type MessageHandler = (message: WebSocketMessage) => void;
