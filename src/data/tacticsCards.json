@@ -9,18 +9,18 @@
     "example": "A TikTok comment says, 'If you don’t repost this, your Among Us account will get DELETED!'"
   },
   "tactic-2": {
-    "tactic": "tricky-jokes",
+    "tactic": "weaponized-humour",
     "title": "Jokes that mislead people",
-    "description": "Sharing funny memes as if they’re real news.",
-    "image": "/images/tactics/tricky.webp",
-    "imageAlt": "Tricky Jokes tactic image",
-    "imageBack": "/images/tactics/backs/tricky.webp",
+    "description": "Using humour to trick people into spreading false information.",
+    "image": "/images/tactics/weaponized-humour.webp",
+    "imageAlt": "Weaponized Humour tactic image",
+    "imageBack": "/images/tactics/backs/weaponized-humour.webp",
     "example": "A Minecraft meme says: 'NEW GLITCH: PRESS ALT+F4 TO GET FREE DIAMONDS! 💎' — kids try it, but pressing ALT+F4 just closes their game!'"
   },
   "tactic-3": {
     "tactic": "deepfakes",
     "title": "Fake Videos/Audio",
-    "description": "Using tech to make someone look or sound like they did/said something they didn’t.",
+    "description": "AI-made videos or images that fakes people doing or saying things they never did.",
     "image": "/images/tactics/deepfakes.webp",
     "imageAlt": "Deepfakes tactic image",
     "imageBack": "/images/tactics/backs/deepfakes.webp",
@@ -29,7 +29,7 @@
   "tactic-4": {
     "tactic": "cherry-picking",
     "title": "Only showing the good parts",
-    "description": "Hiding bad stuff to make something look better.",
+    "description": "Hiding some information to make something look better or worse than it is.",
     "image": "/images/tactics/cherry-picking.webp",
     "imageAlt": "Cherry-picking tactic image",
     "imageBack": "/images/tactics/backs/cherry-picking.webp",
@@ -38,7 +38,7 @@
   "tactic-5": {
     "tactic": "clickbait",
     "title": "Trick headlines",
-    "description": "Headlines that make you click… but the story is boring or fake.",
+    "description": "Headlines that hook you in but the story is fake or not a big deal.",
     "image": "/images/tactics/clickbait.webp",
     "imageAlt": "Clickbait tactic image",
     "imageBack": "/images/tactics/backs/clickbait.webp",
@@ -47,7 +47,7 @@
   "tactic-6": {
     "tactic": "conspiracy-theory",
     "title": "Crazy secret stories",
-    "description": "Making up wild stories with no proof.",
+    "description": "A story that a powerful group is secretly pulling the strings behind a big event.",
     "image": "/images/tactics/conspiracy.webp",
     "imageAlt": "Conspiracy Theories tactic image",
     "imageBack": "/images/tactics/backs/conspiracy.webp",
@@ -65,7 +65,7 @@
   "tactic-8": {
     "tactic": "fear-mongering",
     "title": "Scaring people",
-    "description": "Making small problems seem like disasters.",
+    "description": "Deliberately trying to scare people so they react without thinking.",
     "image": "/images/tactics/fearmongering.webp",
     "imageAlt": "Fear-mongering tactic image",
     "imageBack": "/images/tactics/backs/fearmongering.webp",
@@ -74,7 +74,7 @@
   "tactic-9": {
     "tactic": "impersonation",
     "title": "Fake accounts",
-    "description": "Pretending to be someone famous or a friend online.",
+    "description": "Pretending to be someone you trust to fool you, like a celeb or expert.",
     "image": "/images/tactics/sneaky.webp",
     "imageAlt": "Impersonation tactic image",
     "imageBack": "/images/tactics/backs/sneaky.webp",
@@ -83,7 +83,7 @@
   "tactic-10": {
     "tactic": "gaslighting",
     "title": "Messing with your brain",
-    "description": "Making you doubt what you know is true.",
+    "description": "Trying to confuse you so you don't trust what you know is true.",
     "image": "/images/tactics/gaslighting.webp",
     "imageAlt": "Gaslighting tactic image",
     "imageBack": "/images/tactics/backs/gaslighting.webp",
