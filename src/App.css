@@ -58,7 +58,7 @@
   src:
     url("/fonts/DINAlternate-Bold.woff2") format("woff2"),
     url("/fonts/DINAlternate-Bold.ttf") format("truetype");
-  font-weight: var(--font-weight-bold);
+  font-weight: 700;
   font-style: normal;
   font-display: block;
 }
@@ -68,7 +68,7 @@
   src:
     url("/fonts/subway-berlin-sc.woff2") format("woff2"),
     url("/fonts/subway-berlin-sc.otf") format("opentype");
-  font-weight: var(--font-weight-normal);
+  font-weight: 400;
   font-style: normal;
   font-display: block;
 }
@@ -78,7 +78,7 @@
   src:
     url("/fonts/AlfaSlabOne-Regular.woff2") format("woff2"),
     url("/fonts/AlfaSlabOne-Regular.ttf") format("truetype");
-  font-weight: var(--font-weight-normal);
+  font-weight: 400;
   font-style: normal;
   font-display: block;
 }
