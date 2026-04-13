@@ -142,7 +142,7 @@
 .endgame-modal__home-btn:focus-visible,
 .endgame-modal__home-btn:active {
   transform: scale(1.1);
-  stroke: 2px solid #fff;
+  outline: 2px solid #fff;
 }
 
 /* ========================================

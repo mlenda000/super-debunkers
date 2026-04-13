@@ -6,6 +6,7 @@ import { PARTYKIT_URL } from "@/services/env";
 import { getWebSocketInstance } from "@/services/webSocketService";
 import { sendCreateRoom } from "@/utils/gameMessageUtils";
 import { isProfane } from "@/services/profanityFilter";
+import { sanitizeRoomName } from "@/utils/roomUtils";
 
 const CreateRoom = ({
   rooms,
@@ -22,7 +23,7 @@ const CreateRoom = ({
   };
 
   const handleSubmit = async () => {
-    const trimmedGameRoomName = currentInput.trim();
+    const trimmedGameRoomName = sanitizeRoomName(currentInput.trim());
     if (!trimmedGameRoomName) {
       alert("Please enter a room name");
       return;

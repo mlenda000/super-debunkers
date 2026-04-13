@@ -13,6 +13,7 @@ import {
   sendUpdateAudioSettings,
 } from "@/utils/gameMessageUtils";
 import { isProfane } from "@/services/profanityFilter";
+import { sanitizeRoomName } from "@/utils/roomUtils";
 import "./styles/admin-page.css";
 
 const TEACHER_PIN = "1234";
@@ -141,7 +142,7 @@ const AdminPage = () => {
   }, []);
 
   const handleCreateRoom = async (roomName: string) => {
-    const trimmed = roomName.trim();
+    const trimmed = sanitizeRoomName(roomName.trim());
     if (!trimmed) return;
 
     if (isProfane(trimmed)) {
