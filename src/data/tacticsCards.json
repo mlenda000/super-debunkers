@@ -2,7 +2,7 @@
   "tactic-1": {
     "tactic": "emotional-manipulation",
     "title": "Playing with feelings",
-    "description": "Using your feelings to trick you into doing something.",
+    "description": "Using your feelings (like anger and sadness) to trick you into doing something.",
     "image": "/images/tactics/emotional.webp",
     "imageAlt": "Emotional Manipulation tactic image",
     "imageBack": "/images/tactics/backs/emotional.webp",
@@ -11,7 +11,7 @@
   "tactic-2": {
     "tactic": "weaponized-humour",
     "title": "Jokes that mislead people",
-    "description": "Using humour to trick people into spreading false information.",
+    "description": "Using humour or memes to spread false or misleading information.",
     "image": "/images/tactics/weaponized-humour.webp",
     "imageAlt": "Weaponized Humour tactic image",
     "imageBack": "/images/tactics/backs/weaponized-humour.webp",
@@ -20,7 +20,7 @@
   "tactic-3": {
     "tactic": "deepfakes",
     "title": "Fake Videos/Audio",
-    "description": "AI-made videos or images that fakes people doing or saying things they never did.",
+    "description": "Fake videos or images made with AI that show people doing or saying things they never did.",
     "image": "/images/tactics/deepfakes.webp",
     "imageAlt": "Deepfakes tactic image",
     "imageBack": "/images/tactics/backs/deepfakes.webp",
@@ -29,7 +29,7 @@
   "tactic-4": {
     "tactic": "cherry-picking",
     "title": "Only showing the good parts",
-    "description": "Hiding some information to make something look better or worse than it is.",
+    "description": "Leaving out important information to make something look better or worse than it really is.",
     "image": "/images/tactics/cherry-picking.webp",
     "imageAlt": "Cherry-picking tactic image",
     "imageBack": "/images/tactics/backs/cherry-picking.webp",
@@ -38,7 +38,7 @@
   "tactic-5": {
     "tactic": "clickbait",
     "title": "Trick headlines",
-    "description": "Headlines that hook you in but the story is fake or not a big deal.",
+    "description": "Headlines that grab your attention, but the story is fake or not as important as it seems.",
     "image": "/images/tactics/clickbait.webp",
     "imageAlt": "Clickbait tactic image",
     "imageBack": "/images/tactics/backs/clickbait.webp",
@@ -47,7 +47,7 @@
   "tactic-6": {
     "tactic": "conspiracy-theory",
     "title": "Crazy secret stories",
-    "description": "A story that a powerful group is secretly pulling the strings behind a big event.",
+    "description": "A story that claims a powerful group is secretly behind an event without strong evidence.",
     "image": "/images/tactics/conspiracy.webp",
     "imageAlt": "Conspiracy Theories tactic image",
     "imageBack": "/images/tactics/backs/conspiracy.webp",
@@ -56,7 +56,7 @@
   "tactic-7": {
     "tactic": "sock-puppetry",
     "title": "Multiple fake online identities",
-    "description": "Using fake accounts to make it seem like lots of people agree with something.",
+    "description": "Using fake accounts to make it look like lots of people agree with something.",
     "image": "/images/tactics/sock.webp",
     "imageAlt": "Sock Puppetry tactic image",
     "imageBack": "/images/tactics/backs/sock.webp",
@@ -65,7 +65,7 @@
   "tactic-8": {
     "tactic": "fear-mongering",
     "title": "Scaring people",
-    "description": "Deliberately trying to scare people so they react without thinking.",
+    "description": "Trying to scare you so you react quickly without thinking.",
     "image": "/images/tactics/fearmongering.webp",
     "imageAlt": "Fear-mongering tactic image",
     "imageBack": "/images/tactics/backs/fearmongering.webp",
@@ -74,7 +74,7 @@
   "tactic-9": {
     "tactic": "impersonation",
     "title": "Fake accounts",
-    "description": "Pretending to be someone you trust to fool you, like a celeb or expert.",
+    "description": "Pretending to be someone you trust (like a friend, celebrity, or expert) to trick you.",
     "image": "/images/tactics/sneaky.webp",
     "imageAlt": "Impersonation tactic image",
     "imageBack": "/images/tactics/backs/sneaky.webp",
@@ -83,7 +83,7 @@
   "tactic-10": {
     "tactic": "gaslighting",
     "title": "Messing with your brain",
-    "description": "Trying to confuse you so you don't trust what you know is true.",
+    "description": "Trying to make you doubt what you know is true.",
     "image": "/images/tactics/gaslighting.webp",
     "imageAlt": "Gaslighting tactic image",
     "imageBack": "/images/tactics/backs/gaslighting.webp",
@@ -92,7 +92,7 @@
   "tactic-11": {
     "tactic": "true",
     "title": "Truth",
-    "description": "It's the real deal!",
+    "description": "It's the real deal! \\nYou can look it up and see that it's real.",
     "image": "/images/tactics/truth.webp",
     "imageAlt": "Truth tactic image",
     "imageBack": "/images/tactics/backs/truth.webp",
