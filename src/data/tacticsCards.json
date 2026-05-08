@@ -2,34 +2,34 @@
   "tactic-1": {
     "tactic": "emotional-manipulation",
     "title": "Playing with feelings",
-    "description": "Using your feelings (like anger and sadness) to trick you into doing something.",
+    "description": "Using your feelings to trick you into doing something.",
     "image": "/images/tactics/emotional.webp",
     "imageAlt": "Emotional Manipulation tactic image",
     "imageBack": "/images/tactics/backs/emotional.webp",
-    "example": "A TikTok comment says, 'If you don’t repost this, your Among Us account will get DELETED!'"
+    "example": "A TikTok comment says, “If you don’t repost this, your Among Us account will get DELETED!”"
   },
   "tactic-2": {
     "tactic": "weaponized-humour",
     "title": "Jokes that mislead people",
-    "description": "Using humour or memes to spread false or misleading information.",
+    "description": "Using humour to trick people into spreading false information.",
     "image": "/images/tactics/weaponized-humour.webp",
     "imageAlt": "Weaponized Humour tactic image",
     "imageBack": "/images/tactics/backs/weaponized-humour.webp",
-    "example": "A Minecraft meme says: 'NEW GLITCH: PRESS ALT+F4 TO GET FREE DIAMONDS! 💎' — kids try it, but pressing ALT+F4 just closes their game!'"
+    "example": "A Minecraft meme says: \"NEW GLITCH: PRESS ALT+F4 TO GET FREE DIAMONDS! 💎\" — kids try it, but pressing ALT+F4 just closes their game!"
   },
   "tactic-3": {
     "tactic": "deepfakes",
-    "title": "Fake Videos/Audio",
-    "description": "Fake videos or images made with AI that show people doing or saying things they never did.",
+    "title": "Fake Videos/Audio Made with AI",
+    "description": "Fake videos or images made with AI that show people doing or saying things they never did ",
     "image": "/images/tactics/deepfakes.webp",
     "imageAlt": "Deepfakes tactic image",
     "imageBack": "/images/tactics/backs/deepfakes.webp",
-    "example": "A YouTube short shows Taylor Swift saying, 'I hate cats!' — but it’s AI-generated."
+    "example": "A YouTube short shows Taylor Swift saying, \"I hate cats!\" — but it’s AI-generated."
   },
   "tactic-4": {
     "tactic": "cherry-picking",
-    "title": "Only showing the good parts",
-    "description": "Leaving out important information to make something look better or worse than it really is.",
+    "title": "Only showing the good or bad parts",
+    "description": "Hiding some information to make something look better or worse than it is",
     "image": "/images/tactics/cherry-picking.webp",
     "imageAlt": "Cherry-picking tactic image",
     "imageBack": "/images/tactics/backs/cherry-picking.webp",
@@ -37,62 +37,62 @@
   },
   "tactic-5": {
     "tactic": "clickbait",
-    "title": "Trick headlines",
-    "description": "Headlines that grab your attention, but the story is fake or not as important as it seems.",
+    "title": "Trick headlines that make you want to click",
+    "description": "Headlines that hook you in but the story is fake or not a big deal.",
     "image": "/images/tactics/clickbait.webp",
     "imageAlt": "Clickbait tactic image",
     "imageBack": "/images/tactics/backs/clickbait.webp",
-    "example": "OMG! What this ROBOT can do will SHOCK you! → It’s just an ad for a toy car."
+    "example": "\"OMG! What this ROBOT can do will SHOCK you!\" -> It’s just an ad for a toy car."
   },
   "tactic-6": {
     "tactic": "conspiracy-theory",
-    "title": "Crazy secret stories",
-    "description": "A story that claims a powerful group is secretly behind an event without strong evidence.",
+    "title": "Crazy secret stories that powerful people use to trick you",
+    "description": "A story that a powerful group is secretly pulling the strings behind a big event",
     "image": "/images/tactics/conspiracy.webp",
     "imageAlt": "Conspiracy Theories tactic image",
     "imageBack": "/images/tactics/backs/conspiracy.webp",
-    "example": "Roblox is spying on you through your mic to sell your voice to aliens! (Nope, Roblox just uses mics for voice chat.)"
+    "example": "Powerful world leaders are actually giant lizards wearing human disguises. (Not likely!)"
   },
   "tactic-7": {
     "tactic": "sock-puppetry",
-    "title": "Multiple fake online identities",
-    "description": "Using fake accounts to make it look like lots of people agree with something.",
+    "title": "Multiple fake online identities saying the same thing",
+    "description": "Using fake accounts to make it seem like lots of people agree with something.",
     "image": "/images/tactics/sock.webp",
     "imageAlt": "Sock Puppetry tactic image",
     "imageBack": "/images/tactics/backs/sock.webp",
-    "example": "A TikTok post says, 'Mr. Beast is quitting music forever!' — but it's totally fake."
+    "example": "Jake creates fake Instagram accounts to comment \"This is so cool!\" on his own posts."
   },
   "tactic-8": {
     "tactic": "fear-mongering",
-    "title": "Scaring people",
-    "description": "Trying to scare you so you react quickly without thinking.",
+    "title": "Scaring people to make them react without thinking",
+    "description": "Deliberately trying to scare people so they react without thinking.",
     "image": "/images/tactics/fearmongering.webp",
     "imageAlt": "Fear-mongering tactic image",
     "imageBack": "/images/tactics/backs/fearmongering.webp",
-    "example": "A Snapchat story screams, 'If you don’t share this in 10 seconds, Snapchat will BLOCK YOUR ACCOUNT!' (Nope, it’s just trying to go viral.)"
+    "example": "A Snapchat story screams, \"If you don’t share this in 10 seconds, Snapchat will BLOCK YOUR ACCOUNT!\" (Nope, it’s just trying to go viral.)"
   },
   "tactic-9": {
     "tactic": "impersonation",
-    "title": "Fake accounts",
-    "description": "Pretending to be someone you trust (like a friend, celebrity, or expert) to trick you.",
+    "title": "Fake accounts to sound like someone you trust",
+    "description": "Pretending to be someone you trust (like a friend, celebrity, or expert) to trick you",
     "image": "/images/tactics/sneaky.webp",
     "imageAlt": "Impersonation tactic image",
     "imageBack": "/images/tactics/backs/sneaky.webp",
-    "example": "An Instagram account named '@Real_Taylor_Swift' asks you for money."
+    "example": "An Instagram account named \"@Real_Taylor_Swift\" asks you for money."
   },
   "tactic-10": {
     "tactic": "gaslighting",
     "title": "Messing with your brain",
-    "description": "Trying to make you doubt what you know is true.",
+    "description": "Trying to confuse you so you don’t trust what you know is true",
     "image": "/images/tactics/gaslighting.webp",
     "imageAlt": "Gaslighting tactic image",
     "imageBack": "/images/tactics/backs/gaslighting.webp",
-    "example": "A classmate accuses you of cheating, then denies it: 'I never said that! You’re imagining things—you must be stressed.'"
+    "example": "A classmate accuses you of cheating, then denies it: “I never said that! You’re imagining things—you must be stressed.”"
   },
   "tactic-11": {
     "tactic": "true",
     "title": "Truth",
-    "description": "It's the real deal! \\nYou can look it up and see that it's real.",
+    "description": "It's the real deal! \n\nYou can look it up and see that it's real.",
     "image": "/images/tactics/truth.webp",
     "imageAlt": "Truth tactic image",
     "imageBack": "/images/tactics/backs/truth.webp",
